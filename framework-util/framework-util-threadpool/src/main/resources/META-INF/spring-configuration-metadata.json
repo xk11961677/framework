@@ -1,0 +1,47 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "name": "asyncthreadpool",
+      "type": "com.sky.framework.threadpool.AsyncThreadPoolProperties",
+      "sourceType": "com.sky.framework.threadpool.AsyncThreadPoolProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "asyncthreadpool.corePoolSize",
+      "type": "java.lang.Integer",
+      "sourceType": "com.sky.framework.threadpool.AsyncThreadPoolProperties"
+    },
+    {
+      "name": "asyncthreadpool.maximumPoolSize",
+      "type": "java.lang.Integer",
+      "sourceType": "com.sky.framework.threadpool.AsyncThreadPoolProperties"
+    },
+    {
+      "name": "asyncthreadpool.initialCapacity",
+      "type": "java.lang.Integer",
+      "sourceType": "com.sky.framework.threadpool.AsyncThreadPoolProperties"
+    },
+    {
+      "name": "asyncthreadpool.keepAliveTime",
+      "type": "java.lang.Integer",
+      "sourceType": "com.sky.framework.threadpool.AsyncThreadPoolProperties"
+    },
+    {
+      "name": "asyncthreadpool.threadName",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.framework.threadpool.AsyncThreadPoolProperties"
+    },
+    {
+      "name": "asyncthreadpool.isDiscard",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.sky.framework.threadpool.AsyncThreadPoolProperties"
+    },
+    {
+      "name": "asyncthreadpool.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.sky.framework.threadpool.AsyncThreadPoolProperties"
+    }
+  ]
+}

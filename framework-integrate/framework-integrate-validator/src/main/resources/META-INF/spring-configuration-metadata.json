@@ -1,0 +1,46 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "name": "validator",
+      "type": "com.sky.framework.validator.ValidatorProperties",
+      "sourceType": "com.sky.framework.validator.ValidatorProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "validator.hibernateDefaultErrorCode",
+      "type": "java.lang.Integer",
+      "description": "默认hibernate验证器错误码",
+      "defaultValue": "10001",
+      "sourceType": "com.sky.framework.validator.ValidatorProperties"
+    },
+    {
+      "name": "validator.beanNames",
+      "type": "java.util.List",
+      "description": "切面拦截目标类",
+      "sourceType": "com.sky.framework.validator.ValidatorProperties"
+    },
+    {
+      "name": "validator.errorCode",
+      "type": "java.lang.Integer",
+      "description": "验证器异常时默认错误码",
+      "defaultValue": "99999",
+      "sourceType": "com.sky.framework.validator.ValidatorProperties"
+    },
+    {
+      "name": "validator.errorMsg",
+      "type": "java.lang.String",
+      "description": "验证器异常时默认错误信息",
+      "defaultValue": "验证器异常",
+      "sourceType": "com.sky.framework.validator.ValidatorProperties"
+    },
+    {
+      "name": "validator.order",
+      "type": "java.lang.Integer",
+      "description": "验证器执行顺序",
+      "defaultValue": 100,
+      "sourceType": "com.sky.framework.validator.ValidatorProperties"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "name": "swagger",
+      "type": "com.sky.framework.web.property.SwaggerProperties",
+      "sourceType": "com.sky.framework.web.property.SwaggerProperties"
+    },
+    {
+      "name": "web",
+      "type": "com.sky.framework.web.property.WebProperties",
+      "sourceType": "com.sky.framework.web.property.WebProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "swagger.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.sky.framework.web.property.SwaggerProperties"
+    },
+    {
+      "name": "swagger.title",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.framework.web.property.SwaggerProperties"
+    },
+    {
+      "name": "swagger.description",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.framework.web.property.SwaggerProperties"
+    },
+    {
+      "name": "swagger.version",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.framework.web.property.SwaggerProperties",
+      "defaultValue": "1.0"
+    },
+    {
+      "name": "swagger.license",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.framework.web.property.SwaggerProperties"
+    },
+    {
+      "name": "swagger.licenseUrl",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.framework.web.property.SwaggerProperties"
+    },
+    {
+      "name": "swagger.contactName",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.framework.web.property.SwaggerProperties"
+    },
+    {
+      "name": "swagger.contactUrl",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.framework.web.property.SwaggerProperties"
+    },
+    {
+      "name": "swagger.contactEmail",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.framework.web.property.SwaggerProperties"
+    },
+    {
+      "name": "web.global.exception.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.sky.framework.web.property.WebProperties"
+    },
+    {
+      "name": "web.global.converter.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.sky.framework.web.property.WebProperties"
+    }
+  ]
+}
