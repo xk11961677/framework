@@ -3,13 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.sky.framework</groupId>
-        <artifactId>framework-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>framework-bom</artifactId>
+        <version>${revision}</version>
+        <relativePath>../framework-bom</relativePath>
     </parent>
 
     <artifactId>framework-integrate</artifactId>
     <packaging>pom</packaging>
-    <description>整合其他三方库</description>
+    <description>integrate 3rd part ${project.version}</description>
 
     <modules>
         <module>framework-integrate-validator</module>

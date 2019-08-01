@@ -1,12 +1,34 @@
+/*
+ * The MIT License (MIT)
+ * Copyright © 2019 <sky>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package com.sky.framework.web.interceptor;
 
 import com.alibaba.fastjson.JSON;
-import com.sky.framework.common.LogUtil;
+import com.sky.framework.common.LogUtils;
 import com.sky.framework.model.dto.MessageRes;
 import com.sky.framework.model.enums.FailureCodeEnum;
 import com.sky.framework.model.util.UserContextHolder;
 import com.sky.framework.web.common.annotation.IgnoreToken;
-import com.sky.framework.web.constant.GlobalConstant;
+import com.sky.framework.web.constant.WebConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.lang.Nullable;
@@ -86,7 +108,7 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
 
         String userInfo = request.getHeader(X_CLIENT_TOKEN_USER);
 
-        LogUtil.debug(log, "get x-client-token-user from header  :{} ", userInfo);
+        LogUtils.debug(log, "get x-client-token-user from header  :{} ", userInfo);
 
         String requestURI = request.getRequestURI();
 
@@ -111,9 +133,9 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
 
         if (!ignoreToken && !requestURI.startsWith(INTER_API) && StringUtils.isEmpty(userInfo)) {
             String result = JSON.toJSONString(new MessageRes(FailureCodeEnum.AUZ100001.getCode(), FailureCodeEnum.AUZ100001.getMsg()));
-            LogUtil.debug(log, "token验证结果，result={}", result);
-            response.setCharacterEncoding(GlobalConstant.UTF_8);
-            response.setContentType(GlobalConstant.APPLICATION_JSOON_UTF_8);
+            LogUtils.debug(log, "token验证结果，result={}", result);
+            response.setCharacterEncoding(WebConstants.UTF_8);
+            response.setContentType(WebConstants.APPLICATION_JSOON_UTF_8);
             response.getWriter().println(result);
             return false;
         }
@@ -124,7 +146,7 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
         /**
          * TODO 从网关获取并校验,通过校验就可信任x-client-token-user中的信息
          */
-        LogUtil.debug(log, "//TODO 校验 x-client-token-user:{}", token);
+        LogUtils.debug(log, "//TODO 校验 x-client-token-user:{}", token);
     }
 
     /**
@@ -143,7 +165,7 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
             try {
                 map = JSON.parseObject(userInfo, Map.class);
             } catch (Exception e) {
-                LogUtil.error(log, "旧系统 token :{}", userInfo);
+                LogUtils.error(log, "旧系统 token :{}", userInfo);
             }
         }
         if (map == null) {

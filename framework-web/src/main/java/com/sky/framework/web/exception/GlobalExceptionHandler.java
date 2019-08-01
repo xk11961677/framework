@@ -1,6 +1,28 @@
+/*
+ * The MIT License (MIT)
+ * Copyright © 2019 <sky>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package com.sky.framework.web.exception;
 
-import com.sky.framework.common.LogUtil;
+import com.sky.framework.common.LogUtils;
 import com.sky.framework.common.ding.DingTalkMessage;
 import com.sky.framework.common.ding.DingTalkMessageBuilder;
 import com.sky.framework.model.dto.MessageRes;
@@ -8,7 +30,8 @@ import com.sky.framework.model.enums.FailureCodeEnum;
 import com.sky.framework.model.exception.BusinessException;
 import com.sky.framework.threadpool.CommonThreadPool;
 import com.sky.framework.threadpool.DefaultAsynchronousHandler;
-import com.sky.framework.web.constant.GlobalConstant;
+import com.sky.framework.web.common.notice.HttpExceptionNotice;
+import com.sky.framework.web.constant.WebConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +60,7 @@ import java.util.Set;
  * @author
  */
 @Slf4j
-@ConditionalOnProperty(value = GlobalConstant.GLOBAL_EXCEPTION_ENABLE, matchIfMissing = true)
+@ConditionalOnProperty(value = WebConstants.GLOBAL_EXCEPTION_ENABLE, matchIfMissing = true)
 @RestControllerAdvice
 @SuppressWarnings("all")
 public class GlobalExceptionHandler {
@@ -47,7 +70,21 @@ public class GlobalExceptionHandler {
     private String name;
 
     /**
-     * 业务异常.
+     * 参数非法异常.
+     *
+     * @param
+     * @return
+     */
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    @ResponseStatus(HttpStatus.OK)
+//    @ResponseBody
+//    public MessageRes illegalArgumentException(IllegalArgumentException e) {
+//        LogUtils.error(log, "参数非法异常={}", e.getMessage(), e);
+//        return MessageRes.fail(FailureCodeEnum.GL999999.getCode(), e.getMessage());
+//    }
+
+    /**
+     * 自定义业务异常
      *
      * @param e
      * @return
@@ -56,7 +93,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public MessageRes businessException(BusinessException e) {
-        LogUtil.error(log, "业务异常:{}", e);
+        LogUtils.error(log, "自定义业务异常:{}", e);
         return MessageRes.fail((e.getCode() == 0 ? FailureCodeEnum.GL999999.getCode() : e.getCode()), e.getMessage());
     }
 
@@ -74,7 +111,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public MessageRes exception(Exception e) {
-        LogUtil.debug(log, "验证器异常:{}", e);
+        LogUtils.debug(log, "业务验证器异常:{}", e);
         BindingResult result = null;
         if (e instanceof MethodArgumentNotValidException) {
             result = ((MethodArgumentNotValidException) e).getBindingResult();
@@ -102,8 +139,8 @@ public class GlobalExceptionHandler {
 
 
     /**
-     * 全局异常.
-     *
+     * 全局[Exception]异常
+     * @param request
      * @param e
      * @return
      */
@@ -111,7 +148,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public MessageRes exception(HttpServletRequest request, Exception e) {
-        LogUtil.error(log, "全局异常:{}", e);
+        LogUtils.error(log, "全局[Exception]异常:{}", e);
         this.asyncSendDingTalk(request, e);
         String message = e.getMessage();
         message = StringUtils.isEmpty(message) ? FailureCodeEnum.GL999999.getMsg() : message;
@@ -119,8 +156,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 全局异常.
-     *
+     * 全局[Throwable]异常
      * @param e
      * @return
      */
@@ -128,7 +164,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public MessageRes throwable(Throwable e) {
-        LogUtil.error(log, "全局异常:{}", e);
+        LogUtils.error(log, "全局[Throwable]异常:{}", e);
         String message = e.getMessage();
         message = StringUtils.isEmpty(message) ? FailureCodeEnum.GL999999.getMsg() : message;
         return MessageRes.fail(FailureCodeEnum.GL999999.getCode(), message);
@@ -146,6 +182,10 @@ public class GlobalExceptionHandler {
             public Object call() {
                 try {
                     String uri = request.getRequestURI();
+                    if(!StringUtils.isEmpty(uri) && uri.contains("hystrix.stream")) {
+                        String contentType = request.getContentType();
+                        LogUtils.info(log,"hystrix alarm contentType :{}", contentType);
+                    }
                     Map<String, String[]> parameterMap = request.getParameterMap();
                     String paramFromApplicationJson = getParamFromApplicationJson(request);
                     HttpExceptionNotice httpExceptionNotice = new HttpExceptionNotice(e, null, uri, parameterMap, paramFromApplicationJson);
@@ -154,7 +194,7 @@ public class GlobalExceptionHandler {
                     DingTalkMessage dingTalkMessage = new DingTalkMessage(new DingTalkMessageBuilder().markdownMessage("异常信息", text));
                     dingTalkMessage.send();
                 } catch (Exception e) {
-                    LogUtil.error(log, "send ding talk exception:{}", e);
+                    LogUtils.error(log, "send ding talk exception:{}", e);
                 }
                 return null;
             }
@@ -172,7 +212,7 @@ public class GlobalExceptionHandler {
             String body = sb.toString();
             return body;
         } catch (Exception e) {
-            LogUtil.error(log, "get param exception:{}", e);
+            LogUtils.error(log, "get param exception:{}", e);
         }
         return null;
     }

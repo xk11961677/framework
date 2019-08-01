@@ -1,2 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.sky.framework.rocketmq.RocketMqAutoConfiguration
+org.springframework.context.ApplicationContextInitializer=\
+com.sky.framework.rocketmq.config.CustomMqApplicationContextInitializer

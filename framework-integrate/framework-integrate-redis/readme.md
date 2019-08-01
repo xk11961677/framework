@@ -10,7 +10,7 @@
 
 ```
     
-2): 配置redis属性 (请在配置中心操作)
+2): 配置redis属性 (请在配置中心操作) ,如使用了redisson可不用配置下面信息,直接配置redisson信息即可
 
 ```
 spring:
@@ -37,4 +37,17 @@ spring:
     #连接超时时间（毫秒）
     timeout: 10000
 
+```
+另:使用redis官方推荐的redisson分布式锁
+详细配置请[点我](https://github.com/redisson/redisson/wiki)
+
+3) 如不需要使用redisson 请按如下配置排除jar包 ,且不要使用 RedissonLockUtil , 请使用 RedisLockUtil
+
+```
+<exclusions>
+    <exclusion>
+        <groupId>org.redisson</groupId>
+        <artifactId>redisson</artifactId>
+    </exclusion>
+</exclusions>
 ```
