@@ -1,11 +1,17 @@
-<!-- 代码结构　![framework](https://img.shields.io/badge/license-MIT-ff69b4.svg)　![framework](https://img.shields.io/badge/config--center-yes-red.svg)　![framework](https://img.shields.io/badge/log--center-yes-brightgreen.svg)　![framework](https://img.shields.io/badge/gaea-yes-blue.svg) -->
+## Sky Cloud 
+
+[![Build Status](https://travis-ci.org/xk11961677/framework.svg?branch=master)](https://travis-ci.org/xk11961677/framework)
+[![license](https://img.shields.io/badge/license-MIT-ff69b4.svg)](https://mit-license.org/license.html)
+
+
+<!-- 代码结构 -->
 
 
 ## 代码结构
 - [framework-bom](framework-bom) framework项目jar包版本依赖管理
     -  版本号：<主版本>.<次版本>.<增量版本>-<代号>
     -  ~~升级版本号命令: mvn versions:set -DnewVersion=x.x.x~~
-    -  升级版本号命令
+    -  ~~升级版本号命令~~
          -  mvn release:prepare  
              1. 把项目打一个release版本
              2. 在git的tag中打一个tag
@@ -16,6 +22,8 @@
              1. 去git的tag上拿代码
              2. 用tag上的代码，打一个release版的包 
              3. deploy到的maven私服 
+    -  直接修改<revision>1.0.0-SNAPSHOT</revision>属性版本 
+
     
 - [framework-generator-plugin](framework-generator-plugin) 代码生成器插件
     
