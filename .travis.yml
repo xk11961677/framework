@@ -5,7 +5,8 @@ jdk:
   - openjdk8
 
 cache:
+  ccache: true
   directories:
     - $HOME/.m2
 
-install: true
+#install: true
