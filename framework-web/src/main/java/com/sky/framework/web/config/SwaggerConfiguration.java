@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -89,15 +90,17 @@ public class SwaggerConfiguration {
                 .build()
                 //配置鉴权信息
                 .securitySchemes(securitySchemes())
-				.securityContexts(securityContexts())
+                .securityContexts(securityContexts())
                 .globalOperationParameters(pars)
                 .enable(true);
     }
 
     private ApiInfo apiInfo() {
+        String description = swaggerProperties.getDescription();
+        description = StringUtils.isEmpty(description) ? swaggerProperties.getTitle() : description;
         return new ApiInfoBuilder()
                 .title(swaggerProperties.getTitle())
-                .description(swaggerProperties.getDescription())
+                .description(description)
                 .version(swaggerProperties.getVersion())
                 .license(swaggerProperties.getLicense())
                 .licenseUrl(swaggerProperties.getLicenseUrl())

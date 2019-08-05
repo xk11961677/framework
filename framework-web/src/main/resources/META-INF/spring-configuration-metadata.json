@@ -16,7 +16,9 @@
     {
       "name": "swagger.enabled",
       "type": "java.lang.Boolean",
-      "sourceType": "com.sky.framework.web.property.SwaggerProperties"
+      "sourceType": "com.sky.framework.web.property.SwaggerProperties",
+      "defaultValue": "true",
+      "description": "是否启用swagger在线文档"
     },
     {
       "name": "swagger.title",
@@ -62,12 +64,23 @@
     {
       "name": "web.global.exception.enabled",
       "type": "java.lang.Boolean",
-      "sourceType": "com.sky.framework.web.property.WebProperties"
+      "sourceType": "com.sky.framework.web.property.WebProperties",
+      "defaultValue": "true",
+      "description": "是否启用全局异常处理器"
+    },
+    {
+      "name": "web.global.exception.dingtalk.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.sky.framework.web.property.WebProperties",
+      "defaultValue": "true",
+      "description": "是否使用钉钉发送错误信息"
     },
     {
       "name": "web.global.converter.enabled",
       "type": "java.lang.Boolean",
-      "sourceType": "com.sky.framework.web.property.WebProperties"
+      "sourceType": "com.sky.framework.web.property.WebProperties",
+      "defaultValue": "true",
+      "description": "是否启用fastjson作为http converter"
     }
   ]
 }

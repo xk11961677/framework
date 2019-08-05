@@ -22,29 +22,11 @@
  */
 package com.sky.framework.web.support;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * The class Base controller.
- *
  */
 public class BaseController {
 
-	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
-	 * Gets login auth dto.
-	 *
-	 * @return the login auth dto
-	 */
-//	protected LoginAuthDto getLoginAuthDto() {
-//		LoginAuthDto loginAuthDto = (LoginAuthDto) ThreadLocalMap.get(GlobalConstant.Sys.TOKEN_AUTH_DTO);
-//		if (PublicUtil.isEmpty(loginAuthDto)) {
-//			throw new BusinessException(ErrorCodeEnum.UAC10011041);
-//		}
-//		return loginAuthDto;
-//	}
 
 }
   

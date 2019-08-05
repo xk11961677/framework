@@ -33,6 +33,8 @@ public interface WebConstants {
 
     String GLOBAL_EXCEPTION_ENABLE = "web.global.exception.enabled";
 
+    String GLOBAL_EXCEPTION_DT_ENABLE = "web.global.exception.dingtalk.enabled";
+
     String GLOBAL_HTTP_CONVERTER = "web.global.converter.enabled";
 
     String APPLICATION_JSOON_UTF_8 = "application/json;charset=UTF-8";

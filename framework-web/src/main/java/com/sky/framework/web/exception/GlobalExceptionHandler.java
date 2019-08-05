@@ -54,6 +54,8 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Set;
 
+import static com.sky.framework.web.constant.WebConstants.GLOBAL_EXCEPTION_DT_ENABLE;
+
 /**
  * 全局的的异常拦截器
  *
@@ -68,6 +70,9 @@ public class GlobalExceptionHandler {
 
     @Value("${spring.application.name:'请填写项目名称'}")
     private String name;
+
+    @Value("${" + GLOBAL_EXCEPTION_DT_ENABLE + ":true}")
+    private boolean dingTalk;
 
     /**
      * 参数非法异常.
@@ -177,6 +182,9 @@ public class GlobalExceptionHandler {
      * @param e
      */
     private void asyncSendDingTalk(HttpServletRequest request, Exception e) {
+        if(!dingTalk) {
+            return;
+        }
         CommonThreadPool.execute(new DefaultAsynchronousHandler() {
             @Override
             public Object call() {

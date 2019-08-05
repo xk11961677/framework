@@ -26,8 +26,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import tk.mybatis.mapper.annotation.KeySql;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -41,7 +44,7 @@ import java.util.Date;
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 2393269568666085258L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @KeySql(useGeneratedKeys = true)
     private Long id;
 
     /**
@@ -76,8 +79,6 @@ public class BaseEntity implements Serializable {
      */
     @Column(name = "updated_by")
     private String updatedBy;
-
-
 
 
     @Transient
