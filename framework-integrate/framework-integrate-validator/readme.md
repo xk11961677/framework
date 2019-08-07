@@ -21,8 +21,8 @@ validator.bean-names = *Controller , *ServiceImpl
 
     
 3): 需要编写的业务验证代码
-![实体类](../../doc/images/fluent_01.png)
-![Controller类](../../doc/images/fluent_02.png)
+![实体类](../../docs/images/fluent_01.png)
+![Controller类](../../docs/images/fluent_02.png)
 
 整合验证器为:<a href="https://github.com/neoremind/fluent-validator" target="_blank">fluent-validator</a>
 =====

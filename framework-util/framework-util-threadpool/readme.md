@@ -19,10 +19,10 @@ IDEA下,在yml文件中填写 asyncthreadpool 会自动提示配置项
 
 3): 代码编写方式
 
-![图1](../../doc/images/threadpool-1.png)
+![图1](../../docs/images/threadpool-1.png)
 
 
-![图1](../../doc/images/threadpool-2.png)
+![图1](../../docs/images/threadpool-2.png)
 
 
 
