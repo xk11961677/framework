@@ -55,9 +55,9 @@ import org.apache.http.util.EntityUtils;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -607,18 +607,81 @@ public class HttpClientUtils {
             HttpEntity entity = response.getEntity();
             int statusCode = response.getStatusLine().getStatusCode();
             httpStr = EntityUtils.toString(entity, DEFAULT_ENCODING);
-            LogUtils.info(log,"doPost响应状态码：" + statusCode + "，结果：" + httpStr + "");
+            LogUtils.info(log, "doPost响应状态码：" + statusCode + "，结果：" + httpStr + "");
         } catch (IOException e) {
-            LogUtils.error(log,"doPost执行异常：" + e.getMessage() + "", e);
+            LogUtils.error(log, "doPost执行异常：" + e.getMessage() + "", e);
         } finally {
             if (response != null) {
                 try {
                     EntityUtils.consume(response.getEntity());
                 } catch (IOException e) {
-                    LogUtils.error(log,"doPost执行异常：" + e.getMessage() + "", e);
+                    LogUtils.error(log, "doPost执行异常：" + e.getMessage() + "", e);
                 }
             }
         }
         return httpStr;
+    }
+
+    /**
+     * 下载文档到指定位置
+     *
+     * @param fileURL
+     * @param saveDir
+     * @return
+     */
+    public static String downloadFile(String fileURL, String saveDir) {
+        HttpURLConnection httpConn = null;
+        FileOutputStream outputStream = null;
+        try {
+            URL url = new URL(fileURL);
+            httpConn = (HttpURLConnection) url.openConnection();
+            int responseCode = httpConn.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                String fileName = "";
+                String disposition = httpConn.getHeaderField("Content-Disposition");
+
+                if (disposition != null) {
+                    int index = disposition.indexOf("filename=");
+                    if (index > 0) {
+                        fileName = disposition.substring(index + 10,
+                                disposition.length() - 1);
+                    }
+                } else {
+                    fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1);
+                }
+                InputStream inputStream = httpConn.getInputStream();
+                String saveFilePath = saveDir + File.separator + fileName;
+
+                outputStream = new FileOutputStream(saveFilePath);
+
+                int bytesRead = -1;
+                byte[] buffer = new byte[2048];
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+
+                outputStream.close();
+                inputStream.close();
+
+                return saveFilePath;
+            }
+        } catch (IOException e) {
+            LogUtils.error(log, "下载失败:{}", e.getMessage());
+        } finally {
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (Exception e2) {
+            }
+            try {
+                if (httpConn != null) {
+                    httpConn.disconnect();
+                }
+            } catch (Exception e2) {
+            }
+        }
+        return "";
     }
 }
