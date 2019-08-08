@@ -39,6 +39,7 @@
 - [framework-util](framework-util) 工具类
     -  [framework-util-common](framework-util/framework-util-common)  公共工具类包
     -  [framework-util-threadpool](framework-util/framework-util-threadpool)  线程池工具类,使用方法请读本项目[readme.md](framework-util/framework-util-threadpool/readme.md)
+    -  [framework-util-oss](framework-util/framework-util-oss)  对象存储[readme.md](framework-util/framework-util-oss/readme.md)
    
   
 ## 关于作者
