@@ -15,4 +15,4 @@ register 注册中心
 
 monitor 监控
 
-metric 度量指标
+metrics 度量指标
