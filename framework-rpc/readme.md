@@ -1,6 +1,6 @@
 rpc
 此代码暂时混乱且问题多多
-暂时仅作为学习rpc原理使用
+暂时仅作为学习rpc原理教学使用
 
 
 cluster 集群 (loadbalance)
