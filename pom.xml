@@ -66,6 +66,7 @@
         <module>framework-web</module>
         <module>framework-generator-plugin</module>
         <module>framework-util</module>
+        <module>framework-rpc</module>
     </modules>
 
 

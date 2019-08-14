@@ -1,0 +1,3 @@
+com.sky.framework.rpc.invoker.consumer.proxy.javassist.JavassistProxyFactory
+com.sky.framework.rpc.invoker.consumer.proxy.jdk.JdkProxyFactory
+com.sky.framework.rpc.invoker.consumer.proxy.bytebuddy.ByteBuddyProxyFactory
