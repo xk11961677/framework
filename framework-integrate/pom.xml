@@ -17,5 +17,6 @@
         <module>framework-integrate-redis</module>
         <module>framework-integrate-rocketmq</module>
         <module>framework-integrate-job</module>
+        <module>framework-integrate-canal</module>
     </modules>
 </project>
