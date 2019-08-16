@@ -1,9 +1,37 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Example user template
+# maven ignore
+target/
+*.jar
+!.mvn/wrapper/*
+*.war
+#*.zip
+*.tar
+*.tar.gz
 
-# IntelliJ project files
-.idea
+# eclipse ignore
+.settings/
+.project
+.classpath
+
+# idea ignore
+.idea/
+*.ipr
 *.iml
-out
-gen
+*.iws
+
+# temp ignore
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+
+# system ignore
+.DS_Store
+Thumbs.db
+*.orig
+
+# flatten ignore
 .flattened-pom.xml
+
+# license check result
+license-list
