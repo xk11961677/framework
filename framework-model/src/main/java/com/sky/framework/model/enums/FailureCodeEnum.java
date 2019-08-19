@@ -55,6 +55,10 @@ public enum FailureCodeEnum implements ErrorCode {
      */
     GL990006(990006, "参数格式错误"),
     /**
+     * Gl 990007 error code enum.
+     */
+    GL990007(990007, "不支持的方法请求类型"),
+    /**
      * Gl 100001 error code enum.
      */
     AUZ100001(100001, "未授权"),

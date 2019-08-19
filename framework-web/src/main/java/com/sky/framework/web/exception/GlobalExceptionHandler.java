@@ -40,6 +40,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -87,6 +88,21 @@ public class GlobalExceptionHandler {
 //        LogUtils.error(log, "参数非法异常={}", e.getMessage(), e);
 //        return MessageRes.fail(FailureCodeEnum.GL999999.getCode(), e.getMessage());
 //    }
+
+    /**
+     * 不支持的方法请求类型405
+     *
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public MessageRes httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        LogUtils.error(log, "不支持的方法请求类型:{}", e);
+        return MessageRes.fail(FailureCodeEnum.GL990007.getCode(), e.getMessage());
+    }
+
 
     /**
      * 自定义业务异常
@@ -145,6 +161,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 全局[Exception]异常
+     *
      * @param request
      * @param e
      * @return
@@ -162,6 +179,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 全局[Throwable]异常
+     *
      * @param e
      * @return
      */
@@ -176,13 +194,13 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 发送钉钉
+     * 发送钉钉通知
      *
      * @param request
      * @param e
      */
     private void asyncSendDingTalk(HttpServletRequest request, Exception e) {
-        if(!dingTalk) {
+        if (!dingTalk) {
             return;
         }
         CommonThreadPool.execute(new DefaultAsynchronousHandler() {
@@ -190,12 +208,8 @@ public class GlobalExceptionHandler {
             public Object call() {
                 try {
                     String uri = request.getRequestURI();
-                    if(!StringUtils.isEmpty(uri) && uri.contains("hystrix.stream")) {
-                        String contentType = request.getContentType();
-                        LogUtils.info(log,"hystrix alarm contentType :{}", contentType);
-                    }
                     Map<String, String[]> parameterMap = request.getParameterMap();
-                    String paramFromApplicationJson = getParamFromApplicationJson(request);
+                    String paramFromApplicationJson = getJsonParameters(request);
                     HttpExceptionNotice httpExceptionNotice = new HttpExceptionNotice(e, null, uri, parameterMap, paramFromApplicationJson);
                     httpExceptionNotice.setProject(name);
                     String text = httpExceptionNotice.createText();
@@ -209,7 +223,13 @@ public class GlobalExceptionHandler {
         });
     }
 
-    private String getParamFromApplicationJson(HttpServletRequest request) {
+    /**
+     * 获取application/json格式参数
+     *
+     * @param request
+     * @return
+     */
+    private String getJsonParameters(HttpServletRequest request) {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String line;
