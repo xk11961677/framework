@@ -23,49 +23,27 @@
 package com.sky.framework.model.dto;
 
 import lombok.Data;
+import org.springframework.util.MultiValueMap;
 
-/**
- * 日志 简单实体类
- * 参数、返回值、错误等请放入 message
- *
- * @author sky
- * @version V1.0.0
- * @package com.sky.framework.model.dto
- * @class LogSimpleDto
- * @date 2019-08-15 17:02:36
- * @upate-log name  date  reason/contents
- * ---------------------------------------
- * ***    ****  ****
- * @since
- */
 @Data
-public class LogSimpleDto extends LogBaseDto {
+public class LogHttpDto extends LogBaseDto{
 
-    /**
-     * 全类名
-     */
-    private String fullClazz;
-
-    /**
-     * 方法名
-     */
-    private String method;
-
-    /**
-     * url
-     */
     private String url;
 
-    /**
-     * remoteIp
-     */
+    private String body;
+
+    private MultiValueMap<String,String> queryString;
+
     private String remoteIp;
 
+    private long expendTime;
+
+    private int httpCode;
 
     @Override
     public String toString() {
-        return "LogSimpleDto(fullClazz="
-                + fullClazz + ",method=" + method + ",url=" + url + ",remoteIp=" + remoteIp + ","
+        return "LogSimpleDto(body="
+                + body + ",queryString=" + queryString + ",url=" + url + ",remoteIp=" + remoteIp + ","
                 + super.toString() + ")";
     }
 }
