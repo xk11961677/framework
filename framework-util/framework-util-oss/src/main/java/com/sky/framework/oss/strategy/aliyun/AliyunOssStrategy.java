@@ -22,14 +22,18 @@
  */
 package com.sky.framework.oss.strategy.aliyun;
 
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.*;
+import com.sky.framework.common.LogUtils;
+import com.sky.framework.oss.exception.OssException;
 import com.sky.framework.oss.model.UploadObject;
 import com.sky.framework.oss.model.UploadToken;
 import com.sky.framework.oss.strategy.AbstractOssStrategy;
 import com.sky.framework.oss.strategy.OssStrategyEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.time.DateUtils;
@@ -45,6 +49,7 @@ import java.util.Map;
 /**
  * @author
  */
+@Slf4j
 public class AliyunOssStrategy extends AbstractOssStrategy {
 
     public static final String NAME = OssStrategyEnum.ALIYUN.getKey();
@@ -53,7 +58,7 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
 
     private static final String DEFAULT_CALLBACK_BODY = "filename=${object}&size=${size}&mimeType=${mimeType}&height=${imageInfo.height}&width=${imageInfo.width}";
 
-    private OSSClient ossClient;
+    private OSS ossClient;
 
     private String bucketName;
 
@@ -63,7 +68,11 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
 
     private String accessKeyId;
 
-    private String filedir;
+    /**
+     * 用户要往哪个域名发送上传请求
+     * 如: oss-cn-hangzhou.aliyuncs.com
+     */
+    private String host;
 
     public AliyunOssStrategy(String urlprefix, String endpoint, String bucketName, String accessKey, String secretKey, boolean isPrivate) {
 
@@ -74,13 +83,13 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
         Validate.notBlank(urlprefix, "[urlprefix] not defined");
 
         this.accessKeyId = accessKey;
-        ossClient = new OSSClient(endpoint, accessKey, secretKey);
+        ossClient = new OSSClientBuilder().build(endpoint, accessKey, secretKey);
         this.bucketName = bucketName;
         this.urlprefix = urlprefix.endsWith("/") ? urlprefix : (urlprefix + "/");
         this.isPrivate = isPrivate;
-        this.filedir = StringUtils.remove(urlprefix, "/").split(":")[1];
+        this.host = StringUtils.remove(urlprefix, "/").split(":")[1];
         if (!ossClient.doesBucketExist(bucketName)) {
-            System.out.println("Creating bucket " + bucketName + "\n");
+            LogUtils.info(log, "Creating bucket " + bucketName + "\n");
             ossClient.createBucket(bucketName);
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
             createBucketRequest.setCannedACL(isPrivate ? CannedAccessControlList.Private : CannedAccessControlList.PublicRead);
@@ -109,14 +118,20 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
             if (result.getResponse().isSuccessful()) {
                 return result.getResponse().getUri();
             } else {
-                throw new RuntimeException(result.getResponse().getErrorResponseAsString());
+                throw new OssException(result.getResponse().getErrorResponseAsString());
             }
         } catch (OSSException e) {
-            throw new RuntimeException(e.getErrorMessage());
+            throw new OssException(e.getErrorMessage());
         }
     }
 
-
+    /**
+     * 生成签名
+     * 服务端签名后前端直传使用
+     *
+     * @param param
+     * @return
+     */
     //https://help.aliyun.com/document_detail/31926.html
     //https://help.aliyun.com/document_detail/31989.html?spm=a2c4g.11186623.6.907.tlMQcL
     @Override
@@ -135,7 +150,7 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
         }
 
         if (StringUtils.isBlank(param.getCallbackHost())) {
-            param.setCallbackHost(filedir);
+            param.setCallbackHost(host);
         }
 
         if (StringUtils.isBlank(param.getCallbackBody())) {
@@ -153,14 +168,14 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
                 callbackBase64 = BinaryUtil.toBase64String(callbackJson.getBytes(StandardCharsets.UTF_8.name()));
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new OssException(e);
         }
         String signature = ossClient.calculatePostSignature(policy);
 
         result.put("OSSAccessKeyId", accessKeyId);
         result.put("policy", policyBase64);
         result.put("signature", signature);
-        result.put("host", this.urlprefix);
+        result.put("host", param.getCallbackHost());
         result.put("dir", param.getUploadDir());
         result.put("expire", String.valueOf(expire.getTime()));
         if (callbackBase64 != null) {

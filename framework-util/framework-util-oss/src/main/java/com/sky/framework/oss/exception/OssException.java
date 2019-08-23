@@ -20,51 +20,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.oss.strategy;
+package com.sky.framework.oss.exception;
 
-
-import com.sky.framework.common.http.HttpClientUtils;
 
 /**
+ * OSS异常
+ *
  * @author
  */
-public abstract class AbstractOssStrategy implements OssStrategy {
+public class OssException extends RuntimeException {
 
-    private static final String HTTP_PREFIX = "http://";
-    private static final String HTTPS_PREFIX = "https://";
+    private static final long serialVersionUID = 1L;
 
-    protected static final String DIR_SPLITER = "/";
-
-    /**
-     * 文件访问前缀,如: http://oss-cn-hangzhou.aliyuncs.com
-     */
-    protected String urlprefix;
-
-    protected String bucketName;
-
-    /**
-     * 获取全路径
-     *
-     * @param file
-     * @return
-     */
-    protected String getFullPath(String file) {
-        if (file.startsWith(HTTP_PREFIX) || file.startsWith(HTTPS_PREFIX)) {
-            return file;
-        }
-        return urlprefix + file;
+    public OssException() {
     }
 
-    /**
-     * 下载文件到指定目录
-     *
-     * @param file
-     * @param localSaveDir
-     * @return
-     */
-    @Override
-    public String downloadAndSaveAs(String file, String localSaveDir) {
-        return HttpClientUtils.downloadFile(getDownloadUrl(file), localSaveDir);
+    public OssException(Throwable cause) {
+        super(cause);
+    }
+
+    public OssException(String message) {
+        super(message);
+    }
+
+    public OssException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

@@ -35,7 +35,9 @@ import java.util.Map;
  */
 @Data
 public class UploadToken {
-
+    /**
+     * 表单提交
+     */
     private static final String CONTENT_TYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
     private static final String CONTENT_TYPE_JSON = "application/json";
@@ -46,20 +48,38 @@ public class UploadToken {
      */
     private long expires = 3600;
 
+    /**
+     * oss的存储空间
+     */
     private String bucketName;
 
     private String fileType;
-
+    /**
+     * 上传目录
+     */
     private String uploadDir;
-
+    /**
+     * 名称
+     */
     private String fileName;
-
+    /**
+     * 文件上传成功后的回调地址
+     */
     private String callbackUrl;
-
+    /**
+     * 回调时传入request中的参数
+     */
     private String callbackBody;
 
+    /**
+     * 用户要往哪个域名发送上传请求
+     * 如: oss-cn-hangzhou.aliyuncs.com
+     */
     private String callbackHost;
 
+    /**
+     * 默认请求体类型
+     */
     private boolean callbackBodyUseJson = false;
 
     /**
@@ -75,7 +95,12 @@ public class UploadToken {
 
     private Integer deleteAfterDays;
 
-
+    /**
+     * 设置上传目录
+     * 格式: dir/image/20190822
+     *
+     * @param uploadDir
+     */
     public void setUploadDir(String uploadDir) {
         this.uploadDir = uploadDir;
         if (!StringUtils.isEmpty(uploadDir)) {
@@ -88,10 +113,18 @@ public class UploadToken {
         }
     }
 
+    /**
+     * 获取callback内容体类型
+     */
     public String getCallbackBodyType() {
         return callbackBodyUseJson ? CONTENT_TYPE_JSON : CONTENT_TYPE_FORM_URLENCODED;
     }
 
+    /**
+     * 获取文件目录+文件名
+     *
+     * @return
+     */
     public String getFileKey() {
         if (StringUtils.isEmpty(uploadDir) || StringUtils.isEmpty(fileName)) {
             return fileName;
@@ -99,6 +132,11 @@ public class UploadToken {
         return uploadDir.concat(fileName);
     }
 
+    /**
+     * 创建回调内容
+     *
+     * @return
+     */
     public String getCallbackRuleAsJson() {
         if (StringUtils.isEmpty(callbackBody) || StringUtils.isEmpty(callbackHost) || StringUtils.isEmpty(callbackUrl)) {
             return null;
