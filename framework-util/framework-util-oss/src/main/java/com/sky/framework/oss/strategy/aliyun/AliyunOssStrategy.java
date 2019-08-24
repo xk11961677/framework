@@ -189,7 +189,7 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
         }
         String signature = ossClient.calculatePostSignature(policy);
 
-        result.put("OSSAccessKeyId", accessKeyId);
+        result.put("accessKeyId", accessKeyId);
         result.put("policy", policyBase64);
         result.put("signature", signature);
         result.put("host", param.getCallbackHost());
