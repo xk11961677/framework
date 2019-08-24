@@ -26,11 +26,14 @@ package com.sky.framework.oss.strategy;
 import com.sky.framework.common.http.HttpClientUtils;
 
 /**
- * @author
+ * 策略抽象类
+ *
+ * @author sky
  */
 public abstract class AbstractOssStrategy implements OssStrategy {
 
     private static final String HTTP_PREFIX = "http://";
+
     private static final String HTTPS_PREFIX = "https://";
 
     protected static final String DIR_SPLITER = "/";
@@ -38,7 +41,7 @@ public abstract class AbstractOssStrategy implements OssStrategy {
     /**
      * 文件访问前缀,如: http://oss-cn-hangzhou.aliyuncs.com
      */
-    protected String urlprefix;
+    protected String urlPrefix;
 
     protected String bucketName;
 
@@ -46,13 +49,15 @@ public abstract class AbstractOssStrategy implements OssStrategy {
      * 获取全路径
      *
      * @param file
-     * @return
+     * @return java.lang.String
+     * @author sky
+     * @since
      */
     protected String getFullPath(String file) {
         if (file.startsWith(HTTP_PREFIX) || file.startsWith(HTTPS_PREFIX)) {
             return file;
         }
-        return urlprefix + file;
+        return urlPrefix + file;
     }
 
     /**
@@ -60,7 +65,9 @@ public abstract class AbstractOssStrategy implements OssStrategy {
      *
      * @param file
      * @param localSaveDir
-     * @return
+     * @return java.lang.String
+     * @author sky
+     * @since
      */
     @Override
     public String downloadAndSaveAs(String file, String localSaveDir) {

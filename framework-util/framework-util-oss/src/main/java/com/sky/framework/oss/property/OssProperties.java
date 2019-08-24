@@ -26,15 +26,42 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author
+ * OSS公共实体
+ *
+ * @author sky
  */
 @ConfigurationProperties(prefix = "oss")
 @Data
 public class OssProperties {
 
-    private String urlprefix;
+    /**
+     * url前缀
+     */
+    private String urlPrefix;
 
+    /**
+     * 是否私有
+     */
     private Boolean isPrivate = true;
 
+    /**
+     * @see com.sky.framework.oss.strategy.OssStrategyEnum
+     */
     private String strategy;
+
+    /**
+     * 上传目录前缀
+     */
+    private String dirPrefix;
+
+    /**
+     * callbackUrl地址
+     */
+    private String callbackUrl;
+
+    /**
+     * 阿里云
+     */
+    private AliyunOssProperties aliyun = new AliyunOssProperties();
+
 }

@@ -50,19 +50,12 @@ public class OssStrategyFactory {
     private static OssProperties ossProperties;
 
     /**
-     *
-     */
-    private static AliyunOssProperties aliyunOssProperties;
-
-    /**
      * init factory required properties
      *
      * @param ossProperties
-     * @param aliyunOssProperties
      */
-    public static void init(OssProperties ossProperties, AliyunOssProperties aliyunOssProperties) {
+    public static void init(OssProperties ossProperties) {
         OssStrategyFactory.ossProperties = ossProperties;
-        OssStrategyFactory.aliyunOssProperties = aliyunOssProperties;
     }
 
     /**
@@ -71,9 +64,10 @@ public class OssStrategyFactory {
     public static OssStrategyAdapter createOssStrategy(OssStrategyEnum strategy) {
         OssStrategy ossStrategy;
         if (AliyunOssStrategy.NAME.equals(strategy.getKey())) {
-            ossStrategy = new AliyunOssStrategy(ossProperties.getUrlprefix(), aliyunOssProperties.getEndpoint(),
-                    aliyunOssProperties.getBucketname(), aliyunOssProperties.getAccessKeyId(),
-                    aliyunOssProperties.getAccessKeySecret(), ossProperties.getIsPrivate());
+            AliyunOssProperties aliyun = ossProperties.getAliyun();
+            ossStrategy = new AliyunOssStrategy(ossProperties.getUrlPrefix(), aliyun.getEndpoint(),
+                    aliyun.getBucketName(), aliyun.getAccessKeyId(), aliyun.getAccessKeySecret(),
+                    ossProperties.getCallbackUrl(), ossProperties.getIsPrivate());
         } else {
             throw new IllegalArgumentException("file strategy name:" + strategy.getKey() + " not support");
         }
@@ -94,5 +88,4 @@ public class OssStrategyFactory {
             }
         }
     }
-
 }

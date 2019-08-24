@@ -22,7 +22,6 @@
  */
 package com.sky.framework.oss;
 
-import com.sky.framework.oss.property.AliyunOssProperties;
 import com.sky.framework.oss.property.OssProperties;
 import com.sky.framework.oss.strategy.OssStrategyAdapter;
 import com.sky.framework.oss.strategy.OssStrategyEnum;
@@ -31,7 +30,7 @@ import com.sky.framework.oss.util.OssUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -40,16 +39,15 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PreDestroy;
 
 /**
- * @author
+ * OSS自动配置项
+ *
+ * @author sky
  */
 @Configuration
 @ComponentScan(basePackageClasses = OssAutoConfiguration.class)
-@EnableConfigurationProperties({AliyunOssProperties.class, OssProperties.class})
+@EnableConfigurationProperties({OssProperties.class})
 @Slf4j
 public class OssAutoConfiguration implements CommandLineRunner {
-
-    @Autowired(required = false)
-    private AliyunOssProperties aliyunOssProperties;
 
     @Autowired
     private OssProperties ossProperties;
@@ -59,14 +57,28 @@ public class OssAutoConfiguration implements CommandLineRunner {
         log.info("sky framework oss started !");
     }
 
+    /**
+     * 创建OSS策略工厂
+     *
+     * @return com.sky.framework.oss.strategy.OssStrategyFactory
+     * @author sky
+     * @since
+     */
     @Bean
     public OssStrategyFactory ossStrategyFactory() {
         OssStrategyFactory ossStrategyFactory = new OssStrategyFactory();
-        OssStrategyFactory.init(ossProperties, aliyunOssProperties);
+        OssStrategyFactory.init(ossProperties);
         return ossStrategyFactory;
     }
 
-    @ConditionalOnBean(AliyunOssProperties.class)
+    /**
+     * 默认阿里云OssUtils工具类
+     *
+     * @return com.sky.framework.oss.util.OssUtils
+     * @author sky
+     * @since
+     */
+    @ConditionalOnProperty(name = "oss.strategy", havingValue = "aliyun")
     @Bean
     public OssUtils ossUtils() {
         OssUtils ossUtils = new OssUtils();
@@ -75,6 +87,13 @@ public class OssAutoConfiguration implements CommandLineRunner {
         return ossUtils;
     }
 
+    /**
+     * 关闭所有oss client
+     *
+     * @return void
+     * @author sky
+     * @since
+     */
     @PreDestroy
     public void destroyClient() {
         OssStrategyFactory.destroyAll();

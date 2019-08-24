@@ -45,9 +45,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * @author
+ * 阿里云上传策略
+ *
+ * @author sky
  */
 @Slf4j
 public class AliyunOssStrategy extends AbstractOssStrategy {
@@ -62,7 +63,7 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
 
     private String bucketName;
 
-    private String urlprefix;
+    private String urlPrefix;
 
     private boolean isPrivate;
 
@@ -74,8 +75,9 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
      */
     private String host;
 
-    public AliyunOssStrategy(String urlprefix, String endpoint, String bucketName, String accessKey, String secretKey, boolean isPrivate) {
+    private String callbackUrl;
 
+    public AliyunOssStrategy(String urlprefix, String endpoint, String bucketName, String accessKey, String secretKey, String callbackUrl, boolean isPrivate) {
         Validate.notBlank(endpoint, "[endpoint] not defined");
         Validate.notBlank(bucketName, "[bucketName] not defined");
         Validate.notBlank(accessKey, "[accessKey] not defined");
@@ -83,11 +85,12 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
         Validate.notBlank(urlprefix, "[urlprefix] not defined");
 
         this.accessKeyId = accessKey;
-        ossClient = new OSSClientBuilder().build(endpoint, accessKey, secretKey);
         this.bucketName = bucketName;
-        this.urlprefix = urlprefix.endsWith("/") ? urlprefix : (urlprefix + "/");
+        this.urlPrefix = urlprefix.endsWith("/") ? urlprefix : (urlprefix + "/");
         this.isPrivate = isPrivate;
+        this.callbackUrl = callbackUrl;
         this.host = StringUtils.remove(urlprefix, "/").split(":")[1];
+        ossClient = new OSSClientBuilder().build(endpoint, accessKey, secretKey);
         if (!ossClient.doesBucketExist(bucketName)) {
             LogUtils.info(log, "Creating bucket " + bucketName + "\n");
             ossClient.createBucket(bucketName);
@@ -97,6 +100,14 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
         }
     }
 
+    /**
+     * 上传
+     *
+     * @param object
+     * @return java.lang.String
+     * @author sky
+     * @since
+     */
     @Override
     public String upload(UploadObject object) {
         try {
@@ -113,7 +124,7 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
 
             PutObjectResult result = ossClient.putObject(request);
             if (result.getResponse() == null) {
-                return isPrivate ? object.getFileName() : urlprefix + object.getFileName();
+                return isPrivate ? object.getFileName() : urlPrefix + object.getFileName();
             }
             if (result.getResponse().isSuccessful()) {
                 return result.getResponse().getUri();
@@ -130,7 +141,9 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
      * 服务端签名后前端直传使用
      *
      * @param param
-     * @return
+     * @return java.util.Map<java.lang.String, java.lang.Object>
+     * @author sky
+     * @since
      */
     //https://help.aliyun.com/document_detail/31926.html
     //https://help.aliyun.com/document_detail/31989.html?spm=a2c4g.11186623.6.907.tlMQcL
@@ -155,6 +168,10 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
 
         if (StringUtils.isBlank(param.getCallbackBody())) {
             param.setCallbackBody(DEFAULT_CALLBACK_BODY);
+        }
+
+        if (StringUtils.isBlank(param.getCallbackUrl())) {
+            param.setCallbackUrl(callbackUrl);
         }
 
         Date expire = DateUtils.addSeconds(new Date(), (int) param.getExpires());
@@ -184,6 +201,14 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
         return result;
     }
 
+    /**
+     * 删除
+     *
+     * @param fileKey
+     * @return boolean
+     * @author sky
+     * @since
+     */
     @Override
     public boolean delete(String fileKey) {
         ossClient.deleteObject(bucketName, fileKey);
@@ -194,15 +219,18 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
      * ObjectAcl objectAcl = ossClient.getObjectAcl(bucketName, key);
      *
      * @param fileKey 文件（全路径或者fileKey）
-     * @return
+     * @param fileKey
+     * @return java.lang.String
+     * @author sky
+     * @since
      */
     @Override
     public String getDownloadUrl(String fileKey) {
         if (isPrivate) {
             URL url = ossClient.generatePresignedUrl(bucketName, fileKey, DateUtils.addHours(new Date(), 1));
-            return url.toString().replaceFirst(URL_PREFIX_PATTERN, urlprefix);
+            return url.toString().replaceFirst(URL_PREFIX_PATTERN, urlPrefix);
         }
-        return urlprefix + fileKey;
+        return urlPrefix + fileKey;
     }
 
 

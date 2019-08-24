@@ -23,25 +23,32 @@
 package com.sky.framework.oss.property;
 
 import lombok.Data;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author
+ * 阿里云OSS属性
+ *
+ * @author sky
  */
-@ConditionalOnProperty(prefix = "aliyun.oss", value = "enabled", matchIfMissing = true)
-@ConfigurationProperties(prefix = "aliyun.oss")
 @Data
 public class AliyunOssProperties {
 
+    /**
+     * 用户标识
+     */
     private String accessKeyId;
 
+    /**
+     * 密钥
+     */
     private String accessKeySecret;
 
-    private String bucketname;
+    /**
+     * 存储空间
+     */
+    private String bucketName;
 
+    /**
+     * oss对外服务的访问域名
+     */
     private String endpoint;
-
-    private String filedir;
-
 }
