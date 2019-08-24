@@ -42,7 +42,7 @@ public class OssProperties {
     /**
      * 是否私有
      */
-    private Boolean isPrivate = true;
+    private Boolean isPrivate = false;
 
     /**
      * @see com.sky.framework.oss.strategy.OssStrategyEnum
@@ -61,6 +61,8 @@ public class OssProperties {
 
     /**
      * 阿里云
+     *
+     * @see com.sky.framework.oss.property.AliyunOssProperties
      */
     private AliyunOssProperties aliyun = new AliyunOssProperties();
 

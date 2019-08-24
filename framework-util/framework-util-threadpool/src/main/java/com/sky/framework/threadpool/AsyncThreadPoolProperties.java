@@ -22,94 +22,77 @@
  */
 package com.sky.framework.threadpool;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * 线程池参数vo
  *
- * @author
+ * @author sky
  */
 @ConfigurationProperties(prefix = "asyncthreadpool")
 public class AsyncThreadPoolProperties {
-
+    /**
+     * 默认核心线程数
+     */
     private static final int CORE_POOL_SIZE = 5;
-
+    /**
+     * 默认线程池最大线程数
+     */
     private static final int MAXIMUM_POOLSIZE = 200;
-
+    /**
+     * 默认队列大小
+     */
     private static final int INITIAL_CAPACITY = 1000000;
-
+    /**
+     * 默认线程不被使用后存活时间
+     */
     private static final int KEEP_ALIVE_TIME = 120;
 
-
+    /**
+     * 是否开启
+     */
+    @Getter
+    @Setter
     private boolean enabled = true;
-
+    /**
+     * 核心线程数
+     */
+    @Getter
+    @Setter
     private int corePoolSize = CORE_POOL_SIZE;
-
+    /**
+     * 线程池最大线程数
+     */
+    @Getter
+    @Setter
     private int maximumPoolSize = MAXIMUM_POOLSIZE;
-
+    /**
+     * 队列大小
+     */
+    @Getter
+    @Setter
     private int initialCapacity = INITIAL_CAPACITY;
-
+    /**
+     * 线程不被使用后存活时间
+     */
+    @Getter
+    @Setter
     private long keepAliveTime = KEEP_ALIVE_TIME;
-
-    private String threadName = "framework-threadpool-";
-
+    /**
+     * 线程名称前缀
+     */
+    @Getter
+    @Setter
+    private String threadName = "sky-framework-threadpool-";
+    /**
+     * 内存大小检测
+     */
+    @Getter
+    @Setter
     private boolean isDiscard = true;
 
-    public boolean isDiscard() {
-        return isDiscard;
-    }
-
-    public void setDiscard(boolean isDiscard) {
-        this.isDiscard = isDiscard;
-    }
-
-    public int getCorePoolSize() {
-        return corePoolSize;
-    }
-
-    public void setCorePoolSize(int corePoolSize) {
-        this.corePoolSize = corePoolSize;
-    }
-
-    public int getMaximumPoolSize() {
-        return maximumPoolSize;
-    }
-
-    public void setMaximumPoolSize(int maximumPoolSize) {
-        this.maximumPoolSize = maximumPoolSize;
-    }
-
-    public int getInitialCapacity() {
-        return initialCapacity;
-    }
-
-    public void setInitialCapacity(int initialCapacity) {
-        this.initialCapacity = initialCapacity;
-    }
-
-    public long getKeepAliveTime() {
-        return keepAliveTime;
-    }
-
-    public void setKeepAliveTime(long keepAliveTime) {
-        this.keepAliveTime = keepAliveTime;
-    }
-
-    public String getThreadName() {
-        return threadName;
-    }
-
-    public void setThreadName(String threadName) {
-        this.threadName = threadName;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 
     @Override
     public String toString() {

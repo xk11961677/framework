@@ -48,7 +48,7 @@ public class AliyunOssProperties {
     private String bucketName;
 
     /**
-     * oss对外服务的访问域名
+     * oss节点地址
      */
     private String endpoint;
 }
