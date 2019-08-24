@@ -22,6 +22,8 @@
  */
 package com.sky.framework.threadpool;
 
+import com.sky.framework.threadpool.core.CommonThreadPool;
+import com.sky.framework.threadpool.property.AsyncThreadPoolProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -32,6 +34,19 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 /**
+ * 异步线程池自动加载配置类
+ * 1.异步前后处理器线程池,灵活配置参数,线程池创建线程名称配置
+ * 2.内存限制检测
+ * 3.轻量化线程池数量管理
+ * 4.自定义线程池拒绝策略实现
+ * * *检测是否因并发造成线程池执行拒绝策略
+ * * *队列达到上限则打印详细日志
+ * * *轻量级管理线程池数量
+ * 5.自定义线程创建方法
+ * * *扩展内存检测
+ * * *更严格控制是否开启 最大线程数限定数线程
+ * 6.由优先使用队列转变为优先使用最大线程值
+ *
  * @author
  */
 @Configuration
@@ -55,6 +70,6 @@ public class AsyncThreadPoolAutoConfiguration {
     public void destory() {
         log.info("Start shutdown CommonThreadPool");
         boolean flag = CommonThreadPool.shutDown();
-        log.info("CommonThreadPool is shutdown :{}"+flag);
+        log.info("CommonThreadPool is shutdown :{}" + flag);
     }
 }
