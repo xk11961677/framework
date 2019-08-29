@@ -20,7 +20,7 @@
         <connection>scm:git:https://github.com/xk11961677/framework.git</connection>
         <developerConnection>scm:git:https://github.com/xk11961677/framework.git</developerConnection>
         <url>https://github.com/xk11961677/framework</url>
-        <tag>framework-parent-1.0.0</tag>
+        <tag>head</tag>
     </scm>
 
     <developers>
