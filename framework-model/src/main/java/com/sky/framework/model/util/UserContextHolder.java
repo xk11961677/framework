@@ -47,15 +47,23 @@ public class UserContextHolder {
      * @return
      */
     public static UserContextHolder getInstance() {
-        return SingletonHolder.sInstance;
+        return SingletonHolder.INSTANCE.getInstance();
     }
 
     /**
-     * 静态内部类单例模式
-     * 单例初使化
+     * 枚举类线程安全,仅被装载一次,且不会被反射创建
      */
-    private static class SingletonHolder {
-        private static final UserContextHolder sInstance = new UserContextHolder();
+    private enum SingletonHolder {
+        INSTANCE;
+        private final UserContextHolder instance;
+
+        SingletonHolder() {
+            instance = new UserContextHolder();
+        }
+
+        private UserContextHolder getInstance() {
+            return instance;
+        }
     }
 
     /**
@@ -117,7 +125,7 @@ public class UserContextHolder {
      * @return
      */
     public String getBearerToken() {
-        return "bearer "+getToken();
+        return "bearer " + getToken();
     }
 
 

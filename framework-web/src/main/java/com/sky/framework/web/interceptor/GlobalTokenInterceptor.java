@@ -37,11 +37,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 用户信息拦截器
@@ -52,32 +52,25 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class GlobalTokenInterceptor implements HandlerInterceptor {
     /**
-     * 服务间调用token用户信息,格式为json
-     * {
-     * "user_name":"必须有"
-     * "自定义key:"value"
-     * }
+     * 用户token信息,格式为json
      */
     public static final String X_CLIENT_TOKEN_USER = "x-client-token-user";
     /**
-     * 服务间调用的认证token
+     * 服务内部间调用的认证token
      */
     public static final String X_CLIENT_TOKEN = "x-client-token";
-
     /**
      * 默认字符串
      */
     private static final String DEFAULT_STR = "";
-
     /**
      * 内部服务间调用api接口
      */
     private static final String INTER_API = "/api";
-
     /**
      * 开放地址前缀
      */
-    public static List<String> OPEN_URL = new ArrayList<String>() {
+    public static List<String> OPEN_URL = new CopyOnWriteArrayList() {
         {
             add("/open");
             add("/error");
@@ -96,87 +89,89 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
         }
     };
 
-
+    /**
+     * checkToken(request.getHeader(X_CLIENT_TOKEN));
+     *
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     * @throws Exception
+     */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
-
-        /**
-         * 从网关获取并校验,通过校验就可信任x-client-token-user中的信息
-         */
-        checkToken(request.getHeader(X_CLIENT_TOKEN));
-
-        String userInfo = request.getHeader(X_CLIENT_TOKEN_USER);
-
-        LogUtils.debug(log, "get x-client-token-user from header  :{} ", userInfo);
-
-        String requestURI = request.getRequestURI();
-
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-
-
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
-        Method method = handlerMethod.getMethod();
-
-        boolean ignoreToken = method.isAnnotationPresent(IgnoreToken.class);
-
-        Map map = getUserInfo(userInfo, request);
-        UserContextHolder.getInstance().setContext(map);
-
+        String user = request.getHeader(X_CLIENT_TOKEN_USER);
+        this.convertAndSetContext(user, request);
+        String uri = request.getRequestURI();
         for (String key : OPEN_URL) {
-            if (requestURI.startsWith(key)) {
+            if (uri.startsWith(key)) {
                 return true;
             }
         }
-
-        if (!ignoreToken && !requestURI.startsWith(INTER_API) && StringUtils.isEmpty(userInfo)) {
-            String result = JSON.toJSONString(new MessageRes(FailureCodeEnum.AUZ100001.getCode(), FailureCodeEnum.AUZ100001.getMsg()));
-            LogUtils.debug(log, "token验证结果，result={}", result);
-            response.setCharacterEncoding(WebConstants.UTF_8);
-            response.setContentType(WebConstants.APPLICATION_JSOON_UTF_8);
-            response.getWriter().println(result);
+        boolean ignoreToken = ((HandlerMethod) handler).getMethod().isAnnotationPresent(IgnoreToken.class);
+        if (!ignoreToken && !uri.startsWith(INTER_API) && StringUtils.isEmpty(user)) {
+            this.response(response);
             return false;
         }
         return true;
     }
 
-    private void checkToken(String token) {
-        /**
-         * TODO 从网关获取并校验,通过校验就可信任x-client-token-user中的信息
-         */
-        LogUtils.debug(log, "//TODO 校验 x-client-token-user:{}", token);
+    /**
+     * 返回响应信息
+     *
+     * @param response
+     */
+    private void response(HttpServletResponse response) {
+        String result = JSON.toJSONString(new MessageRes(FailureCodeEnum.AUZ100001.getCode(), FailureCodeEnum.AUZ100001.getMsg()));
+        LogUtils.debug(log, "token验证结果，result={}", result);
+        response.setCharacterEncoding(WebConstants.UTF_8);
+        response.setContentType(WebConstants.APPLICATION_JSOON_UTF_8);
+        try {
+            response.getWriter().println(result);
+        } catch (IOException e) {
+            LogUtils.error(log, "", e.getMessage(), e);
+        }
     }
 
+
     /**
-     * 获取用户信息
+     * 获取用户信息 ,兼容旧系统,token不是jwt格式,重写user_id
      *
-     * @param userInfo
+     * @param user
      * @param request
      * @return
      */
-    private Map getUserInfo(String userInfo, HttpServletRequest request) {
-        /**
-         * 获取用户信息 ,兼容旧系统,token不是jwt格式,重写user_id
-         */
+    private void convertAndSetContext(String user, HttpServletRequest request) {
+        LogUtils.debug(log, "get x-client-token-user from header  :{} ", user);
         Map map = null;
-        if (StringUtils.isNotEmpty(userInfo)) {
+        if (StringUtils.isNotEmpty(user)) {
             try {
-                map = JSON.parseObject(userInfo, Map.class);
+                map = JSON.parseObject(user, Map.class);
             } catch (Exception e) {
-                LogUtils.error(log, "旧系统 token :{}", userInfo);
+                LogUtils.error(log, "旧系统 token :{}", user);
             }
         }
         if (map == null) {
-            map = new HashMap();
+            map = new HashMap(8);
         }
         String userId = request.getHeader("user_id");
-        map.put("user_id", userId);
         String channel = request.getHeader("channel");
+        map.put("user_id", userId);
         map.put("channel", channel);
-        map.put("token", userInfo);
-        return map;
+        map.put("token", user);
+        UserContextHolder.getInstance().setContext(map);
+    }
+
+    /**
+     * TODO 从网关获取并校验,通过校验就可信任x-client-token-user中的信息
+     *
+     * @param token
+     */
+    private void checkToken(String token) {
+        LogUtils.debug(log, "校验 x-client-token-user:{}", token);
     }
 
     @Override
