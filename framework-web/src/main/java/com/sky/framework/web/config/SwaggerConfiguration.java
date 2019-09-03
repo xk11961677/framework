@@ -68,7 +68,7 @@ public class SwaggerConfiguration {
      */
     @Bean
     public Docket createRestApi() {
-        LogUtils.info(log, "framework swagger started ! :{}", swaggerProperties);
+        log.info("sky framework web add swagger successfully !:{}", swaggerProperties);
         //每次都需手动输入header信息
         ParameterBuilder pb = new ParameterBuilder();
         List<Parameter> pars = new ArrayList();

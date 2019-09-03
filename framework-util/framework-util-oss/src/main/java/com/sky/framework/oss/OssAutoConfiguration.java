@@ -54,7 +54,7 @@ public class OssAutoConfiguration implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("sky framework oss started !");
+        log.info("sky framework oss startup successfully !");
     }
 
     /**

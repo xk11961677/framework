@@ -38,6 +38,6 @@ public class WebAutoConfiguration implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("framework web started !");
+        log.info("sky framework web startup successfully !");
     }
 }

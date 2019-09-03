@@ -44,7 +44,7 @@ public class RedisAutoConfiguration implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("framework redis started !");
+        log.info("sky framework redis startup successfully !");
     }
 
     @Bean

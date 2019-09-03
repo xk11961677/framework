@@ -37,6 +37,6 @@ public class RocketMqAutoConfiguration implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("framework rocketmq started !");
+        log.info("sky framework rocketmq startup successfully !");
     }
 }

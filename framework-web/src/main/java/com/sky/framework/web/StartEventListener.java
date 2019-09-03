@@ -23,7 +23,7 @@
 package com.sky.framework.web;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.context.WebServerInitializedEvent;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
@@ -42,12 +42,12 @@ public class StartEventListener {
 
     @Async
     @Order
-    @EventListener(WebServerInitializedEvent.class)
-    public void afterStart(WebServerInitializedEvent event) {
+    @EventListener(ApplicationReadyEvent.class)
+    public void afterStart(ApplicationReadyEvent event) {
         Environment environment = event.getApplicationContext().getEnvironment();
         String appName = environment.getProperty("spring.application.name").toUpperCase();
-        int localPort = event.getWebServer().getPort();
+        String port = environment.getProperty("server.port");
         String profile = StringUtils.arrayToCommaDelimitedString(environment.getActiveProfiles());
-        log.info("---[{}]---启动完成，当前使用的端口:[{}]，环境变量:[{}]---", appName, localPort, profile);
+        log.info("---[{}]---启动完成，当前使用的端口:[{}]，环境变量:[{}]---", appName, port, profile);
     }
 }

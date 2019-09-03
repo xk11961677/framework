@@ -61,15 +61,15 @@ public class AsyncThreadPoolAutoConfiguration {
     @PostConstruct
     public void init() {
         if (CommonThreadPool.getThreadPool() == null) {
-            log.info("Successfully initialized CommonThreadPool :{}" + asyncThreadPoolProperties);
+            log.info("sky framework CommonThreadPool initialized successfully ! :{}" + asyncThreadPoolProperties);
             CommonThreadPool.initThreadPool(asyncThreadPoolProperties);
         }
     }
 
     @PreDestroy
     public void destory() {
-        log.info("Start shutdown CommonThreadPool");
+        log.info("sky framework CommonThreadPool shutdown begin ! ");
         boolean flag = CommonThreadPool.shutDown();
-        log.info("CommonThreadPool is shutdown :{}" + flag);
+        log.info("sky framework CommonThreadPool shutdown status is:{} " + flag);
     }
 }

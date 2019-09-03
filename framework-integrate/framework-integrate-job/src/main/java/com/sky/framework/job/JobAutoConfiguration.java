@@ -49,7 +49,7 @@ public class JobAutoConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "destroy")
     public XxlJobSpringExecutor xxlJobExecutor() {
-        LogUtils.info(log, "framework skycloud-job config init! JobProperties :{}", properties);
+        LogUtils.info(log, "sky framework skycloud-job config init! JobProperties :{}", properties);
         XxlJobSpringExecutor xxlJobSpringExecutor = new XxlJobSpringExecutor();
         xxlJobSpringExecutor.setAdminAddresses(properties.getAdmin().getAddresses());
         xxlJobSpringExecutor.setAppName(properties.getExecutor().getAppName());
