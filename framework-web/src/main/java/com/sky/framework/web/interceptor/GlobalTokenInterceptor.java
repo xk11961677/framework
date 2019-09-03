@@ -100,11 +100,11 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * TODO 从网关获取并校验,通过校验就可信任x-client-token-user中的信息
+     * TODO 从网关获取并校验,通过校验就可信任x-client-token中的信息
      *
-     * @param token
+     * @param clientToken
      */
-    private void checkClientToken(String token) {
-        LogUtils.debug(log, "校验 x-client-token-user:{}", token);
+    private void checkClientToken(String clientToken) {
+        LogUtils.debug(log, "校验 x-client-token:{}", clientToken);
     }
 }
