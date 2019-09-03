@@ -26,7 +26,6 @@ import com.alibaba.fastjson.JSON;
 import com.sky.framework.common.LogUtils;
 import com.sky.framework.model.dto.MessageRes;
 import com.sky.framework.model.enums.FailureCodeEnum;
-import com.sky.framework.model.util.UserContextHolder;
 import com.sky.framework.web.common.annotation.IgnoreToken;
 import com.sky.framework.web.constant.WebConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +51,10 @@ import java.io.IOException;
 @ConditionalOnProperty(value = WebConstants.GLOBAL_TOKEN_INTERCEPTOR_ENABLE, matchIfMissing = true)
 public class GlobalTokenInterceptor implements HandlerInterceptor {
     /**
+     * 用户token信息,格式为json
+     */
+    public static final String X_CLIENT_TOKEN_USER = "x-client-token-user";
+    /**
      * 服务内部间调用的认证token
      */
     public static final String X_CLIENT_TOKEN = "x-client-token";
@@ -71,9 +74,9 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
             return true;
         }
         boolean ignoreToken = ((HandlerMethod) handler).getMethod().isAnnotationPresent(IgnoreToken.class);
-        String token = UserContextHolder.getInstance().getToken();
+        String token = request.getHeader(X_CLIENT_TOKEN_USER);
         if (!ignoreToken && StringUtils.isEmpty(token)) {
-            this.response(response);
+            response(response);
             return false;
         }
         return true;
@@ -101,7 +104,7 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
      *
      * @param token
      */
-    private void checkToken(String token) {
+    private void checkClientToken(String token) {
         LogUtils.debug(log, "校验 x-client-token-user:{}", token);
     }
 }
