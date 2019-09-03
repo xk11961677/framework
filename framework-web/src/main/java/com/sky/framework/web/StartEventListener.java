@@ -20,51 +20,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.property;
+package com.sky.framework.web;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.util.StringUtils;
 
 /**
- * The class Swagger properties.
+ * 项目启动
  *
  * @author
  */
+@Slf4j
+@Configuration
+public class StartEventListener {
 
-@Component
-@ConfigurationProperties(prefix = "swagger")
-@Data
-public class SwaggerProperties {
-
-    /**
-     * 是否启用swagger在线文档,默认true
-     */
-    private Boolean enabled;
-
-    /**
-     * 标题
-     */
-    private String title;
-
-    /**
-     * 详细描述
-     */
-    private String description;
-
-    /**
-     * 版本,默认1.0
-     */
-    private String version = "1.0";
-
-    private String license = "Apache License 2.0";
-
-    private String licenseUrl = "http://www.apache.org/licenses/LICENSE-2.0";
-
-    private String contactName = "sky";
-
-    private String contactUrl = "http://www.sky.com";
-
-    private String contactEmail = "shen11961677@163.com";
-
+    @Async
+    @Order
+    @EventListener(WebServerInitializedEvent.class)
+    public void afterStart(WebServerInitializedEvent event) {
+        Environment environment = event.getApplicationContext().getEnvironment();
+        String appName = environment.getProperty("spring.application.name").toUpperCase();
+        int localPort = event.getWebServer().getPort();
+        String profile = StringUtils.arrayToCommaDelimitedString(environment.getActiveProfiles());
+        log.info("---[{}]---启动完成，当前使用的端口:[{}]，环境变量:[{}]---", appName, localPort, profile);
+    }
 }

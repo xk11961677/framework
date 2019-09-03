@@ -24,41 +24,37 @@ package com.sky.framework.web.interceptor;
 
 import com.alibaba.fastjson.JSON;
 import com.sky.framework.common.LogUtils;
-import com.sky.framework.model.dto.MessageRes;
-import com.sky.framework.model.enums.FailureCodeEnum;
 import com.sky.framework.model.util.UserContextHolder;
-import com.sky.framework.web.common.annotation.IgnoreToken;
 import com.sky.framework.web.constant.WebConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 用户信息拦截器
+ * 用户信息转换拦截器
  *
  * @author
  */
 @Slf4j
-@Order(1100)
+@Order(1000)
 @Component
-@ConditionalOnProperty(value = WebConstants.GLOBAL_TOKEN_INTERCEPTOR_ENABLE, matchIfMissing = true)
-public class GlobalTokenInterceptor implements HandlerInterceptor {
+@ConditionalOnProperty(value = WebConstants.GLOBAL_CONTEXT_INTERCEPTOR_ENABLE, matchIfMissing = true)
+public class GlobalContextInterceptor implements HandlerInterceptor {
     /**
-     * 服务内部间调用的认证token
+     * 用户token信息,格式为json
      */
-    public static final String X_CLIENT_TOKEN = "x-client-token";
+    public static final String X_CLIENT_TOKEN_USER = "x-client-token-user";
 
     /**
-     * checkToken(request.getHeader(X_CLIENT_TOKEN));
-     *
      * @param request
      * @param response
      * @param handler
@@ -67,41 +63,41 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if (!(handler instanceof HandlerMethod)) {
-            return true;
-        }
-        boolean ignoreToken = ((HandlerMethod) handler).getMethod().isAnnotationPresent(IgnoreToken.class);
-        String token = UserContextHolder.getInstance().getToken();
-        if (!ignoreToken && StringUtils.isEmpty(token)) {
-            this.response(response);
-            return false;
-        }
+        String user = request.getHeader(X_CLIENT_TOKEN_USER);
+        convertAndSetContext(user, request);
         return true;
     }
 
     /**
-     * 返回响应信息
+     * 获取用户信息 ,兼容旧系统,token不是jwt格式,重写user_id
      *
-     * @param response
+     * @param user
+     * @param request
+     * @return
      */
-    private void response(HttpServletResponse response) {
-        String result = JSON.toJSONString(new MessageRes(FailureCodeEnum.AUZ100001.getCode(), FailureCodeEnum.AUZ100001.getMsg()));
-        LogUtils.debug(log, "token验证结果，result={}", result);
-        response.setCharacterEncoding(WebConstants.UTF_8);
-        response.setContentType(WebConstants.APPLICATION_JSOON_UTF_8);
-        try {
-            response.getWriter().println(result);
-        } catch (IOException e) {
-            LogUtils.error(log, "", e.getMessage(), e);
+    private void convertAndSetContext(String user, HttpServletRequest request) {
+        LogUtils.debug(log, "get x-client-token-user from header  :{} ", user);
+        Map map = null;
+        if (StringUtils.isNotEmpty(user)) {
+            try {
+                map = JSON.parseObject(user, Map.class);
+            } catch (Exception e) {
+                LogUtils.error(log, "旧系统 token :{}", user);
+            }
         }
+        if (map == null) {
+            map = new HashMap(8);
+        }
+        String userId = request.getHeader("user_id");
+        String channel = request.getHeader("channel");
+        map.put("user_id", userId);
+        map.put("channel", channel);
+        map.put("token", user);
+        UserContextHolder.getInstance().setContext(map);
     }
 
-    /**
-     * TODO 从网关获取并校验,通过校验就可信任x-client-token-user中的信息
-     *
-     * @param token
-     */
-    private void checkToken(String token) {
-        LogUtils.debug(log, "校验 x-client-token-user:{}", token);
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
+        UserContextHolder.getInstance().clear();
     }
 }

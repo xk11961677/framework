@@ -31,11 +31,15 @@ public interface WebConstants {
 
     String SWAGGER_ENABLE = "swagger.enabled";
 
-    String GLOBAL_EXCEPTION_ENABLE = "web.global.exception.enabled";
+    String GLOBAL_EXCEPTION_ENABLE = "web.global-exception-enabled";
 
-    String GLOBAL_EXCEPTION_DT_ENABLE = "web.global.exception.dingtalk.enabled";
+    String GLOBAL_EXCEPTION_DINGTALK_ENABLE = "web.global-exception-ding-talk-enabled";
 
-    String GLOBAL_HTTP_CONVERTER = "web.global.converter.enabled";
+    String GLOBAL_HTTP_CONVERTER_ENABLE = "web.global-http-converter-enabled";
+
+    String GLOBAL_CONTEXT_INTERCEPTOR_ENABLE = "web.global-context-interceptor-enabled";
+
+    String GLOBAL_TOKEN_INTERCEPTOR_ENABLE = "web.global-token-interceptor-enabled";
 
     String APPLICATION_JSOON_UTF_8 = "application/json;charset=UTF-8";
 

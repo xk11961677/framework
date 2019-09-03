@@ -22,11 +22,35 @@
  */
 package com.sky.framework.web.support;
 
+import com.sky.framework.model.util.UserContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * The class Base controller.
  */
 public class BaseController {
 
+    @Autowired
+    protected HttpServletRequest request;
 
+    /**
+     * 获取用户ID
+     *
+     * @return
+     */
+    protected Long getUserId() {
+        return UserContextHolder.getInstance().getUserId();
+    }
+
+    /**
+     * 获取用户登录渠道
+     *
+     * @return
+     */
+    protected String getChannel() {
+        return UserContextHolder.getInstance().getChannel();
+    }
 }
   

@@ -42,7 +42,7 @@ import java.util.List;
  * @author
  */
 @Configuration
-@ConditionalOnProperty(value = WebConstants.GLOBAL_HTTP_CONVERTER, matchIfMissing = true)
+@ConditionalOnProperty(value = WebConstants.GLOBAL_HTTP_CONVERTER_ENABLE, matchIfMissing = true)
 public class HttpMessageConverterConfiguration {
 
     @Bean

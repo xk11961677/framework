@@ -37,8 +37,28 @@ import org.springframework.stereotype.Component;
 @Data
 public class WebProperties {
 
-    private Boolean globalExceptionEnabled;
+    /**
+     * 是否启用全局异常处理器,默认true
+     */
+    private Boolean globalExceptionEnabled = true;
 
-    private Boolean globalConverterEnabled;
+    /**
+     * 是否启用全局异常处理器,默认true
+     */
+    private Boolean globalHttpConverterEnabled;
+
+    /**
+     * 是否使用钉钉发送错误信息,默认true
+     */
+    private Boolean globalExceptionDingTalkEnabled = true;
+    /**
+     * 是否启用用户信息上下文转换器,默认true
+     */
+    private Boolean globalContextInterceptorEnabled = true;
+
+    /**
+     * 是否启用用户token拦截器,默认true
+     */
+    private Boolean globalTokenInterceptorEnabled = true;
 
 }

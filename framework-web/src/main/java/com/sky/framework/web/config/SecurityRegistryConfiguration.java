@@ -20,51 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.property;
+package com.sky.framework.web.config;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import com.sky.framework.web.common.registry.SecurityRegistry;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * The class Swagger properties.
+ * 默认安全注册器
  *
  * @author
  */
+@Configuration
+@AutoConfigureBefore(SecurityConfiguration.class)
+public class SecurityRegistryConfiguration {
 
-@Component
-@ConfigurationProperties(prefix = "swagger")
-@Data
-public class SwaggerProperties {
+    @Bean
+    @ConditionalOnMissingBean(SecurityRegistry.class)
+    public SecurityRegistry secureRegistry() {
+        return new SecurityRegistry();
+    }
 
-    /**
-     * 是否启用swagger在线文档,默认true
-     */
-    private Boolean enabled;
-
-    /**
-     * 标题
-     */
-    private String title;
-
-    /**
-     * 详细描述
-     */
-    private String description;
-
-    /**
-     * 版本,默认1.0
-     */
-    private String version = "1.0";
-
-    private String license = "Apache License 2.0";
-
-    private String licenseUrl = "http://www.apache.org/licenses/LICENSE-2.0";
-
-    private String contactName = "sky";
-
-    private String contactUrl = "http://www.sky.com";
-
-    private String contactEmail = "shen11961677@163.com";
 
 }
