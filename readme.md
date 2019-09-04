@@ -38,7 +38,7 @@
     -  [framework-util-threadpool](framework-util/framework-util-threadpool)  线程池工具类,使用方法请读本项目[readme.md](framework-util/framework-util-threadpool/readme.md)
 
 
-## git 开发规约
+## git 分支开发规约
 - 使用git flow 流程，分支名称分别以 feature-* 、 release-* 、hotfix-* 开头
 - 版本号：<主版本>.<次版本>.<增量版本>-<代号>
    -  方式1: 升级版本号命令: mvn versions:set -DnewVersion=x.x.x
@@ -64,6 +64,16 @@
         2. 稳定版本:
             1. 候选发布版本: 1.1.0-RC1、1.2.0-RC2
             2. 正式发布版本: 1.1.0-RELEASE、1.1.1-RELEASE
+
+## git message 规约
+#### 用于生成规范changelog
+#### 提交格式
+1. [请点我](docs/script/changelog/commit.md)
+2. idea 可使用 git commit template 插件
+3. npm 可以使用 commitizen
+
+#### 生成changelog方式
+运行docs/script/changelog/gitlog.sh
 
 ## 关于作者
 ```javascript
