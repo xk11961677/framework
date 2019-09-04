@@ -59,14 +59,21 @@ public enum FailureCodeEnum implements ErrorCode {
      */
     GL990007(990007, "不支持的方法请求类型"),
     /**
+     * Gl 990008 error code enum.
+     */
+    GL990008(990008, "请求时间已失效"),
+    /**
      * Gl 100001 error code enum.
      */
     AUZ100001(100001, "未授权"),
     /**
+     * Gl 100003 error code enum.
+     */
+    AUZ100003(100003, "无权访问"),
+    /**
      * Gl 100001 error code enum.
      */
     AUZ100016(100016, "token过期"),
-
     /**
      * Gl 999998 error code enum.
      */
@@ -74,11 +81,7 @@ public enum FailureCodeEnum implements ErrorCode {
     /**
      * Gl -1 error code enum.
      */
-    GL999999(-1, "未知异常"),
-    /**
-     * Gl 100003 error code enum.
-     */
-    AUZ100003(100003, "无权访问");
+    GL999999(-1, "未知异常");
 
 
     private Integer code;
