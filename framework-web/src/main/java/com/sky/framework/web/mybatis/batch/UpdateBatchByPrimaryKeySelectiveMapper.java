@@ -20,19 +20,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.mybatis;
+package com.sky.framework.web.mybatis.batch;
 
-import com.sky.framework.web.mybatis.batch.BatchMapper;
-import com.sky.framework.web.mybatis.stream.StreamMapper;
-import tk.mybatis.mapper.common.Mapper;
-import tk.mybatis.mapper.common.MySqlMapper;
+import org.apache.ibatis.annotations.UpdateProvider;
 
+import java.util.List;
 
 /**
- * The interface My mapper.
- *
  * @author
  */
-@SuppressWarnings("unused")
-public interface MyMapper<T> extends StreamMapper<T>, BatchMapper<T>, Mapper<T>, MySqlMapper<T> {
+@tk.mybatis.mapper.annotation.RegisterMapper
+public interface UpdateBatchByPrimaryKeySelectiveMapper<T> {
+    /**
+     * 根据Example条件批量更新实体`record`包含的不是null的属性值
+     *
+     * @param recordList
+     * @return
+     */
+    @UpdateProvider(type = BatchExampleProvider.class, method = "dynamicSQL")
+    int updateBatchByPrimaryKeySelective(List<? extends T> recordList);
+
 }

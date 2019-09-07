@@ -20,19 +20,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.mybatis;
+package com.sky.framework.web.mybatis.stream;
 
-import com.sky.framework.web.mybatis.batch.BatchMapper;
-import com.sky.framework.web.mybatis.stream.StreamMapper;
-import tk.mybatis.mapper.common.Mapper;
-import tk.mybatis.mapper.common.MySqlMapper;
-
+import org.apache.ibatis.mapping.MappedStatement;
+import tk.mybatis.mapper.mapperhelper.MapperHelper;
+import tk.mybatis.mapper.provider.ExampleProvider;
 
 /**
- * The interface My mapper.
+ * 流式查询的SqlProvider
  *
  * @author
  */
-@SuppressWarnings("unused")
-public interface MyMapper<T> extends StreamMapper<T>, BatchMapper<T>, Mapper<T>, MySqlMapper<T> {
+
+public class StreamExampleProvider extends ExampleProvider {
+
+    public StreamExampleProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
+        super(mapperClass, mapperHelper);
+    }
+
+
+    /**
+     * 根据Example流式查询
+     *
+     * @param ms
+     * @return
+     */
+    public String selectStreamByExampleMapper(MappedStatement ms) {
+        return this.selectByExample(ms);
+    }
+
+    /**
+     * 根据Example和RowBounds流式查询
+     *
+     * @param ms
+     * @return
+     */
+    public String selectStreamByExampleRowBoundsMapper(MappedStatement ms) {
+        return this.selectByExample(ms);
+    }
+
 }

@@ -20,19 +20,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.mybatis;
+package com.sky.framework.web.mybatis.stream;
 
-import com.sky.framework.web.mybatis.batch.BatchMapper;
-import com.sky.framework.web.mybatis.stream.StreamMapper;
-import tk.mybatis.mapper.common.Mapper;
-import tk.mybatis.mapper.common.MySqlMapper;
-
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.mapping.ResultSetType;
+import org.apache.ibatis.session.ResultHandler;
 
 /**
- * The interface My mapper.
+ * 通用Mapper接口,流式查询
  *
+ * @param <T> 不能为空
  * @author
  */
-@SuppressWarnings("unused")
-public interface MyMapper<T> extends StreamMapper<T>, BatchMapper<T>, Mapper<T>, MySqlMapper<T> {
+@tk.mybatis.mapper.annotation.RegisterMapper
+public interface SelectStreamByExampleMapper<T> {
+
+    /**
+     * 根据example条件和RowBounds进行流式查询
+     *
+     * @param example
+     * @param resultHandler
+     */
+    @Options(resultSetType = ResultSetType.FORWARD_ONLY, fetchSize = 1000)
+    @SelectProvider(type = StreamExampleProvider.class, method = "dynamicSQL")
+    void selectStreamByExampleMapper(Object example, ResultHandler resultHandler);
+
 }

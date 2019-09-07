@@ -20,19 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.mybatis;
-
-import com.sky.framework.web.mybatis.batch.BatchMapper;
-import com.sky.framework.web.mybatis.stream.StreamMapper;
-import tk.mybatis.mapper.common.Mapper;
-import tk.mybatis.mapper.common.MySqlMapper;
-
+package com.sky.framework.web.mybatis.batch;
 
 /**
- * The interface My mapper.
- *
+ * @param <T>
  * @author
  */
-@SuppressWarnings("unused")
-public interface MyMapper<T> extends StreamMapper<T>, BatchMapper<T>, Mapper<T>, MySqlMapper<T> {
+@tk.mybatis.mapper.annotation.RegisterMapper
+public interface BatchMapper<T> extends UpdateBatchByPrimaryKeySelectiveMapper<T> {
 }
