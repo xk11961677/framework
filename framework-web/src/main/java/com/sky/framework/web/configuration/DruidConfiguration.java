@@ -20,28 +20,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.config;
+package com.sky.framework.web.configuration;
 
-import com.sky.framework.web.common.registry.SecurityRegistry;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import com.alibaba.druid.support.http.StatViewServlet;
+import com.alibaba.druid.support.http.WebStatFilter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 /**
- * 默认安全注册器
- *
  * @author
  */
 @Configuration
-@AutoConfigureBefore(SecurityConfiguration.class)
-public class SecurityRegistryConfiguration {
+@ConditionalOnProperty(prefix = "spring.datasource.monitor", value = "enabled", matchIfMissing = true)
+public class DruidConfiguration {
+
 
     @Bean
-    @ConditionalOnMissingBean(SecurityRegistry.class)
-    public SecurityRegistry secureRegistry() {
-        return new SecurityRegistry();
+    public ServletRegistrationBean druidServlet() {
+        ServletRegistrationBean bean = new ServletRegistrationBean(new StatViewServlet(), "/druid/*");
+        bean.addInitParameter("allow", "");
+        bean.addInitParameter("deny", "");
+        bean.addInitParameter("resetEnable", "true");
+        bean.addInitParameter("loginUsername", "admin");
+        bean.addInitParameter("loginPassword", "admin");
+        return bean;
     }
 
+    @Bean
+    public FilterRegistrationBean statFilter() {
+        FilterRegistrationBean bean = new FilterRegistrationBean(new WebStatFilter());
+        bean.addUrlPatterns("/*");
+        bean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*");
+        return bean;
+    }
 
 }

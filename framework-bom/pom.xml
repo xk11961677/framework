@@ -103,11 +103,11 @@
                 <version>${swagger-bootstrap-ui.version}</version>
             </dependency>
 
-            <dependency>
+            <!--<dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
-            </dependency>
+            </dependency>-->
 
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
@@ -115,11 +115,11 @@
                 <version>${mybatis-starter-version}</version>
             </dependency>
 
-            <dependency>
+            <!--<dependency>
                 <groupId>tk.mybatis</groupId>
                 <artifactId>mapper</artifactId>
                 <version>${tk.mapper.version}</version>
-            </dependency>
+            </dependency>-->
 
             <!--mapper-->
             <dependency>

@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.config;
+package com.sky.framework.web.configuration;
 
 import com.sky.framework.common.LogUtils;
 import com.sky.framework.web.common.registry.SecurityRegistry;

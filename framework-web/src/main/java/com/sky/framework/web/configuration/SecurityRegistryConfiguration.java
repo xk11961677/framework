@@ -20,14 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.mybatis.stream;
+package com.sky.framework.web.configuration;
+
+import com.sky.framework.web.common.registry.SecurityRegistry;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * 流式查询接口
+ * 默认安全注册器
  *
- * @param <T>
  * @author
  */
-@tk.mybatis.mapper.annotation.RegisterMapper
-public interface StreamMapper<T> extends SelectStreamByExampleMapper<T>, SelectStreamByExampleRowBoundsMapper<T> {
+@Configuration
+@AutoConfigureBefore(SecurityConfiguration.class)
+public class SecurityRegistryConfiguration {
+
+    @Bean
+    @ConditionalOnMissingBean(SecurityRegistry.class)
+    public SecurityRegistry secureRegistry() {
+        return new SecurityRegistry();
+    }
+
+
 }

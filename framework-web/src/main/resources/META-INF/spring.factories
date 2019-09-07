@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.sky.framework.web.WebAutoConfiguration
 org.springframework.context.ApplicationContextInitializer=\
-com.sky.framework.web.common.CustomApplicationContextInitializer
+com.sky.framework.web.initializer.CustomApplicationContextInitializer

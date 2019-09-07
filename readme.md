@@ -15,7 +15,7 @@
 
 - [framework-bom](framework-bom) framework项目 3rd part jar包版本依赖管理
 
-- [framework-generator-plugin](framework-generator-plugin) 代码生成器插件
+- [framework-generator-plugin](framework-generator-plugin) 代码生成器插件支持jar包
 
 - [framework-dao](framework-dao) 存储层代码封装,如:hive hbase等
 
