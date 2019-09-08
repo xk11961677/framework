@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.property;
+package com.sky.framework.swagger;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -36,6 +36,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "swagger")
 @Data
 public class SwaggerProperties {
+
+    static final String SWAGGER_ENABLE = "swagger.enabled";
 
     /**
      * 是否启用swagger在线文档,默认true
@@ -56,15 +58,25 @@ public class SwaggerProperties {
      * 版本,默认1.0
      */
     private String version = "1.0";
-
+    /**
+     * 协议
+     */
     private String license = "Apache License 2.0";
-
+    /**
+     * 协议地址
+     */
     private String licenseUrl = "http://www.apache.org/licenses/LICENSE-2.0";
-
+    /**
+     * 联系人姓名
+     */
     private String contactName = "sky";
-
+    /**
+     * 联系人网站
+     */
     private String contactUrl = "http://www.sky.com";
-
+    /**
+     * 联系人邮箱
+     */
     private String contactEmail = "shen11961677@163.com";
 
 }

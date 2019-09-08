@@ -34,6 +34,12 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>framework-integrate-swagger</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>framework-dao-mybatis</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -62,16 +68,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>swagger-bootstrap-ui</artifactId>
         </dependency>
 
         <dependency>

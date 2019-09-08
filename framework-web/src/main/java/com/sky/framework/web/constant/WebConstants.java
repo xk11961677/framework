@@ -29,8 +29,6 @@ package com.sky.framework.web.constant;
  */
 public interface WebConstants {
 
-    String SWAGGER_ENABLE = "swagger.enabled";
-
     String GLOBAL_EXCEPTION_ENABLE = "web.global-exception-enabled";
 
     String GLOBAL_EXCEPTION_DINGTALK_ENABLE = "web.global-exception-ding-talk-enabled";

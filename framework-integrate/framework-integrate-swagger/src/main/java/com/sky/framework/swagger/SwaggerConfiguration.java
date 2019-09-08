@@ -20,10 +20,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.configuration;
+package com.sky.framework.swagger;
 
-import com.sky.framework.web.constant.WebConstants;
-import com.sky.framework.web.property.SwaggerProperties;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -52,7 +50,7 @@ import java.util.List;
  * @author
  */
 @Configuration
-@ConditionalOnProperty(value = WebConstants.SWAGGER_ENABLE, matchIfMissing = true)
+@ConditionalOnProperty(value = SwaggerProperties.SWAGGER_ENABLE, matchIfMissing = true)
 @EnableSwagger2
 @Slf4j
 public class SwaggerConfiguration {

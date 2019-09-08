@@ -18,5 +18,6 @@
         <module>framework-integrate-rocketmq</module>
         <module>framework-integrate-job</module>
         <module>framework-integrate-canal</module>
+        <module>framework-integrate-swagger</module>
     </modules>
 </project>
