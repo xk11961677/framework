@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.redis.config;
+package com.sky.framework.redis.configuration;
 
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.sky.framework.redis.serializer.FastJsonRedisSerializer;
@@ -46,7 +46,7 @@ import java.time.Duration;
  */
 @Configuration
 @EnableCaching
-public class RedisConfig {
+public class RedisConfiguration {
 
     /**
      * 覆盖默认的配置

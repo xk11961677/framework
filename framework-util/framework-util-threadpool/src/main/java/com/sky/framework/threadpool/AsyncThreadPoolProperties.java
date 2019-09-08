@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.threadpool.property;
+package com.sky.framework.threadpool;
 
 import lombok.Getter;
 import lombok.Setter;

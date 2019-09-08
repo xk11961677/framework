@@ -20,40 +20,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rocketmq.config;
+package com.sky.framework.web;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
+ * The class Swagger properties.
+ *
  * @author
  */
-@Slf4j
-public class CustomMqApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+@Component
+@ConfigurationProperties(prefix = "web")
+@Data
+public class WebProperties {
 
     /**
-     * @see org.apache.rocketmq.client.log.ClientLogger
+     * 是否启用全局异常处理器,默认true
      */
-    private static final String ClIENT_LOG_ROOT = "rocketmq.client.logRoot";
-
-    @Override
-    public void initialize(ConfigurableApplicationContext applicationContext) {
-        this.setRocketMQClientLog(applicationContext);
-    }
+    private Boolean globalExceptionEnabled = true;
 
     /**
-     * 修改rocketMQClient日志文件位置
-     *
-     * @param applicationContext
+     * 是否启用全局异常处理器,默认true
      */
-    private void setRocketMQClientLog(ConfigurableApplicationContext applicationContext) {
-        ConfigurableEnvironment environment = applicationContext.getEnvironment();
-        String value = environment.getProperty(ClIENT_LOG_ROOT);
-        if (!StringUtils.isEmpty(value)) {
-            System.setProperty(ClIENT_LOG_ROOT, value);
-        }
-    }
+    private Boolean globalHttpConverterEnabled;
+
+    /**
+     * 是否使用钉钉发送错误信息,默认true
+     */
+    private Boolean globalExceptionDingTalkEnabled = true;
+    /**
+     * 是否启用用户信息上下文转换器,默认true
+     */
+    private Boolean globalContextInterceptorEnabled = true;
+
+    /**
+     * 是否启用用户token拦截器,默认true
+     */
+    private Boolean globalTokenInterceptorEnabled = true;
+
 }

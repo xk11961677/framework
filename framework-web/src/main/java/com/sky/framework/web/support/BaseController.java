@@ -28,7 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * The class Base controller.
+ * The class Base controller
+ *
+ * @author
  */
 public class BaseController {
 

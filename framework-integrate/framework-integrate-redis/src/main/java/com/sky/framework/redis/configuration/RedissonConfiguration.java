@@ -20,34 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web;
+package com.sky.framework.redis.configuration;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
+import com.sky.framework.redis.util.RedissonLockUtils;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.annotation.Order;
-import org.springframework.core.env.Environment;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.util.StringUtils;
 
 /**
- * 项目启动
- *
  * @author
  */
-@Slf4j
 @Configuration
-public class StartEventListener {
+@ConditionalOnClass(Redisson.class)
+public class RedissonConfiguration {
 
-    @Async
-    @Order
-    @EventListener(ApplicationReadyEvent.class)
-    public void afterStart(ApplicationReadyEvent event) {
-        Environment environment = event.getApplicationContext().getEnvironment();
-        String appName = environment.getProperty("spring.application.name").toUpperCase();
-        String port = environment.getProperty("server.port");
-        String profile = StringUtils.arrayToCommaDelimitedString(environment.getActiveProfiles());
-        log.info("---[{}]---启动完成，当前使用的端口:[{}]，环境变量:[{}]---", appName, port, profile);
+    @Bean
+    public RedissonLockUtils redissonLockUtil(RedissonClient redissonClient) {
+        RedissonLockUtils redissonLockUtils = new RedissonLockUtils();
+        RedissonLockUtils.setRedissonClient(redissonClient);
+        return redissonLockUtils;
     }
 }

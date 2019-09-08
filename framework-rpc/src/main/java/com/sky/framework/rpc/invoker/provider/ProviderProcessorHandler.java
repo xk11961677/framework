@@ -33,7 +33,7 @@ import com.sky.framework.rpc.serializer.FastjsonSerializer;
 import com.sky.framework.rpc.util.ReflectAsmUtils;
 import com.sky.framework.threadpool.core.CommonThreadPool;
 import com.sky.framework.threadpool.core.IAsynchronousHandler;
-import com.sky.framework.threadpool.property.AsyncThreadPoolProperties;
+import com.sky.framework.threadpool.AsyncThreadPoolProperties;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import lombok.extern.slf4j.Slf4j;

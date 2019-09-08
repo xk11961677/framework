@@ -23,7 +23,6 @@
 package com.sky.framework.threadpool;
 
 import com.sky.framework.threadpool.core.CommonThreadPool;
-import com.sky.framework.threadpool.property.AsyncThreadPoolProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

@@ -22,7 +22,7 @@
  */
 package com.sky.framework.threadpool.core;
 
-import com.sky.framework.threadpool.property.AsyncThreadPoolProperties;
+import com.sky.framework.threadpool.AsyncThreadPoolProperties;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.management.ManagementFactory;
