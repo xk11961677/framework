@@ -49,8 +49,10 @@ public class HttpMessageConverterConfiguration {
     public HttpMessageConverters fastJsonHttpMessageConverters() {
         //fastjson 新版检查 mediaType ,解决所有请求方法上添加 mediaType
         List<MediaType> supportedMediaTypes = new ArrayList<>();
+        MediaType mediaType = new MediaType("application", "*+json");
         supportedMediaTypes.add(MediaType.APPLICATION_JSON);
         supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
+        supportedMediaTypes.add(mediaType);
 //        supportedMediaTypes.add(MediaType.APPLICATION_ATOM_XML);
 //        supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
 //        supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
