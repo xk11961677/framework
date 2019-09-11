@@ -20,42 +20,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.common.json;
+package com.sky.framework.common.tree;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.util.List;
 
 /**
- * 自定义类型
  * @author
  */
-public class CallType {
+public interface ITree {
 
-    private Type[] types;
+    /**
+     * 获取所有tree节点list , 每个节点child和parent会自动装入
+     *
+     * @return
+     */
+    List<TreeNode> getTree();
 
-    private Class rawType;
+    /**
+     * 从根节点获取树节点list
+     *
+     * @return
+     */
+    List<TreeNode> getRoot();
 
-    public CallType(Class rawType, Type[] types) {
-        this.types = types;
-        this.rawType = rawType;
-    }
-
-    public Type getType() {
-        return new ParameterizedType() {
-            @Override
-            public Type[] getActualTypeArguments() {
-                return types;
-            }
-
-            @Override
-            public Type getRawType() {
-                return rawType;
-            }
-
-            @Override
-            public Type getOwnerType() {
-                return null;
-            }
-        };
-    }
+    /**
+     * 获取某个ID节点
+     *
+     * @param nodeId
+     * @return
+     */
+    TreeNode getTreeNode(String nodeId);
 }

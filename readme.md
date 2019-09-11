@@ -75,6 +75,9 @@
 #### 生成changelog方式
 运行docs/script/changelog/gitlog.sh
 
+## javadoc生成方式
+mvn javadoc:javadoc
+
 ## 关于作者
 ```javascript
   
