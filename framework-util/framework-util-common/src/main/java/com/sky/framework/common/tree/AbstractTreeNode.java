@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019 <reach>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -40,6 +40,11 @@ public abstract class AbstractTreeNode implements ITreeNode {
 
     @Override
     public String getUrl() {
+        return null;
+    }
+
+    @Override
+    public String getIcon() {
         return null;
     }
 }

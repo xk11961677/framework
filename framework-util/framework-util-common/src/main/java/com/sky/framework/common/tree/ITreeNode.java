@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019 <reach>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -74,4 +74,10 @@ public interface ITreeNode {
      * @return
      */
     String getUrl();
+
+    /**
+     * 获取icon
+     * @return
+     */
+    String getIcon();
 }

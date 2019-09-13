@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019 <reach>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -77,11 +77,17 @@ public class TreeNode {
     @JSONField(ordinal = 8)
     private String code;
 
+    /**
+     * 节点
+     */
+    @JSONField(ordinal = 9)
+    private String icon;
+
     private TreeNode parent;
     /**
      * 当前节点的子节点
      */
-    @JSONField(ordinal = 9)
+    @JSONField(ordinal = 10)
     private List<TreeNode> children = new ArrayList<TreeNode>();
     /**
      * 当前节点的子孙节点
@@ -96,6 +102,7 @@ public class TreeNode {
         this.code = obj.getCode();
         this.method = obj.getMethod();
         this.url = obj.getUrl();
+        this.icon = obj.getIcon();
     }
 
     public void addChild(TreeNode treeNode) {

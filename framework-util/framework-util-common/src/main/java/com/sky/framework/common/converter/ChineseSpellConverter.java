@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.common;
+package com.sky.framework.common.converter;
 
 import java.util.HashMap;
 import java.util.Map;
