@@ -25,7 +25,6 @@
         <tk.mapper.version>4.1.5</tk.mapper.version>
         <tk.mapper.starter.version>2.1.5</tk.mapper.starter.version>
         <pagehelper.starter.version>1.2.10</pagehelper.starter.version>
-        <springframework.version>5.1.6.RELEASE</springframework.version>
         <fastjson.version>1.2.60</fastjson.version>
         <commons-codec.version>1.10</commons-codec.version>
         <commons-lang.verion>2.6</commons-lang.verion>
