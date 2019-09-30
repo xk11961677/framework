@@ -31,7 +31,7 @@ import org.slf4j.Logger;
  *
  * @author
  */
-public class LogComposeUtil {
+public class LogComposeUtils {
 
     public static void log(Logger log, String info,Object... args) {
         XxlJobLogger.log(info,args);

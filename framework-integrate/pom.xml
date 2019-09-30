@@ -19,5 +19,6 @@
         <module>framework-integrate-job</module>
         <module>framework-integrate-canal</module>
         <module>framework-integrate-swagger</module>
+        <module>framework-integrate-logback</module>
     </modules>
 </project>
