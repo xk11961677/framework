@@ -18,7 +18,10 @@
 - [framework-generator-plugin](framework-generator-plugin) 代码生成器插件支持jar包
 
 - [framework-dao](framework-dao) 存储层代码封装,如:hive hbase等
-
+    -  [framework-dao-hive](framework-dao/framework-dao-hive)  
+    -  [framework-dao-hbase](framework-dao/framework-dao-hbase)  
+    -  [framework-dao-mybatis](framework-dao/framework-dao-mybatis)  
+   
 - [framework-web](framework-web) Spring Boot Web 脚手架依赖
 
 - [framework-model](framework-model) 公共DTO实体与分页实体
@@ -31,6 +34,7 @@
     -  [framework-integrate-redis](framework-integrate/framework-integrate-redis)  redis,使用方法请读本项目[readme.md](framework-integrate/framework-integrate-redis/readme.md)
     -  [framework-integrate-rocketmq](framework-integrate/framework-integrate-rocketmq)  mq,使用方法请读本项目[readme.md](framework-integrate/framework-integrate-rocketmq/readme.md)
     -  [framework-integrate-job](framework-integrate/framework-integrate-job)  分布式定时任务,使用方法请读本项目[readme.md](framework-integrate/framework-integrate-job/readme.md)
+    -  [framework-integrate-logback](framework-integrate/framework-integrate-logback)  自定义logback appender[readme.md](framework-integrate/framework-integrate-logback/readme.md)
 
 - [framework-util](framework-util) 工具类
     -  [framework-util-common](framework-util/framework-util-common)  公共工具类包
@@ -77,6 +81,13 @@
 
 ## javadoc生成方式
 mvn javadoc:javadoc
+
+## 问题反馈
+- 在使用中有任何问题，欢迎反馈
+
+## 开发计划
+1.0.0 logback appender 、mybatis-plus
+1.0.1 canal 
 
 ## 关于作者
 ```javascript
