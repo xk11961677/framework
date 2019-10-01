@@ -27,11 +27,11 @@ import com.sky.framework.common.LogUtils;
 import com.sky.framework.model.util.UserContextHolder;
 import com.sky.framework.web.constant.WebConstants;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,7 +78,7 @@ public class GlobalContextInterceptor implements HandlerInterceptor {
     private void convertAndSetContext(String user, HttpServletRequest request) {
         LogUtils.debug(log, "get x-client-token-user from header  :{} ", user);
         Map map = null;
-        if (StringUtils.isNotEmpty(user)) {
+        if (!StringUtils.isEmpty(user)) {
             try {
                 map = JSON.parseObject(user, Map.class);
             } catch (Exception e) {
@@ -90,7 +90,10 @@ public class GlobalContextInterceptor implements HandlerInterceptor {
         }
         String userId = request.getHeader("user_id");
         String channel = request.getHeader("channel");
-        map.put("user_id", userId);
+        //优先header
+        if (!StringUtils.isEmpty(userId)) {
+            map.put("user_id", userId);
+        }
         map.put("channel", channel);
         map.put("token", user);
         UserContextHolder.getInstance().setContext(map);

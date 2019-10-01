@@ -23,9 +23,9 @@
 package com.sky.framework.model.util;
 
 import com.google.common.collect.Maps;
-import org.springframework.util.StringUtils;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -100,11 +100,8 @@ public class UserContextHolder {
      * @return
      */
     public Long getUserId() {
-        String userId = Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("user_id");
-        if (!StringUtils.isEmpty(userId)) {
-            return Long.parseLong(userId);
-        }
-        return null;
+        String userId = Objects.toString(Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("user_id"), "-1L");
+        return Long.parseLong(userId);
     }
 
     /**

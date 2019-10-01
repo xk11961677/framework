@@ -44,17 +44,17 @@ public class SecurityRegistry {
         defaultExcludePatterns.add("/api/**");
         defaultExcludePatterns.add("/open/**");
         defaultExcludePatterns.add("/error/**");
-        defaultExcludePatterns.add("/monitor/**");
         defaultExcludePatterns.add("/hystrix/**");
-        defaultExcludePatterns.add("/consulhealth/**");
-        defaultExcludePatterns.add("/doc.html");
-        defaultExcludePatterns.add("/swagger-resources");
-        defaultExcludePatterns.add("/images/**");
-        defaultExcludePatterns.add("/webjars/**");
-        defaultExcludePatterns.add("/v2/api-docs/**");
-        defaultExcludePatterns.add("/configuration/ui/**");
-        defaultExcludePatterns.add("/configuration/security/**");
         defaultExcludePatterns.add("/actuator/**");
+
+        defaultExcludePatterns.add("/");
+        defaultExcludePatterns.add("/*.html");
+        defaultExcludePatterns.add("/favicon.ico");
+        defaultExcludePatterns.add("/**/*.html");
+        defaultExcludePatterns.add("/**/*.css");
+        defaultExcludePatterns.add("/**/*.js");
+        defaultExcludePatterns.add("/v2/api-docs/**");
+        defaultExcludePatterns.add("/swagger-resources/**");
     }
 
     /**
