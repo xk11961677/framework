@@ -48,7 +48,6 @@ public class MessageRes<T> {
     private T data;
 
     public MessageRes() {
-
     }
 
     public MessageRes(Integer code, String msg) {
@@ -56,9 +55,8 @@ public class MessageRes<T> {
         this.msg = msg;
     }
 
-    public MessageRes(Integer msgCode, String msgDesc, T data) {
-        this.code = msgCode;
-        this.msg = msgDesc;
+    public MessageRes(Integer code, String msg, T data) {
+        this(code, msg);
         this.data = data;
     }
 
@@ -71,13 +69,17 @@ public class MessageRes<T> {
     }
 
     public static <T> MessageRes success(T data) {
-        return new MessageRes(ResultCodeEnum.SUCCESS.getCode(), ResultCodeEnum.SUCCESS.getMsg(), data);
+        return success(ResultCodeEnum.SUCCESS.getCode(), ResultCodeEnum.SUCCESS.getMsg(), data);
     }
 
-    @ApiModelProperty(value = "是否成功",hidden = true)
+    public static <T> MessageRes success() {
+        return success(null);
+    }
+
+    @ApiModelProperty(value = "是否成功", hidden = true)
     @JSONField(serialize = false)
     public boolean isSuccess() {
-        return (this.code.intValue() == ResultCodeEnum.SUCCESS.getCode());
+        return (this.code.intValue() == ResultCodeEnum.SUCCESS.getCode().intValue());
     }
 
 }
