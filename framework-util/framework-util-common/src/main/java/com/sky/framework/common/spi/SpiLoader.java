@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.common.spi;
+package com.sky.framework.common.spi;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;
