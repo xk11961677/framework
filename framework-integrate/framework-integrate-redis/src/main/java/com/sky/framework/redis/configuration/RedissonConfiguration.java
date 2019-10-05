@@ -22,19 +22,43 @@
  */
 package com.sky.framework.redis.configuration;
 
+import com.sky.framework.common.LogUtils;
+import com.sky.framework.common.nacos.NacosContainer;
 import com.sky.framework.redis.util.RedissonLockUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author
  */
 @Configuration
 @ConditionalOnClass(Redisson.class)
+@Slf4j
 public class RedissonConfiguration {
+
+    @ConditionalOnProperty(prefix = "spring.cloud.nacos.config", value = "enabled")
+    @Bean(destroyMethod = "shutdown")
+    @Primary
+    public RedissonClient redisson() {
+        InputStream redisson = NacosContainer.get("redisson.yaml");
+        Config config = null;
+        try {
+            config = Config.fromYAML(redisson);
+        } catch (IOException e) {
+            LogUtils.error(log, "load redisson config exception:{}", e);
+        }
+        return Redisson.create(config);
+    }
 
     @Bean
     public RedissonLockUtils redissonLockUtil(RedissonClient redissonClient) {
