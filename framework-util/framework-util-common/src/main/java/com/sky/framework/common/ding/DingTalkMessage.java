@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @author
@@ -34,7 +35,9 @@ import java.io.IOException;
 @Slf4j
 public class DingTalkMessage {
 
-    public static String URL = "https://oapi.dingtalk.com/robot/send?access_token=1fce6f30df64b818bdbe3bd2a11d2b8cc556652c1c004c03540d6268be5a1a8b";
+    public static String token = "xxxx";
+
+    private static String url = "https://oapi.dingtalk.com/robot/send?access_token=" + token;
 
     private DingTalkMessageBuilder builder;
 
@@ -43,10 +46,12 @@ public class DingTalkMessage {
     }
 
     public void send() {
+        String accessToken = builder.getAccessToken();
+        String fullURL = (Objects.isNull(accessToken) || accessToken.trim().length() == 0) ? url : accessToken;
         String json = builder.build();
         OkHttpClient okHttpClient = new OkHttpClient();
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-        Request request = new Request.Builder().post(body).url(URL).build();
+        Request request = new Request.Builder().post(body).url(fullURL).build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -54,13 +59,14 @@ public class DingTalkMessage {
             }
 
             @Override
-            public void onResponse(Call call, Response response) {
+            public void onResponse(Call call, okhttp3.Response response) {
                 try {
                     ResponseBody responseBody = response.body();
                     if (responseBody != null) {
                         LogUtils.info(log, responseBody.string());
                     }
                 } catch (Exception ignore) {
+                    LogUtils.error(log, ignore.getMessage());
                 }
             }
         });

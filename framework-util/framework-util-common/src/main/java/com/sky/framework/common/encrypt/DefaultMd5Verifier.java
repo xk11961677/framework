@@ -23,6 +23,7 @@
 package com.sky.framework.common.encrypt;
 
 import com.alibaba.fastjson.JSON;
+import com.sky.framework.common.LogUtils;
 import com.sky.framework.model.dto.MessageReq;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,22 +37,20 @@ import java.util.*;
 @Slf4j
 public class DefaultMd5Verifier implements Verifier {
 
-    private static final DefaultEncrypter encrypter = new DefaultEncrypter();
+    private static final DefaultEncrypter DEFAULT_ENCRYPTER = new DefaultEncrypter();
 
     @Override
-    public boolean verify(MessageReq messageReq, String secret) {
+    public boolean verify(MessageReq request, String secret) {
         boolean isSame = false;
         try {
-            String signCode = messageReq.getSign();
-            Map<String, ?> map = JSON.parseObject(JSON.toJSONString(messageReq), Map.class);
+            String sign = request.getSign();
+            Map<String, ?> map = JSON.parseObject(JSON.toJSONString(request), Map.class);
             map.remove("sign");
-            String clientSign = buildSign(map, secret);
-            if(log.isInfoEnabled()) {
-                log.info("sign after :{} "+ clientSign);
-            }
-            isSame = signCode.equals(clientSign);
+            String signature = buildSignature(map, secret);
+            LogUtils.info(log, "server signature :{}", signature);
+            isSame = sign.equals(signature);
         } catch (Exception e) {
-            log.error("md5 verifier exception :{}" + e.getMessage(), e);
+            LogUtils.error(log, "DefaultMd5Verifier verify exception :{}", e);
         }
         return isSame;
     }
@@ -64,7 +63,7 @@ public class DefaultMd5Verifier implements Verifier {
      * @return
      * @throws IOException
      */
-    public String buildSign(Map<String, ?> paramsMap, String secret) throws IOException {
+    public String buildSignature(Map<String, ?> paramsMap, String secret) throws IOException {
         Set<String> keySet = paramsMap.keySet();
         List<String> paramNames = new ArrayList<String>(keySet);
 
@@ -77,7 +76,7 @@ public class DefaultMd5Verifier implements Verifier {
         }
 
         String source = secret + paramNameValue.toString() + secret;
-
+        LogUtils.info(log, "server signature before :{} " + source);
         return encrypt(source);
     }
 
@@ -88,7 +87,7 @@ public class DefaultMd5Verifier implements Verifier {
      * @return 返回MD5全部大写
      */
     public String encrypt(String source) {
-        return encrypter.md5(source).toUpperCase();
+        return DEFAULT_ENCRYPTER.md5(source).toUpperCase();
     }
 
 }

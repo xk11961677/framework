@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ObjectUtils;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * @author
@@ -40,11 +39,12 @@ public class Md5Utils {
     /**
      * md5 32位
      *
-     * @param sourceStr
+     * @param origin
      * @return
      */
-    public static String getMD532Str(String sourceStr) {
-        String result = "";
+    public static String getMD532Str(String origin) {
+        return encode(origin, "UTF-8");
+        /*String result = "";
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(sourceStr.getBytes());
@@ -65,18 +65,19 @@ public class Md5Utils {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        return result;
+        return result;*/
     }
 
 
     /**
      * 对字符串做(32位小写)MD5
      *
-     * @param string 需要处理的字符串
+     * @param origin 需要处理的字符串
      * @return 处理后的字符串。
      */
-    public static String encode(String string) {
-        try {
+    public static String encode(String origin) {
+        return encode(origin, "UTF-8");
+        /*try {
             byte[] stringByte = string.getBytes("UTF-8");
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
             messageDigest.update(stringByte);
@@ -93,26 +94,27 @@ public class Md5Utils {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
+        }*/
     }
 
 
-    public static String MD5Encode(String origin, String charsetname) {
+    public static String encode(String origin, String charset) {
         String resultString = null;
         try {
             resultString = origin;
             MessageDigest md = MessageDigest.getInstance("MD5");
-            if (charsetname == null || "".equals(charsetname)) {
+            if (charset == null || "".equals(charset)) {
                 resultString = byteArrayToHexString(md.digest(resultString.getBytes()));
             } else {
-                resultString = byteArrayToHexString(md.digest(resultString.getBytes(charsetname)));
+                resultString = byteArrayToHexString(md.digest(resultString.getBytes(charset)));
             }
-        } catch (Exception exception) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return resultString;
     }
 
-    private static String byteArrayToHexString(byte b[]) {
+    private static String byteArrayToHexString(byte[] b) {
         StringBuffer resultSb = new StringBuffer();
         for (int i = 0; i < b.length; i++) {
             resultSb.append(byteToHexString(b[i]));
@@ -130,5 +132,4 @@ public class Md5Utils {
         int d2 = n % 16;
         return ObjectUtils.toString(hexDigits[d1]) + ObjectUtils.toString(hexDigits[d2]);
     }
-
 }

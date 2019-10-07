@@ -33,7 +33,17 @@ import java.util.Map;
  * @author
  */
 public class DingTalkMessageBuilder {
+    /**
+     * 参数可自定义access_token
+     */
+    private String accessToken;
+
     private final HashMap<String, Object> map;
+
+    public DingTalkMessageBuilder(String token) {
+        this.accessToken = token;
+        map = new HashMap<>();
+    }
 
     public DingTalkMessageBuilder() {
         map = new HashMap<>();
@@ -48,7 +58,7 @@ public class DingTalkMessageBuilder {
         return this;
     }
 
-    public DingTalkMessageBuilder at(ArrayList<String> phones,boolean isAtAll) {
+    public DingTalkMessageBuilder at(ArrayList<String> phones, boolean isAtAll) {
         Map<String, Object> at = new HashMap<>();
         at.put("atMobiles", phones);
         at.put("isAtAll", isAtAll);
@@ -58,5 +68,9 @@ public class DingTalkMessageBuilder {
 
     String build() {
         return JSON.toJSONString(map);
+    }
+
+    public String getAccessToken() {
+        return accessToken;
     }
 }
