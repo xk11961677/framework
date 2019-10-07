@@ -22,14 +22,20 @@
  */
 package com.sky.framework.common.spi;
 
-import java.util.Iterator;
-import java.util.ServiceLoader;
+import java.util.*;
 
 /**
  * @author
  */
 public class SpiLoader {
 
+    /**
+     * 加载第一个
+     *
+     * @param clazz
+     * @param <S>
+     * @return
+     */
     public static <S> S loadFirst(final Class<S> clazz) {
         final ServiceLoader<S> loader = loadAll(clazz);
         final Iterator<S> iterator = loader.iterator();
@@ -41,7 +47,66 @@ public class SpiLoader {
         return iterator.next();
     }
 
+    /**
+     * 加载全部
+     *
+     * @param clazz
+     * @param <S>
+     * @return
+     */
     public static <S> ServiceLoader<S> loadAll(final Class<S> clazz) {
         return ServiceLoader.load(clazz);
+    }
+
+    /**
+     * 获取根据优先级排序后的第一个
+     *
+     * @param clazz
+     * @param <S>
+     * @return
+     */
+    public static <S> S loadFirstPriority(final Class<S> clazz) {
+        return loadAllPriority(clazz).get(0);
+    }
+
+    /**
+     * 根据优先级排序后的全部
+     *
+     * @param clazz
+     * @param <S>
+     * @return
+     */
+    public static <S> List<S> loadAllPriority(final Class<S> clazz) {
+        final Iterator<S> iterator = loadAll(clazz).iterator();
+        List<S> list = new ArrayList<>();
+        while (iterator.hasNext()) {
+            list.add(iterator.next());
+        }
+        Collections.sort(list, (first, second) -> {
+            SpiMetadata firstMetadata = first.getClass().getAnnotation(SpiMetadata.class);
+            SpiMetadata secondMetadata = second.getClass().getAnnotation(SpiMetadata.class);
+            return firstMetadata.priority() - secondMetadata.priority();
+        });
+        return list;
+    }
+
+    /**
+     * 获取对应名称的
+     *
+     * @param clazz
+     * @param name
+     * @param <S>
+     * @return
+     */
+    public static <S> S loadName(final Class<S> clazz, final String name) {
+        final Iterator<S> iterator = loadAll(clazz).iterator();
+        while (iterator.hasNext()) {
+            S next = iterator.next();
+            SpiMetadata metadata = next.getClass().getAnnotation(SpiMetadata.class);
+            if (metadata.name().equals(name)) {
+                return next;
+            }
+        }
+        return null;
     }
 }
