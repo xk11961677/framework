@@ -100,7 +100,7 @@ public class UserContextHolder {
      * @return
      */
     public Long getUserId() {
-        String userId = Objects.toString(Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("user_id"), "-1L");
+        String userId = Objects.toString(Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("user_id"), "-1");
         return Long.parseLong(userId);
     }
 
