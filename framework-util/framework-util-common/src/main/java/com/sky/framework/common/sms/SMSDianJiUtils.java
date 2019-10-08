@@ -99,7 +99,7 @@ public class SMSDianJiUtils {
             long timestamps = System.currentTimeMillis();
             formparams.add(new BasicNameValuePair("account", account));
             formparams
-                    .add(new BasicNameValuePair("password", Md5Utils.getMD532Str(password + mobile + timestamps)));
+                    .add(new BasicNameValuePair("password", Md5Utils.encode(password + mobile + timestamps)));
             formparams.add(new BasicNameValuePair("mobile", mobile));
             formparams.add(new BasicNameValuePair("content", content));
             formparams.add(new BasicNameValuePair("timestamps", timestamps + ""));

@@ -22,8 +22,8 @@
  */
 package com.sky.framework.common.encrypt;
 
+import com.sky.framework.common.LogUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.ObjectUtils;
 
 import java.security.MessageDigest;
 
@@ -33,41 +33,7 @@ import java.security.MessageDigest;
 @Slf4j
 public class Md5Utils {
 
-    private static final char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-
-
-    /**
-     * md5 32位
-     *
-     * @param origin
-     * @return
-     */
-    public static String getMD532Str(String origin) {
-        return encode(origin, "UTF-8");
-        /*String result = "";
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(sourceStr.getBytes());
-            byte b[] = md.digest();
-            int i;
-            StringBuffer buf = new StringBuffer();
-            for (int offset = 0; offset < b.length; offset++) {
-                i = b[offset];
-                if (i < 0) {
-                    i += 256;
-                }
-                if (i < 16) {
-                    buf.append("0");
-                }
-                buf.append(Integer.toHexString(i));
-            }
-            result = buf.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return result;*/
-    }
-
+    private static final char[] HEX_CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
     /**
      * 对字符串做(32位小写)MD5
@@ -77,59 +43,28 @@ public class Md5Utils {
      */
     public static String encode(String origin) {
         return encode(origin, "UTF-8");
-        /*try {
-            byte[] stringByte = string.getBytes("UTF-8");
-            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            messageDigest.update(stringByte);
-            byte[] md5Byte = messageDigest.digest();
-            int j = md5Byte.length;
-            char str[] = new char[j * 2];
-            int k = 0;
-            for (int i = 0; i < j; i++) {
-                byte byteValue = md5Byte[i];
-                str[k++] = hexDigits[byteValue >>> 4 & 0xf];
-                str[k++] = hexDigits[byteValue & 0xf];
-            }
-            return (new String(str));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }*/
     }
 
 
     public static String encode(String origin, String charset) {
-        String resultString = null;
+        String result = null;
         try {
-            resultString = origin;
+            result = origin;
             MessageDigest md = MessageDigest.getInstance("MD5");
-            if (charset == null || "".equals(charset)) {
-                resultString = byteArrayToHexString(md.digest(resultString.getBytes()));
-            } else {
-                resultString = byteArrayToHexString(md.digest(resultString.getBytes(charset)));
-            }
+            result = new String(encodeHex((charset == null || "".equals(charset)) ? md.digest(result.getBytes()) : md.digest(result.getBytes(charset))));
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.error(log, "md5 encode exception:{}", e);
         }
-        return resultString;
+        return result;
     }
 
-    private static String byteArrayToHexString(byte[] b) {
-        StringBuffer resultSb = new StringBuffer();
-        for (int i = 0; i < b.length; i++) {
-            resultSb.append(byteToHexString(b[i]));
+    private static char[] encodeHex(byte[] bytes) {
+        char[] chars = new char[32];
+        for (int i = 0; i < chars.length; i = i + 2) {
+            byte b = bytes[i / 2];
+            chars[i] = HEX_CHARS[(b >>> 0x4) & 0xf];
+            chars[i + 1] = HEX_CHARS[b & 0xf];
         }
-
-        return resultSb.toString();
-    }
-
-    private static String byteToHexString(byte b) {
-        int n = b;
-        if (n < 0) {
-            n += 256;
-        }
-        int d1 = n / 16;
-        int d2 = n % 16;
-        return ObjectUtils.toString(hexDigits[d1]) + ObjectUtils.toString(hexDigits[d2]);
+        return chars;
     }
 }
