@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -39,6 +40,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * 用户信息拦截器
@@ -89,13 +91,18 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
      */
     private void response(HttpServletResponse response) {
         String result = JSON.toJSONString(new MessageRes(FailureCodeEnum.AUZ100001.getCode(), FailureCodeEnum.AUZ100001.getMsg()));
-        LogUtils.debug(log, "token验证结果，result={}", result);
-        response.setCharacterEncoding(WebConstants.UTF_8);
-        response.setContentType(WebConstants.APPLICATION_JSOON_UTF_8);
+        response.setCharacterEncoding(WebConstants.UTF8);
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        PrintWriter writer = null;
         try {
-            response.getWriter().println(result);
+            writer = response.getWriter();
+            writer.println(result);
         } catch (IOException e) {
-            LogUtils.error(log, "", e.getMessage(), e);
+            LogUtils.error(log, "" + e.getMessage(), e);
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
         }
     }
 
@@ -104,7 +111,7 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
      *
      * @param clientToken
      */
-    private void checkClientToken(String clientToken) {
+    private void verifyClientToken(String clientToken) {
         LogUtils.debug(log, "校验 x-client-token:{}", clientToken);
     }
 }

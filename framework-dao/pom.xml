@@ -17,5 +17,7 @@
         <module>framework-dao-hbase</module>
         <module>framework-dao-hive</module>
         <module>framework-dao-mybatis</module>
+        <module>framework-dao-es</module>
+        <module>framework-dao-mongo</module>
     </modules>
 </project>

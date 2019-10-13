@@ -20,24 +20,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.constant;
-
-/**
- * the class core constant
- *
- * @author
- */
-public interface WebConstants {
-
-    String GLOBAL_EXCEPTION_ENABLE = "web.global-exception-enabled";
-
-    String GLOBAL_EXCEPTION_DINGTALK_ENABLE = "web.global-exception-ding-talk-enabled";
-
-    String GLOBAL_HTTP_CONVERTER_ENABLE = "web.global-http-converter-enabled";
-
-    String GLOBAL_CONTEXT_INTERCEPTOR_ENABLE = "web.global-context-interceptor-enabled";
-
-    String GLOBAL_TOKEN_INTERCEPTOR_ENABLE = "web.global-token-interceptor-enabled";
-
-    String UTF8 = "UTF-8";
-}
+package com.sky.framework.mongo;
