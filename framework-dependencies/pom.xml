@@ -52,6 +52,12 @@
 
             <dependency>
                 <groupId>com.sky.framework</groupId>
+                <artifactId>framework-integrate-swagger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sky.framework</groupId>
                 <artifactId>framework-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -77,6 +83,18 @@
             <dependency>
                 <groupId>com.sky.framework</groupId>
                 <artifactId>framework-util-oss</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sky.framework</groupId>
+                <artifactId>framework-dao-mybatis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sky.framework</groupId>
+                <artifactId>framework-dao-mybatis-plus</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

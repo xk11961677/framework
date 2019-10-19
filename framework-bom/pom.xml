@@ -38,6 +38,7 @@
         <kryo.version>2.24.0</kryo.version>
         <hutool.version>4.5.18</hutool.version>
         <aliyun-sdk-oss.version>3.5.0</aliyun-sdk-oss.version>
+        <mybatis.plus.starter.version>3.2.0</mybatis.plus.starter.version>
     </properties>
 
 
@@ -121,7 +122,7 @@
                 <version>${tk.mapper.version}</version>
             </dependency>-->
 
-            <!--mapper-->
+            <!--tk-mybatis mapper-->
             <dependency>
                 <groupId>tk.mybatis</groupId>
                 <artifactId>mapper-spring-boot-starter</artifactId>
@@ -133,6 +134,13 @@
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>${pagehelper.starter.version}</version>
+            </dependency>
+
+            <!--mybatis-plus mapper-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis.plus.starter.version}</version>
             </dependency>
 
             <dependency>

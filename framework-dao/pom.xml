@@ -19,5 +19,6 @@
         <module>framework-dao-mybatis</module>
         <module>framework-dao-es</module>
         <module>framework-dao-mongo</module>
+        <module>framework-dao-mybatis-plus</module>
     </modules>
 </project>
