@@ -53,27 +53,33 @@ public class UploadToken {
      */
     private String bucketName;
 
+    /**
+     * 文件类型
+     */
     private String fileType;
+
     /**
      * 上传目录
      */
     private String uploadDir;
+
     /**
      * 名称
      */
     private String fileName;
+
     /**
      * 文件上传成功后的回调地址
      */
     private String callbackUrl;
+
     /**
      * 回调时传入request中的参数
      */
     private String callbackBody;
 
     /**
-     * 用户要往哪个域名发送上传请求
-     * 如: oss-cn-hangzhou.aliyuncs.com
+     * 回调时服务器host
      */
     private String callbackHost;
 
@@ -87,12 +93,18 @@ public class UploadToken {
      */
     private String mimeLimit;
     /**
-     * 单位 byte
+     * 内容大小 单位 byte
      */
     private Long fsizeMin;
 
+    /**
+     * 内容大小 单位 byte
+     */
     private Long fsizeMax;
 
+    /**
+     * 多少天后删除
+     */
     private Integer deleteAfterDays;
 
     /**
@@ -122,8 +134,6 @@ public class UploadToken {
 
     /**
      * 获取文件目录+文件名
-     *
-     * @return
      */
     public String getFileKey() {
         if (StringUtils.isEmpty(uploadDir) || StringUtils.isEmpty(fileName)) {
@@ -134,11 +144,9 @@ public class UploadToken {
 
     /**
      * 创建回调内容
-     *
-     * @return
      */
     public String getCallbackRuleAsJson() {
-        if (StringUtils.isEmpty(callbackBody) || StringUtils.isEmpty(callbackHost) || StringUtils.isEmpty(callbackUrl)) {
+        if (StringUtils.isEmpty(callbackBody) || (StringUtils.isEmpty(callbackHost) && StringUtils.isEmpty(callbackUrl))) {
             return null;
         }
         Map<String, String> map = new HashMap<>(8);
@@ -148,5 +156,4 @@ public class UploadToken {
         map.put("callbackBodyType", getCallbackBodyType());
         return JSON.toJSONString(map);
     }
-
 }

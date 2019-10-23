@@ -31,6 +31,8 @@ import com.sky.framework.common.LogUtils;
 import com.sky.framework.oss.exception.OssException;
 import com.sky.framework.oss.model.UploadObject;
 import com.sky.framework.oss.model.UploadToken;
+import com.sky.framework.oss.property.AliyunOssProperties;
+import com.sky.framework.oss.property.OssProperties;
 import com.sky.framework.oss.strategy.AbstractOssStrategy;
 import com.sky.framework.oss.strategy.OssStrategyEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -69,35 +71,40 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
 
     private String accessKeyId;
 
-    /**
-     * 用户要往哪个域名发送上传请求
-     * 如: oss-cn-hangzhou.aliyuncs.com
-     */
     private String host;
 
     private String callbackUrl;
 
-    public AliyunOssStrategy(String urlprefix, String endpoint, String bucketName, String accessKey, String secretKey, String callbackUrl, boolean isPrivate) {
-        Validate.notBlank(endpoint, "[endpoint] not defined");
-        Validate.notBlank(bucketName, "[bucketName] not defined");
-        Validate.notBlank(accessKey, "[accessKey] not defined");
-        Validate.notBlank(secretKey, "[secretKey] not defined");
-        Validate.notBlank(urlprefix, "[urlprefix] not defined");
+    public AliyunOssStrategy(OssProperties ossProperties) {
+        AliyunOssProperties aliyunOssProperties = ossProperties.getAliyun();
+        Validate.notBlank(aliyunOssProperties.getEndpoint(), "[endpoint] not defined");
+        Validate.notBlank(aliyunOssProperties.getBucketName(), "[bucketName] not defined");
+        Validate.notBlank(aliyunOssProperties.getAccessKeyId(), "[accessKey] not defined");
+        Validate.notBlank(aliyunOssProperties.getAccessKeySecret(), "[secretKey] not defined");
+        Validate.notBlank(aliyunOssProperties.getHost(), "[host] not defined");
+        Validate.notBlank(ossProperties.getUrlPrefix(), "[urlPrefix] not defined");
 
-        this.accessKeyId = accessKey;
-        this.bucketName = bucketName;
-        this.urlPrefix = urlprefix.endsWith("/") ? urlprefix : (urlprefix + "/");
-        this.isPrivate = isPrivate;
-        this.callbackUrl = callbackUrl;
-        this.host = StringUtils.remove(urlprefix, "/").split(":")[1];
-        ossClient = new OSSClientBuilder().build(endpoint, accessKey, secretKey);
-        if (!ossClient.doesBucketExist(bucketName)) {
-            LogUtils.info(log, "Creating bucket " + bucketName + "\n");
-            ossClient.createBucket(bucketName);
-            CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
-            createBucketRequest.setCannedACL(isPrivate ? CannedAccessControlList.Private : CannedAccessControlList.PublicRead);
-            ossClient.createBucket(createBucketRequest);
-        }
+        String urlPrefix = ossProperties.getUrlPrefix();
+        this.urlPrefix = urlPrefix.endsWith("/") ? urlPrefix : (urlPrefix + "/");
+
+        this.accessKeyId = aliyunOssProperties.getAccessKeyId();
+        this.bucketName = aliyunOssProperties.getBucketName();
+        this.isPrivate = ossProperties.getIsPrivate();
+        this.callbackUrl = ossProperties.getCallbackUrl();
+        this.host = aliyunOssProperties.getHost();
+
+        new Thread(() -> {
+            LogUtils.info(log, "async create oss client started:{}");
+            ossClient = new OSSClientBuilder().build(aliyunOssProperties.getEndpoint(), aliyunOssProperties.getAccessKeyId(), aliyunOssProperties.getAccessKeySecret());
+            if (!ossClient.doesBucketExist(bucketName)) {
+                LogUtils.info(log, "ali oss creating bucket :{}", bucketName);
+                ossClient.createBucket(bucketName);
+                CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
+                createBucketRequest.setCannedACL(isPrivate ? CannedAccessControlList.Private : CannedAccessControlList.PublicRead);
+                ossClient.createBucket(createBucketRequest);
+            }
+            LogUtils.info(log, "async create oss client successfully:{}");
+        }).start();
     }
 
     /**
@@ -105,8 +112,6 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
      *
      * @param object
      * @return java.lang.String
-     * @author sky
-     * @since
      */
     @Override
     public String upload(UploadObject object) {
@@ -142,8 +147,6 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
      *
      * @param param
      * @return java.util.Map<java.lang.String, java.lang.Object>
-     * @author sky
-     * @since
      */
     //https://help.aliyun.com/document_detail/31926.html
     //https://help.aliyun.com/document_detail/31989.html?spm=a2c4g.11186623.6.907.tlMQcL
@@ -160,10 +163,6 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
         }
         if (param.getUploadDir() != null) {
             policyConds.addConditionItem(MatchMode.StartWith, PolicyConditions.COND_KEY, param.getUploadDir());
-        }
-
-        if (StringUtils.isBlank(param.getCallbackHost())) {
-            param.setCallbackHost(host);
         }
 
         if (StringUtils.isBlank(param.getCallbackBody())) {
@@ -192,7 +191,7 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
         result.put("accessKeyId", accessKeyId);
         result.put("policy", policyBase64);
         result.put("signature", signature);
-        result.put("host", param.getCallbackHost());
+        result.put("host", host);
         result.put("dir", param.getUploadDir());
         result.put("expire", String.valueOf(expire.getTime()));
         if (callbackBase64 != null) {
@@ -206,8 +205,6 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
      *
      * @param fileKey
      * @return boolean
-     * @author sky
-     * @since
      */
     @Override
     public boolean delete(String fileKey) {
@@ -221,8 +218,6 @@ public class AliyunOssStrategy extends AbstractOssStrategy {
      * @param fileKey 文件（全路径或者fileKey）
      * @param fileKey
      * @return java.lang.String
-     * @author sky
-     * @since
      */
     @Override
     public String getDownloadUrl(String fileKey) {

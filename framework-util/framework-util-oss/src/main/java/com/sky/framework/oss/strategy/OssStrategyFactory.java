@@ -64,10 +64,7 @@ public class OssStrategyFactory {
     public static OssStrategyAdapter createOssStrategy(OssStrategyEnum strategy) {
         OssStrategy ossStrategy;
         if (AliyunOssStrategy.NAME.equals(strategy.getKey())) {
-            AliyunOssProperties aliyun = ossProperties.getAliyun();
-            ossStrategy = new AliyunOssStrategy(ossProperties.getUrlPrefix(), aliyun.getEndpoint(),
-                    aliyun.getBucketName(), aliyun.getAccessKeyId(), aliyun.getAccessKeySecret(),
-                    ossProperties.getCallbackUrl(), ossProperties.getIsPrivate());
+            ossStrategy = new AliyunOssStrategy(ossProperties);
         } else {
             throw new IllegalArgumentException("file strategy name:" + strategy.getKey() + " not support");
         }

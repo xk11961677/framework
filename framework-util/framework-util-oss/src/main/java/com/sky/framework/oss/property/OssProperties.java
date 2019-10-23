@@ -35,12 +35,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class OssProperties {
 
     /**
-     * url前缀
+     * 图片访问地址前缀
      */
     private String urlPrefix;
 
     /**
-     * 是否私有
+     * bucket是否私有
      */
     private Boolean isPrivate = false;
 
@@ -55,7 +55,7 @@ public class OssProperties {
     private String dirPrefix;
 
     /**
-     * callbackUrl地址
+     * 回调接口地址(如: ali 通过前端上传时，ali需要回调地址通知图片信息或个人用户验签等)
      */
     private String callbackUrl;
 

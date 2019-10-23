@@ -51,4 +51,10 @@ public class AliyunOssProperties {
      * oss节点地址
      */
     private String endpoint;
+
+    /**
+     * 阿里云访问地址(文件上传时地址)
+     * bucketName 和 endpoint 拼接
+     */
+    private String host;
 }
