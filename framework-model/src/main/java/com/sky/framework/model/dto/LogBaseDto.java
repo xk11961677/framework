@@ -22,33 +22,34 @@
  */
 package com.sky.framework.model.dto;
 
-import com.sky.framework.model.util.LogLevel;
-import com.sky.framework.model.util.LogType;
 import lombok.Data;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Map;
 
 /**
  * @author
- *
  */
 @Data
 public class LogBaseDto {
+
+    private static final String pidOrigin = java.lang.management.ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+
+    public LogBaseDto() {
+        pid = pidOrigin;
+    }
+
     /**
      * pid
      */
-    private static final String pid = java.lang.management.ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+    private String pid;
     /**
      *
      */
-    private static String hostName;
+    private String host;
     /**
      *
      */
-    private static String hostIp;
-
-
+    private String ip;
     /**
      * 应用名称
      */
@@ -57,25 +58,53 @@ public class LogBaseDto {
     /**
      * 日志时间
      */
-    private String logTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
+    private String logTime;
+
+    /**
+     * 日志时间int类型
+     */
+    private int time;
     /**
      * 等级
      */
-    private LogLevel level = LogLevel.Info;
+    private String level;
     /**
      * 类型
+     *
+     * @see com.sky.framework.model.util.LogType
      */
-    private LogType type = LogType.Business;
+    private String type;
     /**
      * 错误信息
      */
     private String message;
     /**
-     * 行号
-     */
-    private String num;
-    /**
      * 标签
      */
     private String tag;
+
+    /**
+     * 线程名称
+     */
+    private String thread;
+
+    /**
+     * 日志输出来源类名与行号
+     */
+    private String location;
+
+    /**
+     * 异常栈信息
+     */
+    private String throwable;
+
+    /**
+     * encoder 之后的日志信息
+     */
+    private String log;
+
+    /**
+     * mdc 信息
+     */
+    private Map<String, String> mdcFields;
 }

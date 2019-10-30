@@ -37,7 +37,9 @@ public enum LogType {
 
     MQ(4),
 
-    Cache(5);
+    Cache(5),
+
+    Logback(6);
 
     private int intValue;
 
