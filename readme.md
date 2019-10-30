@@ -21,6 +21,7 @@
     -  [framework-dao-hive](framework-dao/framework-dao-hive)  
     -  [framework-dao-hbase](framework-dao/framework-dao-hbase)  
     -  [framework-dao-mybatis](framework-dao/framework-dao-mybatis)  
+    -  [framework-dao-mybatis-plus](framework-dao/framework-dao-mybatis-plus) 
    
 - [framework-web](framework-web) Spring Boot Web 脚手架依赖
 
