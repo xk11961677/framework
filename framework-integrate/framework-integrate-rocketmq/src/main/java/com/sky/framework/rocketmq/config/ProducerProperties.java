@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rocketmq.model;
+package com.sky.framework.rocketmq.config;
 
 import lombok.Data;
 
@@ -28,14 +28,17 @@ import lombok.Data;
  * @author
  */
 @Data
-public class RocketMessage<M> {
+public class ProducerProperties {
+
+    private static final boolean DEFAULT_VIPCHANNELENABLED = false;
+    private static final Integer DEFAULT_SENDMSGTIMEOUT = 10000;
+    private static final Integer DEFAULT_RETRYTIMESWHENSENDFAILED = 3;
 
     private String group;
-
-    private String topic;
-
-    private M body;
-
-    private String tag;
+    private String namesrvAddr;
+    private Integer maxMessageSize;
+    private Boolean vipChannelEnabled = DEFAULT_VIPCHANNELENABLED;
+    private Integer sendMsgTimeout = DEFAULT_SENDMSGTIMEOUT;
+    private Integer retryTimesWhenSendFailed = DEFAULT_RETRYTIMESWHENSENDFAILED;
 
 }

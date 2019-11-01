@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rocketmq.model;
+package com.sky.framework.rocketmq.config;
 
 import lombok.Data;
 
@@ -28,14 +28,12 @@ import lombok.Data;
  * @author
  */
 @Data
-public class RocketMessage<M> {
+public class ConsumerProperties {
 
     private String group;
-
     private String topic;
-
-    private M body;
-
-    private String tag;
-
+    private String namesrvAddr;
+    private Integer consumeThreadMin;
+    private Integer consumeThreadMax;
+    private Integer consumeMessageBatchMaxSize;
 }

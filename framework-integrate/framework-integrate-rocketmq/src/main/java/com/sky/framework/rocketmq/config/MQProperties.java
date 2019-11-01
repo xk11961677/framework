@@ -20,22 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rocketmq.model;
+package com.sky.framework.rocketmq.config;
 
 import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
+import java.util.List;
 
 /**
  * @author
  */
+@EnableConfigurationProperties(MQProperties.class)
+@ConfigurationProperties(prefix = "rocket.config")
 @Data
-public class RocketMessage<M> {
+public class MQProperties {
 
-    private String group;
+    private List<ProducerProperties> producer;
 
-    private String topic;
+    private List<ConsumerProperties> consumer;
 
-    private M body;
-
-    private String tag;
+    private String namesrvAddr;
 
 }

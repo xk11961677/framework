@@ -10,31 +10,42 @@
 
 ```
     
-2): 配置redis属性
+2): 使用rocketmq-spring-boot-starter方式
 
-```
-spring:
-  redis:
-    # Redis数据库索引（默认为0）
-    database: 0
-    # Redis服务器地址
-    host: 127.0.0.1
-    # Redis服务器连接端口
-    port: 6379
-    # Redis服务器连接密码（默认为空）
-    password: 123456
-    #连接池
-    lettuce:
-      pool:
-        #连接池最大连接数（使用负值表示没有限制）
-        max-active: 200
-        #连接池最大阻塞等待时间（使用负值表示没有限制）
-        max-wait: -1
-        #连接池中的最大空闲连接
-        max-idle: 10
-        #连接池中的最小空闲连接
-        min-idle: 0
-    #连接超时时间（毫秒）
-    timeout: 10000
+2.1) 消费端使用原生
+2.2) 生产端直接使用RocketMqUtils.asyncSend()方法
+2.3) [rocketmq-spring-boot-starter文档](https://github.com/apache/rocketmq-spring)
 
+
+3): 使用自定义方式(暂时不要使用)
+
+3.1) 消费端实现MessageHandler类,并加@ConsumerListener注解
+
+3.2) 生产端配置属性文件后，直接使用RocketMqUtils.sendMsg()方法
+
+3.3) 配置属性文件
 ```
+rocket:
+  config:
+    producer:
+      - group: action_group3
+      - group: action_group3
+    consumer:
+      - group: action_group1
+        topic: action_topic1
+      - group: action_group2
+        topic: action_topic2
+    namesrvAddr: 127.0.0.1:9876
+```
+
+3.4) Feature
+
+* [x] 同步发送消息
+* [ ] 异步发送消息
+* [ ] 广播发送消息
+* [ ] 有序发送和消费消息
+* [ ] 发送延时消息
+* [ ] 消息tag和key支持
+* [ ] 自动序列化和反序列化消息体
+* [ ] 消息的实际消费方IP追溯
+* [ ] 发送事务消息

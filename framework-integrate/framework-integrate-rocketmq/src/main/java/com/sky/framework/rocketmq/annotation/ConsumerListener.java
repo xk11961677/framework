@@ -20,22 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rocketmq.model;
+package com.sky.framework.rocketmq.annotation;
 
-import lombok.Data;
+import org.springframework.stereotype.Component;
+
+import java.lang.annotation.*;
 
 /**
  * @author
  */
-@Data
-public class RocketMessage<M> {
+@Component
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ConsumerListener {
 
-    private String group;
+    String group();
 
-    private String topic;
+    String topic();
 
-    private M body;
-
-    private String tag;
+    String tag() default "";
 
 }

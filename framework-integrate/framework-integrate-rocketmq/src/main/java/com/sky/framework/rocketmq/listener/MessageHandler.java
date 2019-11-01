@@ -20,22 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rocketmq.model;
-
-import lombok.Data;
+package com.sky.framework.rocketmq.listener;
 
 /**
  * @author
  */
-@Data
-public class RocketMessage<M> {
+public interface MessageHandler {
 
-    private String group;
-
-    private String topic;
-
-    private M body;
-
-    private String tag;
-
+    /**
+     * 处理消息
+     *
+     * @param msg
+     */
+    void handle(String msg);
 }

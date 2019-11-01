@@ -22,16 +22,23 @@
  */
 package com.sky.framework.rocketmq.util;
 
+import com.sky.framework.common.LogUtils;
 import com.sky.framework.rocketmq.exception.MqException;
 import com.sky.framework.rocketmq.model.RocketMessage;
 import com.sky.framework.rocketmq.model.RocketSendCallback;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.SerializationUtils;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author
@@ -39,6 +46,9 @@ import javax.annotation.Resource;
 @Component
 @Slf4j
 public class RocketMqUtils {
+
+    public static Map<String, DefaultMQProducer> map = new HashMap<>();
+
 
     @Resource
     private RocketMQTemplate rocketMQTemplate;
@@ -63,4 +73,36 @@ public class RocketMqUtils {
         rocketMQTemplate.asyncSend(mq.getTopic(), mq, new RocketSendCallback());
     }
 
+
+    /**
+     * 发送消息
+     *
+     * @param message
+     */
+    public void sendMsg(RocketMessage message) {
+        if (message.getGroup() == null) {
+            throw new MqException("group不能为空");
+        }
+        if (message.getTopic() == null) {
+            throw new MqException("topic不能为空");
+        }
+        try {
+            if (message.getBody() != null) {
+                DefaultMQProducer producer = map.get(message.getGroup());
+                if (producer == null) {
+                    LogUtils.warn(log, "group:{} cannot find producer ", message.getGroup());
+                    return;
+                }
+                Message msg = new Message(message.getTopic(), message.getTag(), UUID.randomUUID().toString(), String.valueOf(message.getBody()).getBytes());
+                SendResult sendResult = producer.send(msg);
+                if (SendStatus.SEND_OK.equals(sendResult.getSendStatus())) {
+                    LogUtils.info(log, "message:{} send successfully", msg.getKeys());
+                } else {
+                    LogUtils.warn(log, "message:{} status:{}", msg.getKeys(), sendResult.getSendStatus());
+                }
+            }
+        } catch (Exception e) {
+            LogUtils.error(log, "message send failed :{}", e);
+        }
+    }
 }
