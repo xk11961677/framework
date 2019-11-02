@@ -18,6 +18,11 @@ cache:
   directories:
     - $HOME/.m2
 
+#指定分支，只有指定的分支提交时才会运行脚本
+branches:
+  only:
+    - master
+
 install:
   - mvn clean deploy -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
