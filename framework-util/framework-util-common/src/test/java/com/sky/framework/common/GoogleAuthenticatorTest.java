@@ -34,7 +34,7 @@ public class GoogleAuthenticatorTest {
         // 帐户名建议使用自己 APP名称+APP账户(手机/邮箱)， 例如：admin-18900000000
         // host 域名
         String qrcode = GoogleAuthenticator.getQRBarcodeURL(
-                "admin-18911752664", "127.0.0.1", secret);
+                "admin-18900000000", "127.0.0.1", secret);
         System.out.println("二维码地址:" + qrcode);
         System.out.println("密钥:" + secret);
     }
