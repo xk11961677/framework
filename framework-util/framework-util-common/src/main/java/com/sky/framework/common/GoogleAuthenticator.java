@@ -92,7 +92,7 @@ public class GoogleAuthenticator {
      * 获取QR条形码URL, 用这个生成二维码，给Google验证器扫码
      */
     public static String getQRBarcodeURL(String user, String host, String secret) {
-        String format = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=otpauth://totp/%s@%s%%3Fsecret%%3D%s";
+        String format = "https://www.google.cn/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=otpauth://totp/%s@%s%%3Fsecret%%3D%s";
         return String.format(format, user, host, secret);
     }
 
