@@ -34,6 +34,9 @@ import java.security.SecureRandom;
 
 /**
  * GoogleAuthenticator
+ * 双重验证
+ * 使用方式:
+ * 根据账号和域名生成
  *
  * @author
  */
@@ -57,6 +60,7 @@ public class GoogleAuthenticator {
 
     /**
      * default 3 - max 17 (from google docs)最多可偏移的时间
+     * 允许客户端的验证码变换 [window_size] 次范围内可验证成功
      */
     private int window_size = 3;
 
@@ -88,7 +92,7 @@ public class GoogleAuthenticator {
      * 获取QR条形码URL, 用这个生成二维码，给Google验证器扫码
      */
     public static String getQRBarcodeURL(String user, String host, String secret) {
-        String format = "https://www.google.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=otpauth://totp/%s@%s%%3Fsecret%%3D%s";
+        String format = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=otpauth://totp/%s@%s%%3Fsecret%%3D%s";
         return String.format(format, user, host, secret);
     }
 
@@ -99,7 +103,7 @@ public class GoogleAuthenticator {
      * @param code     动态验证码
      * @param timeMsec 毫秒时间搓 System.currentTimeMillis()
      */
-    public boolean checkCode(String secret, long code, long timeMsec) {
+    public boolean checkCode(String secret, String code, long timeMsec) {
         Base32 codec = new Base32();
         byte[] decodedKey = codec.decode(secret);
         // convert unix msec time into a 30 second "window"
@@ -108,7 +112,7 @@ public class GoogleAuthenticator {
         // Window is used to check codes generated in the near past.
         // You can use this value to tune how far you're willing to go.
         for (int i = -window_size; i <= window_size; ++i) {
-            long hash;
+            String hash;
             try {
                 hash = verifyCode(decodedKey, t + i);
             } catch (Exception e) {
@@ -118,7 +122,7 @@ public class GoogleAuthenticator {
                 throw new RuntimeException(e.getMessage());
                 //return false;
             }
-            if (hash == code) {
+            if (hash.equals(code)) {
                 return true;
             }
         }
@@ -127,7 +131,7 @@ public class GoogleAuthenticator {
     }
 
 
-    private static int verifyCode(byte[] key, long t) throws NoSuchAlgorithmException, InvalidKeyException {
+    private static String verifyCode(byte[] key, long t) throws NoSuchAlgorithmException, InvalidKeyException {
         byte[] data = new byte[8];
         long value = t;
         for (int i = 8; i-- > 0; value >>>= 8) {
@@ -148,6 +152,6 @@ public class GoogleAuthenticator {
         }
         truncatedHash &= 0x7FFFFFFF;
         truncatedHash %= 1000000;
-        return (int) truncatedHash;
+        return String.valueOf(truncatedHash);
     }
 }
