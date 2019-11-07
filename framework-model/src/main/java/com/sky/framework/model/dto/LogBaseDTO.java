@@ -30,11 +30,11 @@ import java.util.Map;
  * @author
  */
 @Data
-public class LogBaseDto {
+public class LogBaseDTO {
 
     private static final String pidOrigin = java.lang.management.ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 
-    public LogBaseDto() {
+    public LogBaseDTO() {
         pid = pidOrigin;
     }
 

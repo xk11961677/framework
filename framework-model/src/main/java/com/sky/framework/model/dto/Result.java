@@ -24,6 +24,7 @@ package com.sky.framework.model.dto;
 
 
 import com.sky.framework.model.enums.ResultCodeEnum;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -32,20 +33,27 @@ import java.io.Serializable;
  *
  * @author
  */
+@Data
 public class Result<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Integer resultCode;
 
+    /**
+     * 失败编码
+     */
     private Integer failureCode;
 
+    /**
+     * 失败原因
+     */
     private String failureMessage;
 
+    /**
+     * 处理结果
+     */
     private T data;
-
-    public Result() {
-    }
 
     /**
      * 获取成功返回结果
@@ -96,8 +104,7 @@ public class Result<T> implements Serializable {
     @SuppressWarnings("rawtypes")
     public static Result fail(Integer failureCode) {
         Result result = new Result();
-        result.setResultCode(500);
-//        result.setResultCode(ResultCodeEnum.FAILURE.getCode());
+        result.setResultCode(ResultCodeEnum.FAILURE.getCode());
         result.setFailureCode(failureCode);
         return result;
     }
@@ -112,59 +119,10 @@ public class Result<T> implements Serializable {
     @SuppressWarnings("rawtypes")
     public static Result fail(Integer failureCode, String failureMessage) {
         Result result = new Result();
-        result.setResultCode(500);
-//        result.setResultCode(ResultCodeEnum.FAILURE.getCode());
+        result.setResultCode(ResultCodeEnum.FAILURE.getCode());
         result.setFailureCode(failureCode);
         result.setFailureMessage(failureMessage);
         return result;
-    }
-
-    /**
-     * 返回接口处理结果
-     */
-    public T getData() {
-        return data;
-    }
-
-    /**
-     * 返回失败编码
-     */
-    public Integer getFailureCode() {
-        return failureCode;
-    }
-
-    /**
-     * 返回失败原因
-     */
-    public String getFailureMessage() {
-        return failureMessage;
-    }
-
-    public void setFailureCode(Integer failureCode) {
-        this.failureCode = failureCode;
-    }
-
-    public void setFailureMessage(String failureMessage) {
-        this.failureMessage = failureMessage;
-    }
-
-    public Integer getResultCode() {
-        return resultCode;
-    }
-
-    public void setResultCode(Integer resultCode) {
-        this.resultCode = resultCode;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    @Override
-    public String toString() {
-        return "Result [resultCode=" + resultCode + ", failureCode="
-                + failureCode + ", failureMessage=" + failureMessage
-                + ", data=" + data + "]";
     }
 
 }

@@ -25,47 +25,21 @@ package com.sky.framework.model.dto;
 import lombok.Data;
 
 /**
- * 日志 简单实体类
- * 参数、返回值、错误等请放入 message
+ * 分页查询
  *
- * @author sky
- * @version V1.0.0
- * @package com.sky.framework.model.dto
- * @class LogSimpleDto
- * @date 2019-08-15 17:02:36
- * @upate-log name  date  reason/contents
- * ---------------------------------------
- * ***    ****  ****
- * @since
+ * @author
  */
+@SuppressWarnings("serial")
 @Data
-public class LogSimpleDto extends LogBaseDto {
+public class BaseQueryPageRequestDTO extends BaseRequestDTO {
+    /**
+     * 分页使用的参数，分页大小
+     */
+    private Integer pageSize = 10;
 
     /**
-     * 全类名
+     * 分页使用的参数，当前分页号
      */
-    private String fullClazz;
+    private Integer pageNum = 1;
 
-    /**
-     * 方法名
-     */
-    private String method;
-
-    /**
-     * url
-     */
-    private String url;
-
-    /**
-     * remoteIp
-     */
-    private String remoteIp;
-
-
-    @Override
-    public String toString() {
-        return "LogSimpleDto(fullClazz="
-                + fullClazz + ",method=" + method + ",url=" + url + ",remoteIp=" + remoteIp + ","
-                + super.toString() + ")";
-    }
 }

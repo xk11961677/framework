@@ -20,30 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.model.dto;
+package com.sky.framework.model.constant;
 
-import lombok.Data;
-import org.springframework.util.MultiValueMap;
-
-@Data
-public class LogHttpDto extends LogBaseDto{
-
-    private String url;
-
-    private String body;
-
-    private MultiValueMap<String,String> queryString;
-
-    private String remoteIp;
-
-    private long expendTime;
-
-    private int httpCode;
-
-    @Override
-    public String toString() {
-        return "LogSimpleDto(body="
-                + body + ",queryString=" + queryString + ",url=" + url + ",remoteIp=" + remoteIp + ","
-                + super.toString() + ")";
-    }
+/**
+ * The class Global constant.
+ * @author
+ */
+public class GlobalConstants {
+    /**
+     * 版本信息
+     */
+    public static final String VERSION = "1.0";
 }
