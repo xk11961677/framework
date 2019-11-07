@@ -27,9 +27,9 @@ package com.sky.framework.model.enums;
  * @author
  */
 public enum ResultCodeEnum implements ErrorCode {
-    SUCCESS(0, "成功");
+    SUCCESS(0, "成功"),
 
-//    FAILURE(500, "失败");
+    FAILURE(500, "失败");
 
     private Integer code;
 

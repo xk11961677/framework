@@ -25,55 +25,45 @@ package com.sky.framework.model.dto;
 import lombok.Data;
 
 /**
- * 请求实体基础类
+ * 描述:
+ *
  * @author
+ * @version V1.0
  */
 @SuppressWarnings("serial")
 @Data
-public class BaseRequestDto extends BaseDto {
+public class BaseQueryPageResponseDTO extends BaseResponseDTO {
 
     /**
-     * 版本号
+     * 默认分页大小
      */
-    private String version;
-    /**
-     * 应用系统编码
-     */
-    private String appCode;
-    /**
-     * 平台编码
-     */
-    private String sourceCode;
-    /**
-     * 字符集
-     */
-    private String charset;
-    /**
-     * 扩展字段
-     */
-    private String extParam;
-    /**
-     * 唯一ID 用于验证幂等性
-      */
-    private String uniqueId;
+    public static final int DEFAULT_PAGE_SIZE = 10;
 
     /**
-     * access_token  访问token
+     * 默认页码
      */
-    private String accessToken;
+    public static final int DEFAULT_PAGE_NUM = 1;
 
     /**
-     * refresh_token  刷新token
+     * 分页使用的参数，分页大小
      */
-    private String refreshToken;
+    private int pageSize;
 
     /**
-     * client_id
+     * 分页使用的参数，当前分页号
      */
-    private String clientId;
+    private int pageNum;
 
     /**
-     * secret_key
+     * 分页使用的参数，总数据条数
      */
-    private String secretKey;
+    private int total;
+
+    /**
+     * 分页使用的参数，总页数
+     */
+    private int pages;
+
+
+
 }

@@ -30,7 +30,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.encoder.Encoder;
 import com.alibaba.fastjson.JSON;
-import com.sky.framework.model.dto.LogBaseDto;
+import com.sky.framework.model.dto.LogBaseDTO;
 import com.sky.framework.model.util.LogType;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -116,7 +116,7 @@ public class LogCustomAppender<E> extends UnsynchronizedAppenderBase<E> {
         }
         LoggingEvent event = (LoggingEvent) eventObject;
 
-        LogBaseDto item = new LogBaseDto();
+        LogBaseDTO item = new LogBaseDTO();
         item.setAppName(appName);
         item.setType(LogType.Logback.toString());
         item.setTime((int) (event.getTimeStamp() / 1000));

@@ -22,12 +22,50 @@
  */
 package com.sky.framework.model.dto;
 
+import lombok.Data;
 
 /**
- * 响应实体基础类
+ * 日志 简单实体类
+ * 参数、返回值、错误等请放入 message
  *
- * @author
+ * @author sky
+ * @version V1.0.0
+ * @package com.sky.framework.model.dto
+ * @class LogSimpleDTO
+ * @date 2019-08-15 17:02:36
+ * @upate-log name  date  reason/contents
+ * ---------------------------------------
+ * ***    ****  ****
+ * @since
  */
-@SuppressWarnings("serial")
-public class BaseResponseDto extends BaseDto {
+@Data
+public class LogSimpleDTO extends LogBaseDTO {
+
+    /**
+     * 全类名
+     */
+    private String fullClazz;
+
+    /**
+     * 方法名
+     */
+    private String method;
+
+    /**
+     * url
+     */
+    private String url;
+
+    /**
+     * remoteIp
+     */
+    private String remoteIp;
+
+
+    @Override
+    public String toString() {
+        return "LogSimpleDTO(fullClazz="
+                + fullClazz + ",method=" + method + ",url=" + url + ",remoteIp=" + remoteIp + ","
+                + super.toString() + ")";
+    }
 }
