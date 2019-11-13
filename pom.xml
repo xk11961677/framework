@@ -155,7 +155,7 @@
             </plugin>
 
             <!--检查代码覆盖率的插件配置-->
-            <!--<plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco-maven-plugin.version}</version>
@@ -167,7 +167,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
 
             <!--sonar插件配置-->
             <!--<plugin>
