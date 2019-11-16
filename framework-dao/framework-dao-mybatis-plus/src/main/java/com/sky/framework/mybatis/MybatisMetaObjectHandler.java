@@ -23,16 +23,18 @@
 package com.sky.framework.mybatis;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.sky.framework.model.util.UserContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * 通用的字段填充，如createBy createDate这些字段的自动填充
+ *
  * @author
  */
 @Component
@@ -40,21 +42,32 @@ import java.util.Date;
 @Slf4j
 public class MybatisMetaObjectHandler implements MetaObjectHandler {
 
+    private String DEFAULT_USER = "system";
+
     @Override
     public void insertFill(MetaObject metaObject) {
         log.debug("start insert fill ....");
-        this.setInsertFieldValByName("createdBy", "system", metaObject);
-        this.setInsertFieldValByName("updatedBy", "system", metaObject);
+        String userName = getUserName();
+        this.setInsertFieldValByName("createBy", userName, metaObject);
+        this.setInsertFieldValByName("updateBy", userName, metaObject);
         Date date = new Date();
-        this.setInsertFieldValByName("createdTime", date, metaObject);
-        this.setInsertFieldValByName("updatedTime", date, metaObject);
+        this.setInsertFieldValByName("createTime", date, metaObject);
+        this.setInsertFieldValByName("updateTime", date, metaObject);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         log.debug("start update fill ....");
-        this.setInsertFieldValByName("updatedBy", "system", metaObject);
+        String userName = getUserName();
+        this.setInsertFieldValByName("updateBy", userName, metaObject);
         Date date = new Date();
-        this.setUpdateFieldValByName("updatedTime", date, metaObject);
+        this.setUpdateFieldValByName("updateTime", date, metaObject);
+    }
+
+
+    private String getUserName() {
+        String username = UserContextHolder.getInstance().getUsername();
+        username = Objects.isNull(username) || "".equals(username) ? DEFAULT_USER : username;
+        return username;
     }
 }

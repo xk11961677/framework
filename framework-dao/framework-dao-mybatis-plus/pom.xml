@@ -17,6 +17,12 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>framework-model</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
         <!-- mybatis-plus -->
         <dependency>
             <groupId>com.baomidou</groupId>

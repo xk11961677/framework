@@ -33,6 +33,7 @@ import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -44,6 +45,7 @@ import java.util.Map;
  *
  * @author
  */
+@ConditionalOnBean(MQProperties.class)
 @Component
 @Slf4j
 public class MQInitializingBean implements InitializingBean {

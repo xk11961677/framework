@@ -55,30 +55,30 @@ public class BaseEntity implements Serializable {
     /**
      * 创建时间
      */
-    @Column(name = "created_time")
+    @Column(name = "create_time")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date createdTime;
+    private Date createTime;
 
     /**
      * 创建人
      */
-    @Column(name = "created_by")
-    private String createdBy;
+    @Column(name = "create_by")
+    private String createBy;
 
     /**
      * 更新时间
      */
-    @Column(name = "updated_time")
+    @Column(name = "update_time")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date updatedTime;
+    private Date updateTime;
 
     /**
      * 更新人
      */
-    @Column(name = "updated_by")
-    private String updatedBy;
+    @Column(name = "update_by")
+    private String updateBy;
 
 
     @Transient
