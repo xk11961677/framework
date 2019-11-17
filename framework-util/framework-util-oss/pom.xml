@@ -13,6 +13,12 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.sky.framework</groupId>
+            <artifactId>framework-util-common</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
@@ -28,9 +34,17 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- 生成spring-configuration-metadata.json -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 生成spring-autoconfigure-metadata.properties -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure-processor</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -38,13 +52,6 @@
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
             <optional>true</optional>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.sky.framework</groupId>
-            <artifactId>framework-util-common</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>
