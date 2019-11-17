@@ -63,6 +63,7 @@ public class Proxy {
     }
 
     public Object remoteCall(Method method, Object[] args) throws Throwable {
+        // todo cluster
         RegisterMeta.ServiceMeta serviceMeta = new RegisterMeta.ServiceMeta();
         serviceMeta.setGroup("test");
         serviceMeta.setServiceProviderName(interfaceClass.getName());
@@ -72,14 +73,15 @@ public class Proxy {
         RegisterMeta.Address select = instance.select(serviceMeta);
         ChannelGenericPool channelGenericPool = ChannelGenericPoolFactory.getPoolConcurrentHashMap().get(select);
 
-        Channel channel = channelGenericPool.getConnection();
-        Object result;
+        // channel 最大化复用
+        Channel channel = null;
         try {
-            DefaultInvokeFuture invokeFuture = $invoke(channel, method, args);
-            result = invokeFuture.getResult();
+            channel = channelGenericPool.getConnection();
         } finally {
             channelGenericPool.releaseConnection(channel);
         }
+        DefaultInvokeFuture invokeFuture = $invoke(channel, method, args);
+        Object result = invokeFuture.getResult();
         return result;
     }
 
@@ -106,14 +108,14 @@ public class Proxy {
 
             byte[] serialize = serializer.serialize(rpcInvocation);
             request.bytes(SerializeEnum.FASTJSON.getSerializerCode(), serialize);
-            invokeFuture = DefaultInvokeFuture.with(request.getId(), channel, 0, method.getReturnType());
+            invokeFuture = DefaultInvokeFuture.with(request.getId(), 0, method.getReturnType());
             channel.writeAndFlush(request);
         } catch (Exception e) {
             //todo build error response and set DefaultInvokeFuture
             LogUtils.error(log, "then client proxy invoke failed:{}", e.getMessage());
             Response response = new Response(id);
             response.setStatus(Status.CLIENT_ERROR.value());
-            DefaultInvokeFuture.fakeReceived(channel, response);
+            DefaultInvokeFuture.fakeReceived(response);
         }
         return invokeFuture;
     }

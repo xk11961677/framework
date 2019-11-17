@@ -23,13 +23,12 @@
 package com.sky.framework.rpc.remoting.server;
 
 import com.sky.framework.common.LogUtils;
-import com.sky.framework.rpc.common.enums.SerializeEnum;
 import com.sky.framework.rpc.invoker.provider.ProviderProcessorHandler;
 import com.sky.framework.rpc.remoting.Request;
-import com.sky.framework.rpc.remoting.Response;
-import com.sky.framework.rpc.remoting.Status;
-import com.sky.framework.rpc.serializer.FastjsonSerializer;
-import io.netty.channel.*;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,10 +79,8 @@ public class ServerChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("=====" + msg);
-//        ctx.fireChannelRead(msg);
-        Channel channel = ctx.channel();
-        ProviderProcessorHandler.instance.handler(channel, (Request) msg);
+        log.info("=====" + msg);
+        ProviderProcessorHandler.instance.handler(ctx, (Request) msg);
     }
 
     /**

@@ -34,6 +34,8 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -88,6 +90,7 @@ public class NettyClient extends AbstractBootstrap implements Registry {
                         ChannelPipeline p = ch.pipeline();
                         p.addLast(new ProtocolEncoder());
                         p.addLast(new ProtocolDecoder());
+                        p.addLast(new LoggingHandler(LogLevel.ERROR));
                         p.addLast(new ClientChannelHandler());
                     }
                 });

@@ -1,4 +1,4 @@
-## Sky Cloud 
+## sky 
 
 [![Build Status](https://travis-ci.org/xk11961677/framework.svg?branch=master)](https://travis-ci.org/xk11961677/framework)
 [![license](https://img.shields.io/badge/license-mit-ff69b4.svg)](https://mit-license.org/license.html)
@@ -14,23 +14,16 @@
 
 ## 代码结构
 - [framework-dependencies](framework-dependencies) framework项目 1rd part jar包兼容版本依赖管理
-
 - [framework-bom](framework-bom) framework项目 3rd part jar包版本依赖管理
-
 - [framework-generator-plugin](framework-generator-plugin) 代码生成器插件支持jar包
-
 - [framework-dao](framework-dao) 存储层代码封装,如:hive hbase等
     -  [framework-dao-hive](framework-dao/framework-dao-hive)  
     -  [framework-dao-hbase](framework-dao/framework-dao-hbase)  
     -  [framework-dao-mybatis](framework-dao/framework-dao-mybatis)  
     -  [framework-dao-mybatis-plus](framework-dao/framework-dao-mybatis-plus) 
-   
 - [framework-web](framework-web) Spring Boot Web 脚手架依赖
-
 - [framework-model](framework-model) 公共DTO实体与分页实体
-
 - [framework-rpc](framework-rpc) 远程调用框架(暂时用于学习)
-
 - [framework-integrate](framework-integrate) 整合其他三方库,如netty、spark等
     -  [framework-integrate-canal](framework-integrate/framework-integrate-canal)  同步mysql binlog 
     -  [framework-integrate-validator](framework-integrate/framework-integrate-validator)  业务参数验证器,使用方法请读本项目[readme.md](framework-integrate/framework-integrate-validator/readme.md)
@@ -38,7 +31,6 @@
     -  [framework-integrate-rocketmq](framework-integrate/framework-integrate-rocketmq)  mq,使用方法请读本项目[readme.md](framework-integrate/framework-integrate-rocketmq/readme.md)
     -  [framework-integrate-job](framework-integrate/framework-integrate-job)  分布式定时任务,使用方法请读本项目[readme.md](framework-integrate/framework-integrate-job/readme.md)
     -  [framework-integrate-logback](framework-integrate/framework-integrate-logback)  自定义logback appender[readme.md](framework-integrate/framework-integrate-logback/readme.md)
-
 - [framework-util](framework-util) 工具类
     -  [framework-util-common](framework-util/framework-util-common)  公共工具类包
     -  [framework-util-oss](framework-util/framework-util-oss)  对象资源存储[readme.md](framework-util/framework-util-oss/readme.md)
@@ -89,13 +81,10 @@ mvn javadoc:javadoc
 - 在使用中有任何问题，欢迎反馈
 
 ## 开发计划
-1.0.0 logback appender 、mybatis-plus
-1.0.1 canal 
+
 
 ## 关于作者
-```javascript
-  
-```
+
 ## [LICENSE](LICENSE)
 MIT License
 
