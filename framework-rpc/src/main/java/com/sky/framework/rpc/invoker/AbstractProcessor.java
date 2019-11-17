@@ -25,6 +25,7 @@ package com.sky.framework.rpc.invoker;
 import com.sky.framework.rpc.remoting.Request;
 import com.sky.framework.rpc.remoting.Response;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 
 /**
  * @author
@@ -34,21 +35,21 @@ public abstract class AbstractProcessor implements Processor {
     /**
      * request handler
      *
-     * @param channel
+     * @param ctx
      * @param request
      */
     @Override
-    public void handler(Channel channel, Request request) {
+    public void handler(ChannelHandlerContext ctx, Request request) {
     }
 
     /**
      * response handler
      *
-     * @param channel
+     * @param ctx
      * @param response
      */
     @Override
-    public void handler(Channel channel, Response response) {
+    public void handler(ChannelHandlerContext ctx, Response response) {
     }
 
 }

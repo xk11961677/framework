@@ -13,6 +13,8 @@
         </filter>
     </appender>
 
+    <logger name="io.netty" level="error"/>
+
     <root level="info">
         <appender-ref ref="STDOUT" />
     </root>

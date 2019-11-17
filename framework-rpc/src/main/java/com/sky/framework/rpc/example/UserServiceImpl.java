@@ -22,19 +22,22 @@
  */
 package com.sky.framework.rpc.example;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author
  */
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Override
     public String hello(String msg) {
-        System.out.println("msg:{}" + msg);
+        log.info("msg:{}" + msg);
         return msg + "[response]";
     }
 
     @Override
     public void hello() {
-        System.out.println("no msg:{}");
+        log.info("no msg:{}");
     }
 }

@@ -31,6 +31,7 @@ import com.sky.framework.threadpool.core.CommonThreadPool;
 import com.sky.framework.threadpool.core.IAsynchronousHandler;
 import com.sky.framework.threadpool.AsyncThreadPoolProperties;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 
 /**
  * @author
@@ -50,7 +51,7 @@ public class ConsumerProcessorHandler extends AbstractProcessor {
     }
 
     @Override
-    public void handler(Channel channel, Response response) {
+    public void handler(ChannelHandlerContext ctx, Response response) {
         CommonThreadPool.execute(new IAsynchronousHandler() {
             @Override
             public void executeAfter(Throwable t) {
@@ -65,7 +66,7 @@ public class ConsumerProcessorHandler extends AbstractProcessor {
 
             @Override
             public Object call() throws Exception {
-                DefaultInvokeFuture.received(channel, response);
+                DefaultInvokeFuture.received(ctx, response);
                 return null;
             }
         });

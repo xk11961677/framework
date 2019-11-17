@@ -24,7 +24,7 @@ package com.sky.framework.rpc.invoker;
 
 import com.sky.framework.rpc.remoting.Request;
 import com.sky.framework.rpc.remoting.Response;
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 
 /**
  * @author
@@ -34,17 +34,17 @@ public interface Processor {
     /**
      * request service handler
      *
-     * @param channel
+     * @param ctx
      * @param request
      */
-    void handler(Channel channel, Request request);
+    void handler(ChannelHandlerContext ctx, Request request);
 
 
     /**
      * response service handler
      *
-     * @param channel
+     * @param ctx
      * @param response
      */
-    void handler(Channel channel, Response response);
+    void handler(ChannelHandlerContext ctx, Response response);
 }

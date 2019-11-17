@@ -25,7 +25,7 @@ package com.sky.framework.rpc.invoker.future;
 import com.sky.framework.rpc.remoting.Response;
 import com.sky.framework.rpc.remoting.Status;
 import com.sky.framework.rpc.serializer.FastjsonSerializer;
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 
 import java.util.concurrent.*;
 
@@ -42,8 +42,6 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
 
     private final long invokeId;
 
-    private final Channel channel;
-
     private final Class<V> returnType;
 
     private final long timeout;
@@ -51,21 +49,16 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
     private final long startTime = System.nanoTime();
 
     public static <T> DefaultInvokeFuture<T> with(
-            long invokeId, Channel channel, long timeoutMillis, Class<T> returnType) {
+            long invokeId, long timeoutMillis, Class<T> returnType) {
 
-        return new DefaultInvokeFuture<>(invokeId, channel, timeoutMillis, returnType);
+        return new DefaultInvokeFuture<>(invokeId, timeoutMillis, returnType);
     }
 
-    private DefaultInvokeFuture(long invokeId, Channel channel, long timeoutMillis, Class<V> returnType) {
+    private DefaultInvokeFuture(long invokeId, long timeoutMillis, Class<V> returnType) {
         this.invokeId = invokeId;
-        this.channel = channel;
         this.timeout = timeoutMillis > 0 ? TimeUnit.MILLISECONDS.toNanos(timeoutMillis) : DEFAULT_TIMEOUT_NANOSECONDS;
         this.returnType = returnType;
         roundFutures.put(invokeId, this);
-    }
-
-    public Channel channel() {
-        return channel;
     }
 
     @Override
@@ -80,7 +73,7 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
         } catch (TimeoutException e) {
             Response response = new Response(invokeId);
             response.setStatus(Status.CLIENT_ERROR.value());
-            DefaultInvokeFuture.fakeReceived(channel, response);
+            DefaultInvokeFuture.fakeReceived(response);
             //todo
             //throw new RuntimeException("the client get result timeout");
         }
@@ -114,20 +107,19 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
     }
 
     /**
-     * @param channel
+     * @param ctx
      * @param response
      */
-    public static void received(Channel channel, Response response) {
+    public static void received(ChannelHandlerContext ctx, Response response) {
         long invokeId = response.id();
         DefaultInvokeFuture<?> future = roundFutures.remove(invokeId);
         future.doReceived(response);
     }
 
     /**
-     * @param channel
      * @param response
      */
-    public static void fakeReceived(Channel channel, Response response) {
+    public static void fakeReceived(Response response) {
         long invokeId = response.id();
         DefaultInvokeFuture<?> future = roundFutures.remove(invokeId);
         future.doReceived(response);

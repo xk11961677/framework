@@ -69,6 +69,6 @@ public class BaseConnectionFactory extends BasePoolableObjectFactory<Channel> {
 
     @Override
     public boolean validateObject(Channel channel) {
-        return channel.isActive();
+        return channel.isOpen() || channel.isActive();
     }
 }

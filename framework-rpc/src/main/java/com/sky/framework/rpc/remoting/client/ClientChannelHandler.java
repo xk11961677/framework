@@ -27,10 +27,12 @@ import com.sky.framework.rpc.remoting.Response;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author
  */
+@Slf4j
 public class ClientChannelHandler extends ChannelDuplexHandler {
 
     /**
@@ -68,9 +70,8 @@ public class ClientChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("=====consumer======" + msg);
-        ctx.fireChannelRead(msg);
-        ConsumerProcessorHandler.instance.handler(ctx.channel(), (Response) msg);
+        log.info("=====consumer======" + msg);
+        ConsumerProcessorHandler.instance.handler(ctx, (Response) msg);
     }
 
     /**

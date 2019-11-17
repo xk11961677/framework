@@ -116,6 +116,7 @@ public class NettyServer extends AbstractBootstrap implements Registry {
 //                            p.addLast(new IdleStateHandler(0, 0, 10, TimeUnit.MINUTES));
                             p.addLast(new ProtocolEncoder());
                             p.addLast(new ProtocolDecoder());
+                            p.addLast(new LoggingHandler(LogLevel.ERROR));
                             p.addLast(serverChannelHandler);
                         }
                     })

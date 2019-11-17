@@ -1,6 +1,7 @@
-rpc
+## rpc demo
+
 此代码暂时混乱且问题多多
-暂时仅作为学习教学使用
+暂时仅作为学习使用
 
 
 cluster 集群 (loadbalance)
@@ -18,3 +19,8 @@ monitor 监控
 metrics 度量指标
 
 spring support spring
+
+
+## future
+
+    1. 客户端连接池,使用数组实现  

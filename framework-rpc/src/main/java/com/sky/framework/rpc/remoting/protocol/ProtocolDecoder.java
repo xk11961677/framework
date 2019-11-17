@@ -27,12 +27,14 @@ import com.sky.framework.rpc.remoting.Response;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 /**
  * @author
  */
+@Slf4j
 public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
 
     private static final int MAX_BODY_SIZE = 1024 * 1024 * 5;
@@ -49,7 +51,7 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        System.out.println("decoder");
+        log.info("decoder");
         switch (state()) {
             case MAGIC:
                 checkMagic(in.readShort());         // MAGIC
@@ -96,7 +98,7 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
                         break;
                     }
                     default:
-                        System.out.println("not supported");
+                        log.info("not supported");
                 }
                 checkpoint(State.MAGIC);
         }

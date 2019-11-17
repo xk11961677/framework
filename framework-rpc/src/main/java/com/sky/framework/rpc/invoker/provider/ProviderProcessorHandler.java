@@ -31,11 +31,11 @@ import com.sky.framework.rpc.remoting.Response;
 import com.sky.framework.rpc.remoting.Status;
 import com.sky.framework.rpc.serializer.FastjsonSerializer;
 import com.sky.framework.rpc.util.ReflectAsmUtils;
+import com.sky.framework.threadpool.AsyncThreadPoolProperties;
 import com.sky.framework.threadpool.core.CommonThreadPool;
 import com.sky.framework.threadpool.core.IAsynchronousHandler;
-import com.sky.framework.threadpool.AsyncThreadPoolProperties;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -57,7 +57,7 @@ public class ProviderProcessorHandler extends AbstractProcessor {
     }
 
     @Override
-    public void handler(Channel channel, Request request) {
+    public void handler(ChannelHandlerContext ctx, Request request) {
         CommonThreadPool.execute(new IAsynchronousHandler() {
 
             private RpcInvocation rpcInvocation = null;
@@ -70,9 +70,11 @@ public class ProviderProcessorHandler extends AbstractProcessor {
                 response.setStatus(Status.OK.value());
                 byte[] serialize = fastjsonSerializer.serialize(result);
                 response.bytes(SerializeEnum.FASTJSON.getSerializerCode(), serialize);
-                channel.writeAndFlush(response).addListener((ChannelFutureListener) channelFuture -> {
-                    System.out.println("write completion");
+                ctx.writeAndFlush(response).addListener((ChannelFutureListener) channelFuture -> {
+                    log.info("write completion");
                 });
+                //todo
+//                ReferenceCountUtil.release(request);
             }
 
             @Override
