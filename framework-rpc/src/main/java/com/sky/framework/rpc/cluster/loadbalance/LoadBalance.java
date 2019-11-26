@@ -30,6 +30,7 @@ import com.sky.framework.rpc.register.meta.RegisterMeta;
 public interface LoadBalance {
 
     /**
+     * 根据 serviceMeta 元信息获取 可用 address信息
      *
      * @param serviceMeta
      * @param <T>

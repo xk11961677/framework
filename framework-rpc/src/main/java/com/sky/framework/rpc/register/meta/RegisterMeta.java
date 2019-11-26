@@ -27,6 +27,9 @@ import lombok.Data;
 import java.util.Objects;
 
 /**
+ * 元信息
+ * 重写equals和hashcode使其在容器中具有唯一性
+ *
  * @author
  */
 public class RegisterMeta {

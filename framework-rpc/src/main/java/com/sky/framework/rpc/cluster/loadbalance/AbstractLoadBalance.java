@@ -27,7 +27,7 @@ import com.sky.framework.rpc.register.meta.RegisterMeta;
 /**
  * @author
  */
-public abstract class AbstractLoadBalnace implements LoadBalance {
+public abstract class AbstractLoadBalance implements LoadBalance {
 
     @Override
     public <T> T select(RegisterMeta.ServiceMeta serviceMeta) {

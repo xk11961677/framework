@@ -30,10 +30,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 /**
+ * 简单轮训负载均衡方式
+ *
  * @author
  */
-public class RoundRobinLoadBalance extends AbstractLoadBalnace {
+public class RoundRobinLoadBalance extends AbstractLoadBalance {
 
+    /**
+     * snapshot
+     */
     private CopyOnWriteArrayList cList = new CopyOnWriteArrayList();
 
     private static final AtomicIntegerFieldUpdater<RoundRobinLoadBalance> indexUpdater =
@@ -57,7 +62,6 @@ public class RoundRobinLoadBalance extends AbstractLoadBalnace {
     }
 
     /**
-     *
      * @param addresses
      */
     private void snapshot(ConcurrentHashSet<RegisterMeta.Address> addresses) {

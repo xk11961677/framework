@@ -46,22 +46,23 @@ public abstract class AbstractRegistryService implements RegistryService {
     private final LinkedBlockingQueue<RegisterMeta> queue = new LinkedBlockingQueue<>();
 
     /**
-     * 注册元信息
+     * 元信息注册器线程池 时机: 项目初次启动时,异步注册
      */
     private final ExecutorService registerExecutor = Executors.newSingleThreadExecutor(new NamedThreadFactory("register-executor", true));
 
     /**
-     * 定时重新将元信息注册
+     * 定时重新将元信息注册  时机: 当registerExecutor注册异常时,调用此定时器重新注册
      */
-    private final ScheduledExecutorService registerScheduledExecutor = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("register-executor", true));
+    private final ScheduledExecutorService registerScheduledExecutor = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("register-scheduled-executor", true));
 
     /**
-     *
+     * 注册中心是否启动
      */
     private AtomicBoolean shutdown = new AtomicBoolean(false);
 
     /**
      * 已注册服务
+     * <元信息:注册状态>
      */
     @Getter
     @Setter
@@ -75,7 +76,7 @@ public abstract class AbstractRegistryService implements RegistryService {
     private final ConcurrentHashSet<RegisterMeta.ServiceMeta> subscribeSet = new ConcurrentHashSet();
 
     /**
-     * address provider by meta
+     * <元信息,{所有提供此元信息的地址}>
      */
     public static final ConcurrentHashMap<RegisterMeta.ServiceMeta, ConcurrentHashSet<RegisterMeta.Address>> metaAddressMap = new ConcurrentHashMap();
 
@@ -85,7 +86,6 @@ public abstract class AbstractRegistryService implements RegistryService {
     private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("register-available", true));
 
     public AbstractRegistryService() {
-        //async register
         LogUtils.info(log, "async register start!");
         registerExecutor.execute(() -> {
             while (!shutdown.get()) {

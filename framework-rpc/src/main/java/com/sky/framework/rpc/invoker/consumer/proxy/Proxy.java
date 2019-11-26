@@ -51,11 +51,6 @@ public class Proxy {
 
     private LongSequence longSequence = new LongSequence();
 
-    /*static {
-        AsyncThreadPoolProperties properties = new AsyncThreadPoolProperties();
-        CommonThreadPool.initThreadPool(properties);
-    }*/
-
     private Class<?> interfaceClass;
 
     public Proxy(Class<?> interfaceClass) {
@@ -111,47 +106,11 @@ public class Proxy {
             invokeFuture = DefaultInvokeFuture.with(request.getId(), 0, method.getReturnType());
             channel.writeAndFlush(request);
         } catch (Exception e) {
-            //todo build error response and set DefaultInvokeFuture
-            LogUtils.error(log, "then client proxy invoke failed:{}", e.getMessage());
+            LogUtils.error(log, "the client proxy invoke failed:{}", e.getMessage());
             Response response = new Response(id);
             response.setStatus(Status.CLIENT_ERROR.value());
             DefaultInvokeFuture.fakeReceived(response);
         }
         return invokeFuture;
     }
-
-    /*
-    Future<Object> future = CommonThreadPool.execute(invoke(method, args));
-    Object result = future.get(3000, TimeUnit.SECONDS);
-    private IAsynchronousHandler invoke(Method method, Object[] args) {
-        DefaultAsynchronousHandler handler = new DefaultAsynchronousHandler() {
-            @Override
-            public Object call() throws Exception {
-                DefaultInvokeFuture<?> invokeFuture = null;
-                ChannelGenericKeyedPool channelGenericKeyedPool = nettyClient.getChannelGenericKeyedPool();
-                Channel channel = channelGenericKeyedPool.getConnection(key);
-                Method interfaceMethod = interfaceClass.getDeclaredMethod(method.getName(), method.getParameterTypes());
-                try {
-                    long id = longSequence.next();
-                    Request request = new Request(id);
-                    RpcInvocation rpcInvocation = new RpcInvocation();
-                    rpcInvocation.setClazzName(interfaceMethod.getName());
-                    rpcInvocation.setMethodName(interfaceMethod.getName());
-                    rpcInvocation.setParameterTypes(interfaceMethod.getParameterTypes());
-                    rpcInvocation.setArguments(args);
-
-                    byte[] serialize = serializer.serialize(rpcInvocation);
-                    request.bytes(SerializeEnum.FASTJSON.getSerializerCode(), serialize);
-                    channel.writeAndFlush(request);
-                    invokeFuture = DefaultInvokeFuture.with(request.getId(), channel, 3000, method.getReturnType());
-                } catch (Exception e) {
-
-                } finally {
-                    channelGenericKeyedPool.releaseConnection(key, channel);
-                }
-                return invokeFuture;
-            }
-        };
-        return handler;
-    }*/
 }

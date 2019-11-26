@@ -51,8 +51,14 @@ import java.util.concurrent.ConcurrentMap;
 @Slf4j
 public class ZookeeperRegistryService extends AbstractRegistryService {
 
+    /**
+     * zk 客户端
+     */
     private CuratorFramework client;
 
+    /**
+     * 本机IP地址
+     */
     private final String address = IpUtils.getLocalIp();
 
     /**
@@ -67,10 +73,10 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
 
 
     @Override
-    public void connectToRegistryServer(String connectString) {
+    public void connectToRegistryServer(String connect) {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         client = CuratorFrameworkFactory.builder()
-                .connectString(connectString)
+                .connectString(connect)
                 .sessionTimeoutMs(60 * 1000)
                 .connectionTimeoutMs(60 * 1000)
                 .retryPolicy(retryPolicy)
@@ -94,6 +100,7 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
 
     @Override
     protected void doRegister(RegisterMeta meta) {
+        //zk 目录
         String directory = String.format("/rpc/provider/%s/%s/%s",
                 meta.getGroup(),
                 meta.getServiceProviderName(),
@@ -143,6 +150,7 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
                             RegisterMeta registerMeta = parseRegisterMeta(event.getData().getPath());
                             RegisterMeta.Address address = registerMeta.getAddress();
                             RegisterMeta.ServiceMeta serviceMeta1 = registerMeta.getServiceMeta();
+
                             ConcurrentHashSet<RegisterMeta.ServiceMeta> serviceMetaSet = getServiceMeta(address);
                             serviceMetaSet.add(serviceMeta1);
                             ZookeeperRegistryService.super.notify(address, serviceMeta1, EventType.ADD);
@@ -205,20 +213,20 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
     }
 
     /**
-     * parse meta
+     * 解析zk存储数据,构建元信息
      *
      * @param data
      * @return
      */
     private RegisterMeta parseRegisterMeta(String data) {
-        String[] array_0 = StringUtils.split(data, "/");
+        String[] metaArray = StringUtils.split(data, "/");
         RegisterMeta meta = new RegisterMeta();
-        meta.setGroup(array_0[2]);
-        meta.setServiceProviderName(array_0[3]);
-        meta.setVersion(array_0[4]);
-        String[] array_1 = array_0[5].split(":");
-        meta.setHost(array_1[0]);
-        meta.setPort(Integer.parseInt(array_1[1]));
+        meta.setGroup(metaArray[2]);
+        meta.setServiceProviderName(metaArray[3]);
+        meta.setVersion(metaArray[4]);
+        String[] arrayAddress = metaArray[5].split(":");
+        meta.setHost(arrayAddress[0]);
+        meta.setPort(Integer.parseInt(arrayAddress[1]));
         return meta;
     }
 
