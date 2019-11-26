@@ -28,17 +28,17 @@ package com.sky.framework.rpc.remoting;
 public interface Bootstrap {
 
     /**
-     *
+     * 启动
      */
     void startup();
 
     /**
-     *
+     * 停止
      */
     void stop();
 
     /**
-     *
+     * 状态
      */
     boolean status();
 }

@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class AbstractBootstrap implements Bootstrap {
 
-    public AtomicBoolean status = new AtomicBoolean(false);
+    private final AtomicBoolean status = new AtomicBoolean(false);
 
     @Override
     public void startup() {
@@ -48,7 +48,7 @@ public abstract class AbstractBootstrap implements Bootstrap {
     }
 
     /**
-     *
+     * 初始化
      */
     public abstract void init();
 }

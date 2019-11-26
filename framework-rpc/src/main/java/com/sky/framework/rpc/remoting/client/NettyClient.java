@@ -56,7 +56,7 @@ public class NettyClient extends AbstractBootstrap implements Registry {
     private RegistryService registryService;
 
     public NettyClient() {
-        init();
+        this.init();
         client = this;
     }
 
@@ -74,13 +74,15 @@ public class NettyClient extends AbstractBootstrap implements Registry {
                 group.shutdownGracefully();
             }
         } else {
-            LogUtils.info(log, " the consumer has been shutdown !");
+            LogUtils.info(log, " the client has been shutdown !");
         }
     }
 
     @Override
     public void init() {
         bootstrap = new Bootstrap();
+        LoggingHandler loggingHandler = new LoggingHandler(LogLevel.INFO);
+
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.TCP_NODELAY, true)
@@ -88,10 +90,10 @@ public class NettyClient extends AbstractBootstrap implements Registry {
                     @Override
                     public void initChannel(SocketChannel ch) throws Exception {
                         ChannelPipeline p = ch.pipeline();
-                        p.addLast(new ProtocolEncoder());
-                        p.addLast(new ProtocolDecoder());
-                        p.addLast(new LoggingHandler(LogLevel.ERROR));
-                        p.addLast(new ClientChannelHandler());
+                        p.addLast("protocolEncoder", new ProtocolEncoder());
+                        p.addLast("protocolDecoder", new ProtocolDecoder());
+                        p.addLast("loggingHandler", loggingHandler);
+                        p.addLast("clientChannelHandler", new ClientChannelHandler());
                     }
                 });
     }
@@ -102,20 +104,19 @@ public class NettyClient extends AbstractBootstrap implements Registry {
     }
 
     private Channel getChannel(String address, int port) {
-        ChannelFuture f = null;
         try {
-            f = bootstrap.connect(address, port).sync();
+            ChannelFuture f = bootstrap.connect(address, port).sync();
             Channel channel = f.channel();
             return channel;
         } catch (InterruptedException e) {
-            LogUtils.error(log, "the consumer get channel has error !", e.getMessage());
+            LogUtils.error(log, "the client get channel failed! :{}", e.getMessage());
         }
         return null;
     }
 
     @Override
-    public void connectToRegistryServer(String connectString) {
+    public void connectToRegistryServer(String connect) {
         registryService = new ZookeeperRegistryService();
-        registryService.connectToRegistryServer(connectString);
+        registryService.connectToRegistryServer(connect);
     }
 }

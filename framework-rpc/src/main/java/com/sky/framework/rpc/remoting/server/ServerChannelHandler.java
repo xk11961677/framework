@@ -26,7 +26,6 @@ import com.sky.framework.common.LogUtils;
 import com.sky.framework.rpc.invoker.provider.ProviderProcessorHandler;
 import com.sky.framework.rpc.remoting.Request;
 import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -36,7 +35,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author
  */
 @Slf4j
-@ChannelHandler.Sharable
 public class ServerChannelHandler extends ChannelDuplexHandler {
 
     /**
@@ -65,7 +63,7 @@ public class ServerChannelHandler extends ChannelDuplexHandler {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
-            ctx.channel().close();
+            ctx.close();
             LogUtils.info(log, "the server close an idle channel ! ");
         } else {
             super.userEventTriggered(ctx, evt);
@@ -79,7 +77,6 @@ public class ServerChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("=====" + msg);
         ProviderProcessorHandler.instance.handler(ctx, (Request) msg);
     }
 

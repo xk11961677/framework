@@ -70,7 +70,6 @@ public class ClientChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("=====consumer======" + msg);
         ConsumerProcessorHandler.instance.handler(ctx, (Response) msg);
     }
 

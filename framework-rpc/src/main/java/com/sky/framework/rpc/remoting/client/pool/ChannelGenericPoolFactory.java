@@ -45,7 +45,7 @@ public class ChannelGenericPoolFactory {
             ChannelGenericPool channelGenericPool = poolConcurrentHashMap.get(address);
             if (channelGenericPool == null) {
                 channelGenericPool = new ChannelGenericPool(address.getHost() + ":" + address.getPort());
-                poolConcurrentHashMap.put(address, channelGenericPool);
+                poolConcurrentHashMap.putIfAbsent(address, channelGenericPool);
             }
         } finally {
             reentrantLock.unlock();
