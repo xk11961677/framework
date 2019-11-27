@@ -27,14 +27,16 @@ import com.sky.framework.rpc.remoting.Response;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author
  */
+@Slf4j
 public class ProtocolEncoder extends MessageToByteEncoder<PayloadHolder> {
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, PayloadHolder msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, PayloadHolder msg, ByteBuf out) throws Exception {
         if (msg instanceof Request) {
             doEncodeRequest((Request) msg, out);
         } else if (msg instanceof Response) {
@@ -49,7 +51,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<PayloadHolder> {
         long invokeId = request.getId();
         byte[] bytes = request.bytes();
         int length = bytes.length;
-
+        log.info("doEncodeRequest");
         out.writeShort(ProtocolHeader.MAGIC)
                 .writeByte(sign)
                 .writeByte(0x00)
@@ -65,7 +67,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<PayloadHolder> {
         long invokeId = response.id();
         byte[] bytes = response.bytes();
         int length = bytes.length;
-
+        log.info("doEncodeResponse");
         out.writeShort(ProtocolHeader.MAGIC)
                 .writeByte(sign)
                 .writeByte(status)

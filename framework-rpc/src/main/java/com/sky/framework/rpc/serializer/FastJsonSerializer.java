@@ -28,7 +28,7 @@ import com.sky.framework.rpc.common.enums.SerializeEnum;
 /**
  * @author
  */
-public class FastjsonSerializer implements ObjectSerializer {
+public class FastJsonSerializer implements ObjectSerializer {
 
     @Override
     public byte[] serialize(Object obj) throws RuntimeException {

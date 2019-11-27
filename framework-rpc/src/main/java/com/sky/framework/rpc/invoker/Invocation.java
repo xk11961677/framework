@@ -25,60 +25,77 @@ package com.sky.framework.rpc.invoker;
 import java.util.Map;
 
 /**
+ * 调用者对象
+ *
  * @author
  */
 public interface Invocation {
 
     /**
-     * get clazz name.
+     * 获取类名称
      *
-     * @return clazz name.
+     * @return
      */
     String getClazzName();
 
     /**
-     * get method name.
+     * 获取方法名称
      *
-     * @return method name.
+     * @return
      */
     String getMethodName();
 
     /**
-     * get parameter types.
+     * 获取方法参数类型
      *
-     * @return parameter types.
+     * @return
      */
     Class<?>[] getParameterTypes();
 
     /**
-     * get arguments.
+     * 获取方法参数
      *
-     * @return arguments.
+     * @return
      */
     Object[] getArguments();
 
     /**
-     * get attachments.
+     * 获取全部附加参数
      *
-     * @return attachments.
+     * @return
      */
     Map<String, String> getAttachments();
 
+    /**
+     * 设置附加参数
+     *
+     * @param key
+     * @param value
+     */
     void setAttachment(String key, String value);
 
+    /**
+     * 附加参数没有此参数,则设置此参数
+     *
+     * @param key
+     * @param value
+     */
     void setAttachmentIfAbsent(String key, String value);
 
     /**
-     * get attachment by key.
+     * 获取附加参数
      *
-     * @return attachment value.
+     * @param key
+     * @return
      */
     String getAttachment(String key);
 
     /**
-     * get attachment by key with default value.
+     * 获取附加参数,没有则返回默认值
      *
-     * @return attachment value.
+     * @param key
+     * @param defaultValue
+     * @return
      */
     String getAttachment(String key, String defaultValue);
 

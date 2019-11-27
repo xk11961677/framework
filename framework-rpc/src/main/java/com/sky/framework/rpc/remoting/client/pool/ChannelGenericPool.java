@@ -39,10 +39,11 @@ public class ChannelGenericPool {
         GenericObjectPool.Config config = new GenericObjectPool.Config();
         config.maxActive = 20;
         config.maxWait = 3000;
+        config.maxIdle = 10;
         config.minIdle = 10;
         config.testWhileIdle = true;
         config.numTestsPerEvictionRun = 1;
-        config.timeBetweenEvictionRunsMillis = 1000;
+        config.timeBetweenEvictionRunsMillis = 10000;
         pool = new GenericObjectPool(new BaseConnectionFactory(NettyClient.getClient(), key), config);
 
     }
@@ -51,10 +52,11 @@ public class ChannelGenericPool {
         GenericObjectPool.Config config = new GenericObjectPool.Config();
         config.maxActive = 20;
         config.maxWait = 3000;
+        config.maxIdle = 10;
         config.minIdle = 10;
         config.testWhileIdle = true;
         config.numTestsPerEvictionRun = 1;
-        config.timeBetweenEvictionRunsMillis = 1000;
+        config.timeBetweenEvictionRunsMillis = 10000;
         pool = new GenericObjectPool(new BaseConnectionFactory(client), config);
 
     }

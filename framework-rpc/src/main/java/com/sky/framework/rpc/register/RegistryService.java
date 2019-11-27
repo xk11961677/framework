@@ -32,21 +32,29 @@ import java.util.Collection;
 public interface RegistryService extends Registry {
 
     /**
+     * 注册信息
+     *
      * @param meta
      */
     void register(RegisterMeta meta);
 
     /**
+     * 取消注册信息
+     *
      * @param meta
      */
     void unregister(RegisterMeta meta);
 
     /**
+     * 订阅信息
+     *
      * @param serviceMeta
      */
     void subscribe(RegisterMeta.ServiceMeta serviceMeta);
 
     /**
+     * 查找信息
+     *
      * @param serviceMeta
      * @return
      */

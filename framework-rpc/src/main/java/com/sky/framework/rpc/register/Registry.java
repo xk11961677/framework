@@ -23,12 +23,16 @@
 package com.sky.framework.rpc.register;
 
 /**
+ * 注册中心
+ *
  * @author
  */
 public interface Registry {
 
     /**
-     * @param connectString
+     * 根据connect地址链接注册中心
+     *
+     * @param connect 链接地址
      */
-    void connectToRegistryServer(String connectString);
+    void connectToRegistryServer(String connect);
 }

@@ -22,7 +22,7 @@
  */
 package com.sky.framework.rpc.remoting.server;
 
-import com.sky.framework.common.LogUtils;
+
 import com.sky.framework.rpc.register.Registry;
 import com.sky.framework.rpc.register.RegistryService;
 import com.sky.framework.rpc.register.zookeeper.ZookeeperRegistryService;
@@ -34,8 +34,10 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.flush.FlushConsolidationHandler;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,24 +46,36 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class NettyServer extends AbstractBootstrap implements Registry {
-
+    /**
+     * 启动项
+     */
+    private ServerBootstrap bootstrap = null;
+    /**
+     * boss 线程组
+     */
     private EventLoopGroup bossGroup = null;
-
+    /**
+     * worker 线程组
+     */
     private EventLoopGroup workerGroup = null;
 
-    private ServerBootstrap bootstrap = null;
+    /**
+     * 服务端默认端口
+     */
+    private static final int DEFAULT_PORT = 8080;
 
     @Getter
     private RegistryService registryService = null;
 
-    /**
-     * default port 8081
-     */
-    private int port = 8081;
+    private int port;
+
+    public NettyServer() {
+        this(DEFAULT_PORT);
+    }
 
     public NettyServer(int port) {
         this.port = port;
-        init();
+        this.init();
     }
 
 
@@ -70,12 +84,10 @@ public class NettyServer extends AbstractBootstrap implements Registry {
         super.startup();
         try {
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
-
-            LogUtils.info(log, "the provider start successfully !");
-
+            log.info("the server start successfully !");
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
-            LogUtils.error(log, "the provider start failed !", e.getMessage());
+            log.error("the server start failed:{}", e.getMessage());
             stop();
         }
     }
@@ -90,46 +102,50 @@ public class NettyServer extends AbstractBootstrap implements Registry {
                 workerGroup.shutdownGracefully();
             }
         } else {
-            LogUtils.info(log, " the provider has been shutdown !");
+            log.info(" the server has been shutdown !");
         }
     }
 
     /**
-     * p.addLast(new LoggingHandler(LogLevel.INFO));
+     *
      */
     @Override
     public void init() {
-        bossGroup = new NioEventLoopGroup(1);
-        workerGroup = new NioEventLoopGroup();
+        //epoll kqueue
+        bossGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("boss"));
+        workerGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("worker"));
         ServerChannelHandler serverChannelHandler = new ServerChannelHandler();
+        LoggingHandler loggingHandler = new LoggingHandler(LogLevel.INFO);
         try {
             bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_BACKLOG, 100)
-
-                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .option(ChannelOption.SO_BACKLOG, 1024)
+                    .option(ChannelOption.SO_REUSEADDR, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
-//                            p.addLast(new IdleStateHandler(0, 0, 10, TimeUnit.MINUTES));
-                            p.addLast(new ProtocolEncoder());
-                            p.addLast(new ProtocolDecoder());
-                            p.addLast(new LoggingHandler(LogLevel.ERROR));
-                            p.addLast(serverChannelHandler);
+//                            p.addLast("flushEnhance", new FlushConsolidationHandler(10, true));
+                            p.addLast(new ServerIdleStateTrigger());
+                            p.addLast(new ServerHeartbeatChannelHandler());
+                            p.addLast("protocolEncoder", new ProtocolEncoder());
+                            p.addLast("protocolDecoder", new ProtocolDecoder());
+//                            p.addLast("loggingHandler", loggingHandler);
+                            p.addLast("serverChannelHandler", serverChannelHandler);
                         }
                     })
                     .childOption(ChannelOption.TCP_NODELAY, true)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+                    .childOption(ChannelOption.SO_REUSEADDR, true);
+//                    .childOption(ChannelOption.SO_KEEPALIVE, true);
         } catch (Exception e) {
-            LogUtils.error(log, "the provider init failed ! ", e.getMessage());
+            log.error("the server init failed:{}", e.getMessage());
         }
     }
 
     @Override
-    public void connectToRegistryServer(String connectString) {
+    public void connectToRegistryServer(String connect) {
         registryService = new ZookeeperRegistryService();
-        registryService.connectToRegistryServer(connectString);
+        registryService.connectToRegistryServer(connect);
     }
 }

@@ -22,22 +22,24 @@
  */
 package com.sky.framework.rpc.remoting.server;
 
-import com.sky.framework.common.LogUtils;
 import com.sky.framework.rpc.invoker.provider.ProviderProcessorHandler;
 import com.sky.framework.rpc.remoting.Request;
-import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
-import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author
  */
 @Slf4j
 @ChannelHandler.Sharable
-public class ServerChannelHandler extends ChannelDuplexHandler {
+public class ServerChannelHandler extends ChannelInboundHandlerAdapter {
+
+    private static final AtomicInteger channelCounter = new AtomicInteger(0);
 
     /**
      * @param ctx
@@ -45,7 +47,8 @@ public class ServerChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.fireChannelActive();
+        channelCounter.incrementAndGet();
+        super.channelActive(ctx);
     }
 
     /**
@@ -54,22 +57,8 @@ public class ServerChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        ctx.fireChannelInactive();
-    }
-
-    /**
-     * @param ctx
-     * @param evt
-     * @throws Exception
-     */
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            ctx.channel().close();
-            LogUtils.info(log, "the server close an idle channel ! ");
-        } else {
-            super.userEventTriggered(ctx, evt);
-        }
+        channelCounter.decrementAndGet();
+        super.channelInactive(ctx);
     }
 
     /**
@@ -79,19 +68,12 @@ public class ServerChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("=====" + msg);
-        ProviderProcessorHandler.instance.handler(ctx, (Request) msg);
-    }
-
-    /**
-     * @param ctx
-     * @param msg
-     * @param promise
-     * @throws Exception
-     */
-    @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        ctx.write(msg, promise);
+        if (msg instanceof Request) {
+            ProviderProcessorHandler.getInstance().handler(ctx, (Request) msg);
+        } else {
+            log.warn("Unexpected message type received: {}, channel: {}.", msg.getClass(), ctx);
+            ReferenceCountUtil.release(msg);
+        }
     }
 
     /**
@@ -101,6 +83,6 @@ public class ServerChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        ctx.fireExceptionCaught(cause);
+        ctx.channel().close();
     }
 }

@@ -20,35 +20,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.remoting;
+package com.sky.framework.rpc.codec;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import com.sky.framework.rpc.util.NumberUtils;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageDecoder;
+
+import java.nio.charset.Charset;
+import java.util.List;
 
 /**
+ * simple codec protocol
+ *
  * @author
  */
-public abstract class AbstractBootstrap implements Bootstrap {
+public class RpcDecoder extends ByteToMessageDecoder {
 
-    private final AtomicBoolean status = new AtomicBoolean(false);
+    private final static Charset charset = Charset.defaultCharset();
 
-    @Override
-    public void startup() {
-        status.compareAndSet(false, true);
-    }
+    public RpcDecoder() {
 
-
-    @Override
-    public void stop() {
-        status.compareAndSet(true, false);
     }
 
     @Override
-    public boolean status() {
-        return status.get();
+    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+        if (msg.readableBytes() > 4) {
+            msg.markReaderIndex();
+            byte[] b = new byte[4];
+            msg.readBytes(b);
+            int l = NumberUtils.byteArrayToInt(b);
+            if (msg.readableBytes() < l) {
+                msg.resetReaderIndex();
+                return;
+            }
+            msg.markReaderIndex();
+            byte[] decoded = new byte[l];
+            msg.readBytes(decoded);
+            out.add(new String(decoded, charset));
+        }
     }
-
-    /**
-     * 初始化
-     */
-    public abstract void init();
 }

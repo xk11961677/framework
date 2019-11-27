@@ -37,6 +37,9 @@ import java.util.List;
 @Slf4j
 public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
 
+    /**
+     * 消息内容最大长度
+     */
     private static final int MAX_BODY_SIZE = 1024 * 1024 * 5;
 
 
@@ -51,54 +54,57 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        log.info("decoder");
         switch (state()) {
             case MAGIC:
-                checkMagic(in.readShort());         // MAGIC
+                // MAGIC
+                checkMagic(in.readShort());
                 checkpoint(State.SIGN);
             case SIGN:
-                header.sign(in.readByte());         // 消息标志位
+                // 消息标志位
+                header.sign(in.readByte());
                 checkpoint(State.STATUS);
             case STATUS:
-                header.status(in.readByte());       // 状态位
+                // 状态位
+                header.setStatus(in.readByte());
                 checkpoint(State.ID);
             case ID:
-                header.id(in.readLong());           // 消息id
+                // 消息id
+                header.setId(in.readLong());
                 checkpoint(State.BODY_SIZE);
             case BODY_SIZE:
-                header.bodySize(in.readInt());      // 消息体长度
+                // 消息体长度
+                header.setBodySize(in.readInt());
                 checkpoint(State.BODY);
             case BODY:
-                switch (header.messageCode()) {
+                // 消息体内容
+                switch (header.getMessageCode()) {
                     case ProtocolHeader.HEARTBEAT:
+                        log.info("the protocol decoder recv heartbeat");
                         break;
                     case ProtocolHeader.REQUEST: {
-                        int length = checkBodySize(header.bodySize());
+                        log.info("the protocol decoder recv REQUEST");
+                        int length = checkBodySize(header.getBodySize());
                         byte[] bytes = new byte[length];
                         in.readBytes(bytes);
-                        Request request = new Request(header.id());
+                        Request request = new Request(header.getId());
                         request.timestamp(System.currentTimeMillis());
-                        request.bytes(header.serializerCode(), bytes);
-
+                        request.bytes(header.getSerializerCode(), bytes);
                         out.add(request);
-
                         break;
                     }
                     case ProtocolHeader.RESPONSE: {
-                        int length = checkBodySize(header.bodySize());
+                        log.info("the protocol decoder recv RESPONSE");
+                        int length = checkBodySize(header.getBodySize());
                         byte[] bytes = new byte[length];
                         in.readBytes(bytes);
-
-                        Response response = new Response(header.id());
-                        response.status(header.status());
-                        response.bytes(header.serializerCode(), bytes);
-
+                        Response response = new Response(header.getId());
+                        response.status(header.getStatus());
+                        response.bytes(header.getSerializerCode(), bytes);
                         out.add(response);
-
                         break;
                     }
                     default:
-                        log.info("not supported");
+                        log.info("the protocol decoder not supported!");
                 }
                 checkpoint(State.MAGIC);
         }

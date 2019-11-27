@@ -22,11 +22,12 @@
  */
 package com.sky.framework.rpc.invoker.consumer.proxy;
 
-import com.sky.framework.common.LogUtils;
+
 import com.sky.framework.rpc.cluster.loadbalance.LoadBalance;
 import com.sky.framework.rpc.cluster.loadbalance.RoundRobinLoadBalance;
 import com.sky.framework.rpc.common.enums.SerializeEnum;
 import com.sky.framework.rpc.invoker.RpcInvocation;
+import com.sky.framework.rpc.invoker.annotation.Consumer;
 import com.sky.framework.rpc.invoker.future.DefaultInvokeFuture;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.Request;
@@ -35,7 +36,7 @@ import com.sky.framework.rpc.remoting.Status;
 import com.sky.framework.rpc.remoting.client.pool.ChannelGenericPool;
 import com.sky.framework.rpc.remoting.client.pool.ChannelGenericPoolFactory;
 import com.sky.framework.rpc.remoting.protocol.LongSequence;
-import com.sky.framework.rpc.serializer.FastjsonSerializer;
+import com.sky.framework.rpc.serializer.FastJsonSerializer;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,14 +48,9 @@ import java.lang.reflect.Method;
 @Slf4j
 public class Proxy {
 
-    FastjsonSerializer serializer = new FastjsonSerializer();
+    private FastJsonSerializer serializer = new FastJsonSerializer();
 
     private LongSequence longSequence = new LongSequence();
-
-    /*static {
-        AsyncThreadPoolProperties properties = new AsyncThreadPoolProperties();
-        CommonThreadPool.initThreadPool(properties);
-    }*/
 
     private Class<?> interfaceClass;
 
@@ -64,23 +60,23 @@ public class Proxy {
 
     public Object remoteCall(Method method, Object[] args) throws Throwable {
         // todo cluster
+        Consumer annotation = interfaceClass.getAnnotation(Consumer.class);
         RegisterMeta.ServiceMeta serviceMeta = new RegisterMeta.ServiceMeta();
-        serviceMeta.setGroup("test");
+        serviceMeta.setGroup(annotation.group());
         serviceMeta.setServiceProviderName(interfaceClass.getName());
-        serviceMeta.setVersion("1.0.0");
+        serviceMeta.setVersion(annotation.version());
 
         LoadBalance instance = RoundRobinLoadBalance.getInstance();
         RegisterMeta.Address select = instance.select(serviceMeta);
-        ChannelGenericPool channelGenericPool = ChannelGenericPoolFactory.getPoolConcurrentHashMap().get(select);
-
-        // channel 最大化复用
+        ChannelGenericPool channelGenericPool = ChannelGenericPoolFactory.getClientPoolMap().get(select);
         Channel channel = null;
+        DefaultInvokeFuture invokeFuture = null;
         try {
             channel = channelGenericPool.getConnection();
+            invokeFuture = $invoke(channel, method, args);
         } finally {
             channelGenericPool.releaseConnection(channel);
         }
-        DefaultInvokeFuture invokeFuture = $invoke(channel, method, args);
         Object result = invokeFuture.getResult();
         return result;
     }
@@ -111,47 +107,11 @@ public class Proxy {
             invokeFuture = DefaultInvokeFuture.with(request.getId(), 0, method.getReturnType());
             channel.writeAndFlush(request);
         } catch (Exception e) {
-            //todo build error response and set DefaultInvokeFuture
-            LogUtils.error(log, "then client proxy invoke failed:{}", e.getMessage());
+            log.error("the client proxy invoke failed:{}", e.getMessage());
             Response response = new Response(id);
             response.setStatus(Status.CLIENT_ERROR.value());
             DefaultInvokeFuture.fakeReceived(response);
         }
         return invokeFuture;
     }
-
-    /*
-    Future<Object> future = CommonThreadPool.execute(invoke(method, args));
-    Object result = future.get(3000, TimeUnit.SECONDS);
-    private IAsynchronousHandler invoke(Method method, Object[] args) {
-        DefaultAsynchronousHandler handler = new DefaultAsynchronousHandler() {
-            @Override
-            public Object call() throws Exception {
-                DefaultInvokeFuture<?> invokeFuture = null;
-                ChannelGenericKeyedPool channelGenericKeyedPool = nettyClient.getChannelGenericKeyedPool();
-                Channel channel = channelGenericKeyedPool.getConnection(key);
-                Method interfaceMethod = interfaceClass.getDeclaredMethod(method.getName(), method.getParameterTypes());
-                try {
-                    long id = longSequence.next();
-                    Request request = new Request(id);
-                    RpcInvocation rpcInvocation = new RpcInvocation();
-                    rpcInvocation.setClazzName(interfaceMethod.getName());
-                    rpcInvocation.setMethodName(interfaceMethod.getName());
-                    rpcInvocation.setParameterTypes(interfaceMethod.getParameterTypes());
-                    rpcInvocation.setArguments(args);
-
-                    byte[] serialize = serializer.serialize(rpcInvocation);
-                    request.bytes(SerializeEnum.FASTJSON.getSerializerCode(), serialize);
-                    channel.writeAndFlush(request);
-                    invokeFuture = DefaultInvokeFuture.with(request.getId(), channel, 3000, method.getReturnType());
-                } catch (Exception e) {
-
-                } finally {
-                    channelGenericKeyedPool.releaseConnection(key, channel);
-                }
-                return invokeFuture;
-            }
-        };
-        return handler;
-    }*/
 }

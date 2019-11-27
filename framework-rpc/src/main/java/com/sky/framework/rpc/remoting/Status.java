@@ -23,6 +23,8 @@
 package com.sky.framework.rpc.remoting;
 
 /**
+ * 远程访问错误信息枚举
+ *
  * @author
  */
 public enum Status {

@@ -22,9 +22,12 @@
  */
 package com.sky.framework.rpc.example;
 
+import com.sky.framework.rpc.invoker.annotation.Consumer;
+
 /**
  * @author
  */
+@Consumer(group = "test")
 public interface UserService {
     /**
      * @param msg

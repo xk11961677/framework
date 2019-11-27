@@ -22,14 +22,14 @@
  */
 package com.sky.framework.rpc.invoker.provider;
 
-import com.sky.framework.common.LogUtils;
+
 import com.sky.framework.rpc.common.enums.SerializeEnum;
 import com.sky.framework.rpc.invoker.AbstractProcessor;
 import com.sky.framework.rpc.invoker.RpcInvocation;
 import com.sky.framework.rpc.remoting.Request;
 import com.sky.framework.rpc.remoting.Response;
 import com.sky.framework.rpc.remoting.Status;
-import com.sky.framework.rpc.serializer.FastjsonSerializer;
+import com.sky.framework.rpc.serializer.FastJsonSerializer;
 import com.sky.framework.rpc.util.ReflectAsmUtils;
 import com.sky.framework.threadpool.AsyncThreadPoolProperties;
 import com.sky.framework.threadpool.core.CommonThreadPool;
@@ -44,14 +44,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProviderProcessorHandler extends AbstractProcessor {
 
-    public static final ProviderProcessorHandler instance = new ProviderProcessorHandler();
-
     static {
+        instance = new ProviderProcessorHandler();
         AsyncThreadPoolProperties properties = new AsyncThreadPoolProperties();
         CommonThreadPool.initThreadPool(properties);
     }
 
-    private FastjsonSerializer fastjsonSerializer = new FastjsonSerializer();
+    private FastJsonSerializer fastjsonSerializer = new FastJsonSerializer();
+
+    private static ProviderProcessorHandler instance;
 
     public ProviderProcessorHandler() {
     }
@@ -71,16 +72,16 @@ public class ProviderProcessorHandler extends AbstractProcessor {
                 byte[] serialize = fastjsonSerializer.serialize(result);
                 response.bytes(SerializeEnum.FASTJSON.getSerializerCode(), serialize);
                 ctx.writeAndFlush(response).addListener((ChannelFutureListener) channelFuture -> {
-                    log.info("write completion");
+                    log.info("the server response completion:{}");
                 });
-                //todo
-//                ReferenceCountUtil.release(request);
+                rpcInvocation = null;
+                result = null;
             }
 
             @Override
             public void executeBefore(Thread t) {
-                //default fastjson
-                SerializeEnum acquire = SerializeEnum.acquire(request.serializerCode());
+                //todo default fastJson
+                SerializeEnum serialize = SerializeEnum.acquire(request.serializerCode());
                 byte[] bytes = request.bytes();
                 rpcInvocation = fastjsonSerializer.deSerialize(bytes, RpcInvocation.class);
             }
@@ -91,10 +92,15 @@ public class ProviderProcessorHandler extends AbstractProcessor {
                     result = ReflectAsmUtils.invoke(rpcInvocation.getClazzName(), rpcInvocation.getMethodName(),
                             rpcInvocation.getParameterTypes(), rpcInvocation.getArguments());
                 } catch (Exception e) {
-                    LogUtils.error(log, "the provider reflect has error !", e.getMessage());
+                    log.error("the provider reflect exception !", e.getMessage());
                 }
                 return null;
             }
         });
+    }
+
+
+    public static ProviderProcessorHandler getInstance() {
+        return instance;
     }
 }
