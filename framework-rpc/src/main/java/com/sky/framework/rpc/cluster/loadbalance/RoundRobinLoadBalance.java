@@ -53,6 +53,9 @@ public class RoundRobinLoadBalance extends AbstractLoadBalance {
     @Override
     public <T> T doSelect(RegisterMeta.ServiceMeta serviceMeta) {
         ConcurrentHashSet<RegisterMeta.Address> addresses = AbstractRegistryService.metaAddressMap.get(serviceMeta);
+        if (addresses == null) {
+            return null;
+        }
         this.snapshot(addresses);
         RegisterMeta.Address[] addressesArray = new RegisterMeta.Address[cList.size()];
         cList.toArray(addressesArray);

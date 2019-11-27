@@ -26,42 +26,16 @@ import com.sky.framework.rpc.invoker.consumer.ConsumerProcessorHandler;
 import com.sky.framework.rpc.remoting.Response;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author
  */
 @Slf4j
-public class ClientChannelHandler extends ChannelDuplexHandler {
-
-    /**
-     * @param ctx
-     * @throws Exception
-     */
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.fireChannelActive();
-    }
-
-    /**
-     * @param ctx
-     * @throws Exception
-     */
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        ctx.fireChannelInactive();
-    }
-
-    /**
-     * @param ctx
-     * @param evt
-     * @throws Exception
-     */
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        ctx.fireUserEventTriggered(evt);
-    }
+public class ClientChannelHandler extends ChannelInboundHandlerAdapter {
 
     /**
      * @param ctx
@@ -70,18 +44,12 @@ public class ClientChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ConsumerProcessorHandler.instance.handler(ctx, (Response) msg);
-    }
-
-    /**
-     * @param ctx
-     * @param msg
-     * @param promise
-     * @throws Exception
-     */
-    @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        ctx.write(msg, promise);
+        if (msg instanceof Response) {
+            ConsumerProcessorHandler.getInstance().handler(ctx, (Response) msg);
+        } else {
+            log.warn("Unexpected message type received: {}, channel: {}.", msg.getClass(), ctx);
+            ReferenceCountUtil.release(msg);
+        }
     }
 
     /**
@@ -91,6 +59,6 @@ public class ClientChannelHandler extends ChannelDuplexHandler {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        ctx.fireExceptionCaught(cause);
+        ctx.channel().close();
     }
 }

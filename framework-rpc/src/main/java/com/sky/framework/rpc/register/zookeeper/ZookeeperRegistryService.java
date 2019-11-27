@@ -24,7 +24,6 @@ package com.sky.framework.rpc.register.zookeeper;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
 import com.sky.framework.common.IpUtils;
-import com.sky.framework.common.LogUtils;
 import com.sky.framework.rpc.register.AbstractRegistryService;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import lombok.extern.slf4j.Slf4j;
@@ -82,25 +81,45 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
                 .retryPolicy(retryPolicy)
                 .build();
         client.getConnectionStateListenable().addListener((client, newState) -> {
-            LogUtils.info(log, "Zookeeper connection state changed {}.", newState);
-
+            log.info("zookeeper connection state changed {}.", newState);
             if (newState == ConnectionState.RECONNECTED) {
-                // 重新订阅
-                for (RegisterMeta.ServiceMeta serviceMeta : getSubscribeSet()) {
-                    doSubscribe(serviceMeta);
-                }
                 // 重新发布服务
                 for (RegisterMeta meta : getRegisterMetaMap().keySet()) {
                     ZookeeperRegistryService.super.register(meta);
+                }
+                // 重新订阅
+                for (RegisterMeta.ServiceMeta serviceMeta : getSubscribeSet()) {
+                    doSubscribe(serviceMeta);
                 }
             }
         });
         client.start();
     }
 
+
+    @Override
+    public Collection<RegisterMeta> lookup(RegisterMeta.ServiceMeta serviceMeta) {
+        String directory = String.format("/rpc/provider/%s/%s/%s",
+                serviceMeta.getGroup(),
+                serviceMeta.getServiceProviderName(),
+                serviceMeta.getVersion());
+
+        List<RegisterMeta> registerMetaList = new ArrayList<>();
+        try {
+            List<String> paths = client.getChildren().forPath(directory);
+            for (String p : paths) {
+                registerMetaList.add(parseRegisterMeta(String.format("%s/%s", directory, p)));
+            }
+        } catch (Exception e) {
+            log.error("lookup service meta: {} path failed, {}", serviceMeta, e.getMessage());
+        }
+        return registerMetaList;
+    }
+
+    /*****************************************************************************************/
+
     @Override
     protected void doRegister(RegisterMeta meta) {
-        //zk 目录
         String directory = String.format("/rpc/provider/%s/%s/%s",
                 meta.getGroup(),
                 meta.getServiceProviderName(),
@@ -110,26 +129,28 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
                 client.create().creatingParentsIfNeeded().forPath(directory);
             }
         } catch (Exception e) {
-            LogUtils.error(log, "Create parent path failed, directory:{} exception:{}", directory, e.getMessage());
+            log.error("Create parent path failed, directory:{} exception:{}", directory, e.getMessage());
         }
 
         try {
             meta.setHost(address);
+
+            getRegisterMetaMap().put(meta, RegisterMetaType.INIT.toString());
+
             client.create().withMode(CreateMode.EPHEMERAL).inBackground((client, event) -> {
                 if (event.getResultCode() == KeeperException.Code.OK.intValue()) {
-                    getRegisterMetaMap().put(meta, KeeperException.Code.OK.toString());
+                    getRegisterMetaMap().put(meta, RegisterMetaType.OK.toString());
                 }
-                LogUtils.info(log, "Register: {} - {}.", meta, event);
+                log.info("Register: {} - {}.", meta, event);
             }).forPath(String.format("%s/%s:%s",
                     directory,
                     meta.getHost(),
                     String.valueOf(meta.getPort())));
         } catch (Exception e) {
-            LogUtils.error(log, "Create parent path failed, directory:{}", directory);
+            log.error("Create parent path failed, directory:{}", directory);
         }
     }
 
-    @SuppressWarnings("all")
     @Override
     protected void doSubscribe(RegisterMeta.ServiceMeta serviceMeta) {
         PathChildrenCache childrenCache = pathChildrenCaches.get(serviceMeta);
@@ -144,7 +165,7 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
             if (childrenCache == null) {
                 childrenCache = newChildrenCache;
                 childrenCache.getListenable().addListener((client, event) -> {
-                    LogUtils.info(log, "Child event: {}", event);
+                    log.info("child event: {}", event);
                     switch (event.getType()) {
                         case CHILD_ADDED: {
                             RegisterMeta registerMeta = parseRegisterMeta(event.getData().getPath());
@@ -166,7 +187,7 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
                             ZookeeperRegistryService.super.notify(address, serviceMeta1, EventType.REMOVE);
 
                             if (serviceMetaSet.isEmpty()) {
-                                LogUtils.info(log, "Offline notify: {}.", address);
+                                log.info("offline notify: {}", address);
                                 ZookeeperRegistryService.super.notify(address, serviceMeta1, EventType.OFFLINE);
                             }
                             break;
@@ -176,41 +197,37 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
                 try {
                     childrenCache.start();
                 } catch (Exception e) {
-                    LogUtils.error(log, "Subscribe failed :{}", directory);
+                    log.error("subscribe failed, directory:{}", directory);
                 }
             } else {
                 try {
                     newChildrenCache.close();
                 } catch (IOException e) {
-                    LogUtils.error(log, "PathChildrenCache close failed:{}", e.getMessage());
+                    log.error("PathChildrenCache close failed:{}", e.getMessage());
                 }
             }
         }
     }
 
     @Override
-    public void unregister(RegisterMeta meta) {
-
-    }
-
-    @Override
-    public Collection<RegisterMeta> lookup(RegisterMeta.ServiceMeta serviceMeta) {
+    protected void doUnRegister(RegisterMeta meta) {
+        RegisterMeta.ServiceMeta serviceMeta = meta.getServiceMeta();
         String directory = String.format("/rpc/provider/%s/%s/%s",
                 serviceMeta.getGroup(),
                 serviceMeta.getServiceProviderName(),
                 serviceMeta.getVersion());
-
-        List<RegisterMeta> registerMetaList = new ArrayList<>();
         try {
-            List<String> paths = client.getChildren().forPath(directory);
-            for (String p : paths) {
-                registerMetaList.add(parseRegisterMeta(String.format("%s/%s", directory, p)));
+            if (client.checkExists().forPath(directory) == null) {
+                client.delete().forPath(String.format("%s/%s:%s",
+                        directory,
+                        meta.getHost(),
+                        String.valueOf(meta.getPort())));
             }
         } catch (Exception e) {
-            LogUtils.error(log, "lookup service meta: {} path failed, {}", serviceMeta, e.getMessage());
+            log.error("doUnRegister failed, directory:{} address:{}", directory, meta.getAddress());
         }
-        return registerMetaList;
     }
+
 
     /**
      * 解析zk存储数据,构建元信息

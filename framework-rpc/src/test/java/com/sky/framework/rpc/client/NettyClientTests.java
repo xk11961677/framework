@@ -24,6 +24,7 @@ package com.sky.framework.rpc.client;
 
 import com.sky.framework.rpc.BaseApplicationTests;
 import com.sky.framework.rpc.example.UserService;
+import com.sky.framework.rpc.invoker.annotation.Consumer;
 import com.sky.framework.rpc.invoker.consumer.proxy.Proxy;
 import com.sky.framework.rpc.invoker.consumer.proxy.javassist.JavassistProxyFactory;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
@@ -41,9 +42,10 @@ public class NettyClientTests extends BaseApplicationTests {
         nettyClient.connectToRegistryServer("127.0.0.1:2181");
 
         RegisterMeta.ServiceMeta serviceMeta = new RegisterMeta.ServiceMeta();
-        serviceMeta.setGroup("test");
+        Consumer annotation = UserService.class.getAnnotation(Consumer.class);
+        serviceMeta.setGroup(annotation.group());
         serviceMeta.setServiceProviderName(UserService.class.getName());
-        serviceMeta.setVersion("1.0.0");
+        serviceMeta.setVersion(annotation.version());
         nettyClient.getRegistryService().subscribe(serviceMeta);
 
         JavassistProxyFactory javassistProxyFactory = new JavassistProxyFactory();
@@ -52,5 +54,10 @@ public class NettyClientTests extends BaseApplicationTests {
         System.out.println("=====result:{}" + hello);
         userService.hello();
 
+        while (true) {
+            Thread.sleep(10000);
+            hello = userService.hello("123");
+            System.out.println("=====result:{}" + hello);
+        }
     }
 }

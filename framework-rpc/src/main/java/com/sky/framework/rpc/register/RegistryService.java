@@ -39,7 +39,7 @@ public interface RegistryService extends Registry {
     void register(RegisterMeta meta);
 
     /**
-     * 反注册信息
+     * 取消注册信息
      *
      * @param meta
      */

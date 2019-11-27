@@ -20,34 +20,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.remoting.client.pool;
+package com.sky.framework.rpc.codec;
 
-import com.sky.framework.rpc.register.meta.RegisterMeta;
-import lombok.Getter;
+import com.sky.framework.rpc.util.NumberUtils;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageDecoder;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
+import java.nio.charset.Charset;
+import java.util.List;
 
 /**
+ * simple codec protocol
+ *
  * @author
  */
-public class ChannelGenericPoolFactory {
+public class RpcDecoder extends ByteToMessageDecoder {
 
-    @Getter
-    private static ConcurrentHashMap<RegisterMeta.Address, ChannelGenericPool> clientPoolMap = new ConcurrentHashMap<>();
+    private final static Charset charset = Charset.defaultCharset();
 
-    private static final ReentrantLock lock = new ReentrantLock();
+    public RpcDecoder() {
 
-    public static void create(RegisterMeta.Address address) {
-        try {
-            lock.lock();
-            ChannelGenericPool channelGenericPool = clientPoolMap.get(address);
-            if (channelGenericPool == null) {
-                channelGenericPool = new ChannelGenericPool(address.getHost() + ":" + address.getPort());
-                clientPoolMap.putIfAbsent(address, channelGenericPool);
+    }
+
+    @Override
+    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+        if (msg.readableBytes() > 4) {
+            msg.markReaderIndex();
+            byte[] b = new byte[4];
+            msg.readBytes(b);
+            int l = NumberUtils.byteArrayToInt(b);
+            if (msg.readableBytes() < l) {
+                msg.resetReaderIndex();
+                return;
             }
-        } finally {
-            lock.unlock();
+            msg.markReaderIndex();
+            byte[] decoded = new byte[l];
+            msg.readBytes(decoded);
+            out.add(new String(decoded, charset));
         }
     }
 }

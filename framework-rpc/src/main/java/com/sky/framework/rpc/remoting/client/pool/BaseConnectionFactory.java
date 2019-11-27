@@ -22,7 +22,6 @@
  */
 package com.sky.framework.rpc.remoting.client.pool;
 
-import com.sky.framework.common.LogUtils;
 import com.sky.framework.rpc.remoting.client.NettyClient;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -62,13 +61,13 @@ public class BaseConnectionFactory extends BasePoolableObjectFactory<Channel> {
         channel.close().addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                LogUtils.info(log, "baseConnectionFactory close channel complete !");
+                log.info("baseConnectionFactory close channel complete !");
             }
         });
     }
 
     @Override
     public boolean validateObject(Channel channel) {
-        return channel.isOpen() || channel.isActive();
+        return channel.isOpen() || channel.isActive() || channel.isWritable();
     }
 }

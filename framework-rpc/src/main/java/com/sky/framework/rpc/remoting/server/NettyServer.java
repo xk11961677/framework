@@ -22,7 +22,7 @@
  */
 package com.sky.framework.rpc.remoting.server;
 
-import com.sky.framework.common.LogUtils;
+
 import com.sky.framework.rpc.register.Registry;
 import com.sky.framework.rpc.register.RegistryService;
 import com.sky.framework.rpc.register.zookeeper.ZookeeperRegistryService;
@@ -34,14 +34,12 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.flush.FlushConsolidationHandler;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author
@@ -86,10 +84,10 @@ public class NettyServer extends AbstractBootstrap implements Registry {
         super.startup();
         try {
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
-            LogUtils.info(log, "the server start successfully !");
+            log.info("the server start successfully !");
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
-            LogUtils.error(log, "the server start failed:{}", e.getMessage());
+            log.error("the server start failed:{}", e.getMessage());
             stop();
         }
     }
@@ -104,7 +102,7 @@ public class NettyServer extends AbstractBootstrap implements Registry {
                 workerGroup.shutdownGracefully();
             }
         } else {
-            LogUtils.info(log, " the server has been shutdown !");
+            log.info(" the server has been shutdown !");
         }
     }
 
@@ -113,7 +111,8 @@ public class NettyServer extends AbstractBootstrap implements Registry {
      */
     @Override
     public void init() {
-        bossGroup = new NioEventLoopGroup(1);
+        //epoll kqueue
+        bossGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("boss"));
         workerGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("worker"));
         ServerChannelHandler serverChannelHandler = new ServerChannelHandler();
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.INFO);
@@ -122,21 +121,25 @@ public class NettyServer extends AbstractBootstrap implements Registry {
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 1024)
+                    .option(ChannelOption.SO_REUSEADDR, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
-                            p.addLast(new IdleStateHandler(0, 0, 10, TimeUnit.MINUTES));
+//                            p.addLast("flushEnhance", new FlushConsolidationHandler(10, true));
+                            p.addLast(new ServerIdleStateTrigger());
+                            p.addLast(new ServerHeartbeatChannelHandler());
                             p.addLast("protocolEncoder", new ProtocolEncoder());
                             p.addLast("protocolDecoder", new ProtocolDecoder());
-                            p.addLast("loggingHandler", loggingHandler);
+//                            p.addLast("loggingHandler", loggingHandler);
                             p.addLast("serverChannelHandler", serverChannelHandler);
                         }
                     })
                     .childOption(ChannelOption.TCP_NODELAY, true)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+                    .childOption(ChannelOption.SO_REUSEADDR, true);
+//                    .childOption(ChannelOption.SO_KEEPALIVE, true);
         } catch (Exception e) {
-            LogUtils.error(log, "the server init failed:{}", e.getMessage());
+            log.error("the server init failed:{}", e.getMessage());
         }
     }
 

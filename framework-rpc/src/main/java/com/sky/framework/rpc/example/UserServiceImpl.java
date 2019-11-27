@@ -22,12 +22,14 @@
  */
 package com.sky.framework.rpc.example;
 
+import com.sky.framework.rpc.invoker.annotation.Provider;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author
  */
 @Slf4j
+@Provider(group = "test")
 public class UserServiceImpl implements UserService {
 
     @Override

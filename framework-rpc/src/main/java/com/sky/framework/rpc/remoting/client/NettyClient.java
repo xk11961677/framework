@@ -22,7 +22,7 @@
  */
 package com.sky.framework.rpc.remoting.client;
 
-import com.sky.framework.common.LogUtils;
+
 import com.sky.framework.rpc.register.Registry;
 import com.sky.framework.rpc.register.RegistryService;
 import com.sky.framework.rpc.register.zookeeper.ZookeeperRegistryService;
@@ -74,15 +74,14 @@ public class NettyClient extends AbstractBootstrap implements Registry {
                 group.shutdownGracefully();
             }
         } else {
-            LogUtils.info(log, " the client has been shutdown !");
+            log.info(" the client has been shutdown !");
         }
     }
 
     @Override
     public void init() {
-        bootstrap = new Bootstrap();
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.INFO);
-
+        bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.TCP_NODELAY, true)
@@ -90,9 +89,12 @@ public class NettyClient extends AbstractBootstrap implements Registry {
                     @Override
                     public void initChannel(SocketChannel ch) throws Exception {
                         ChannelPipeline p = ch.pipeline();
+                        p.addLast("loggingHandler", loggingHandler);
+                        p.addLast(new ClientIdleStateTrigger());
+                        p.addLast(new HeartbeatChannelHandler());
                         p.addLast("protocolEncoder", new ProtocolEncoder());
                         p.addLast("protocolDecoder", new ProtocolDecoder());
-                        p.addLast("loggingHandler", loggingHandler);
+//                        p.addLast("loggingHandler", loggingHandler);
                         p.addLast("clientChannelHandler", new ClientChannelHandler());
                     }
                 });
@@ -108,8 +110,8 @@ public class NettyClient extends AbstractBootstrap implements Registry {
             ChannelFuture f = bootstrap.connect(address, port).sync();
             Channel channel = f.channel();
             return channel;
-        } catch (InterruptedException e) {
-            LogUtils.error(log, "the client get channel failed! :{}", e.getMessage());
+        } catch (Exception e) {
+            log.error("the client get channel failed! :{}", e.getMessage());
         }
         return null;
     }

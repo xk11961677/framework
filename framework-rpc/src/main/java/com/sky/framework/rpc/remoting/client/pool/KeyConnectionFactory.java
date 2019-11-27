@@ -22,7 +22,6 @@
  */
 package com.sky.framework.rpc.remoting.client.pool;
 
-import com.sky.framework.common.LogUtils;
 import com.sky.framework.rpc.remoting.client.NettyClient;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -52,7 +51,7 @@ public class KeyConnectionFactory implements KeyedPoolableObjectFactory<String, 
         channel.close().addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                LogUtils.info(log, "KeyConnectionFactory close channel complete !");
+                log.info("KeyConnectionFactory close channel complete !");
             }
         });
     }

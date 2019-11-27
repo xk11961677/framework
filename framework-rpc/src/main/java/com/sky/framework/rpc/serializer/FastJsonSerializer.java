@@ -20,46 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.remoting.codec;
+package com.sky.framework.rpc.serializer;
 
-import com.sky.framework.rpc.util.NumberUtils;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufOutputStream;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToByteEncoder;
-
-import java.nio.charset.Charset;
+import com.alibaba.fastjson.JSON;
+import com.sky.framework.rpc.common.enums.SerializeEnum;
 
 /**
- * simple codec protocol
- *
  * @author
  */
-public class RpcEncoder extends MessageToByteEncoder<String> {
+public class FastJsonSerializer implements ObjectSerializer {
 
-
-    private final static Charset charset = Charset.defaultCharset();
-
-    public RpcEncoder() {
+    @Override
+    public byte[] serialize(Object obj) throws RuntimeException {
+        return JSON.toJSONBytes(obj);
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, String s, ByteBuf out) throws Exception {
-        int length = s.length();
+    public <T> T deSerialize(byte[] param, Class<T> clazz) throws RuntimeException {
+        return JSON.parseObject(param, clazz);
+    }
 
-        byte[] bytes = NumberUtils.intToByteArray(length);
-
-        int startIdx = out.writerIndex();
-
-        ByteBufOutputStream bout = new ByteBufOutputStream(out);
-        bout.write(bytes);
-        bout.write(s.getBytes(charset));
-        bout.flush();
-        bout.close();
-
-        int endIdx = out.writerIndex();
-
-        out.setInt(startIdx, endIdx - startIdx - 4);
-
+    @Override
+    public String getScheme() {
+        return SerializeEnum.FASTJSON.getSerialize();
     }
 }

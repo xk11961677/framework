@@ -26,12 +26,15 @@ import com.esotericsoftware.reflectasm.MethodAccess;
 import com.sky.framework.rpc.BaseApplicationTests;
 import com.sky.framework.rpc.example.UserService;
 import com.sky.framework.rpc.example.UserServiceImpl;
+import com.sky.framework.rpc.invoker.annotation.Provider;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.server.NettyServer;
 import com.sky.framework.rpc.util.ReflectAsmUtils;
 import org.junit.Test;
 
 public class NettyServerTests extends BaseApplicationTests {
+
+    private int port = 8081;
 
     private void build() {
         MethodAccess access = MethodAccess.get(UserService.class);
@@ -44,7 +47,7 @@ public class NettyServerTests extends BaseApplicationTests {
     public void start() {
         build();
 
-        NettyServer nettyServer = new NettyServer(8081);
+        NettyServer nettyServer = new NettyServer(port);
 
         register(nettyServer);
 
@@ -54,11 +57,14 @@ public class NettyServerTests extends BaseApplicationTests {
 
     private void register(NettyServer nettyServer) {
         nettyServer.connectToRegistryServer("127.0.0.1:2181");
+
         RegisterMeta registerMeta = new RegisterMeta();
-        registerMeta.setPort(8081);
-        registerMeta.setGroup("test");
+        registerMeta.setPort(port);
+
+        Provider annotation = UserServiceImpl.class.getAnnotation(Provider.class);
+        registerMeta.setGroup(annotation.group());
         registerMeta.setServiceProviderName(UserService.class.getName());
-        registerMeta.setVersion("1.0.0");
+        registerMeta.setVersion(annotation.version());
         nettyServer.getRegistryService().register(registerMeta);
     }
 }

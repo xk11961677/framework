@@ -24,21 +24,23 @@ package com.sky.framework.rpc.invoker.future;
 
 import com.sky.framework.rpc.remoting.Response;
 import com.sky.framework.rpc.remoting.Status;
-import com.sky.framework.rpc.serializer.FastjsonSerializer;
+import com.sky.framework.rpc.serializer.FastJsonSerializer;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.*;
 
 /**
  * @author
  */
+@Slf4j
 public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements InvokeFuture<V> {
 
     private static final ConcurrentMap<Long, DefaultInvokeFuture<?>> roundFutures = new ConcurrentHashMap<>();
 
     private static final long DEFAULT_TIMEOUT_NANOSECONDS = TimeUnit.MILLISECONDS.toNanos(30000);
 
-    private static final FastjsonSerializer serializer = new FastjsonSerializer();
+    private static final FastJsonSerializer serializer = new FastJsonSerializer();
 
     private final long invokeId;
 
@@ -72,10 +74,8 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
             return get(timeout, TimeUnit.NANOSECONDS);
         } catch (TimeoutException e) {
             Response response = new Response(invokeId);
-            response.setStatus(Status.CLIENT_ERROR.value());
+            response.setStatus(Status.CLIENT_TIMEOUT.value());
             DefaultInvokeFuture.fakeReceived(response);
-            //todo
-            //throw new RuntimeException("the client get result timeout");
         }
         return null;
     }
@@ -101,7 +101,7 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
      * @param response
      */
     private void setException(byte status, Response response) {
-        Throwable cause = null;
+        Throwable cause = new RuntimeException("todo exception"+status);
         //todo exception
         completeExceptionally(cause);
     }

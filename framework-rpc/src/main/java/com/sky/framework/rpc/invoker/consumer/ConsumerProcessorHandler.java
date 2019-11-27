@@ -22,15 +22,12 @@
  */
 package com.sky.framework.rpc.invoker.consumer;
 
-import com.sky.framework.rpc.common.enums.SerializeEnum;
 import com.sky.framework.rpc.invoker.AbstractProcessor;
 import com.sky.framework.rpc.invoker.future.DefaultInvokeFuture;
 import com.sky.framework.rpc.remoting.Response;
-import com.sky.framework.rpc.serializer.FastjsonSerializer;
-import com.sky.framework.threadpool.core.CommonThreadPool;
-import com.sky.framework.threadpool.core.IAsynchronousHandler;
 import com.sky.framework.threadpool.AsyncThreadPoolProperties;
-import io.netty.channel.Channel;
+import com.sky.framework.threadpool.core.CommonThreadPool;
+import com.sky.framework.threadpool.core.DefaultAsynchronousHandler;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -38,37 +35,29 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class ConsumerProcessorHandler extends AbstractProcessor {
 
-    public static final ConsumerProcessorHandler instance = new ConsumerProcessorHandler();
+    private static ConsumerProcessorHandler instance;
 
     static {
+        instance = new ConsumerProcessorHandler();
         AsyncThreadPoolProperties properties = new AsyncThreadPoolProperties();
         CommonThreadPool.initThreadPool(properties);
     }
-
-    private FastjsonSerializer fastjsonSerializer = new FastjsonSerializer();
 
     public ConsumerProcessorHandler() {
     }
 
     @Override
     public void handler(ChannelHandlerContext ctx, Response response) {
-        CommonThreadPool.execute(new IAsynchronousHandler() {
-            @Override
-            public void executeAfter(Throwable t) {
-            }
-
-            @Override
-            public void executeBefore(Thread t) {
-                //todo build a wrapper response object
-                SerializeEnum acquire = SerializeEnum.acquire(response.serializerCode());
-                byte[] bytes = response.bytes();
-            }
-
+        CommonThreadPool.execute(new DefaultAsynchronousHandler() {
             @Override
             public Object call() throws Exception {
                 DefaultInvokeFuture.received(ctx, response);
                 return null;
             }
         });
+    }
+
+    public static ConsumerProcessorHandler getInstance() {
+        return instance;
     }
 }
