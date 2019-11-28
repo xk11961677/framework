@@ -22,8 +22,22 @@
  */
 package com.sky.framework.rpc.cluster;
 
+import com.sky.framework.rpc.register.meta.RegisterMeta;
+import com.sky.framework.rpc.remoting.Request;
+
 /**
  * @author
  */
 public interface ClusterInvoker {
+
+    /**
+     * 执行请求
+     *
+     * @param request
+     * @param serviceMeta
+     * @param returnType
+     * @param <T>
+     * @return
+     */
+    <T> T invoke(Request request, RegisterMeta.ServiceMeta serviceMeta, Class<?> returnType);
 }

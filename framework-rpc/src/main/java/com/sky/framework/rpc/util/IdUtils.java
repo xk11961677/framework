@@ -20,32 +20,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.remoting;
+package com.sky.framework.rpc.util;
 
-import com.sky.framework.rpc.remoting.protocol.PayloadHolder;
-import lombok.Data;
+import com.sky.framework.rpc.remoting.protocol.LongSequence;
 
 /**
  * @author
  */
-@Data
-public class Request extends PayloadHolder {
+public class IdUtils {
 
-    private long timestamp;
+    private static final LongSequence longSequence = new LongSequence();
 
-    private String version;
-
-    private Long id;
-
-    public Request() {
+    /**
+     * 获取id
+     *
+     * @return
+     */
+    public static long getId() {
+        return longSequence.next();
     }
 
-    public Request(long id) {
-        this.id = id;
-    }
-
-
-    public void timestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
 }

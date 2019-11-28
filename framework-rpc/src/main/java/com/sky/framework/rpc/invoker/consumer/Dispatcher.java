@@ -20,32 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.remoting;
+package com.sky.framework.rpc.invoker.consumer;
 
-import com.sky.framework.rpc.remoting.protocol.PayloadHolder;
-import lombok.Data;
+import com.sky.framework.rpc.invoker.future.DefaultInvokeFuture;
+import com.sky.framework.rpc.register.meta.RegisterMeta;
+import com.sky.framework.rpc.remoting.Request;
 
 /**
  * @author
  */
-@Data
-public class Request extends PayloadHolder {
+public interface Dispatcher {
 
-    private long timestamp;
+    /**
+     * 执行远程调用,获取结果
+     *
+     * @param request
+     * @param serviceMeta
+     * @param returnType
+     * @return
+     */
+    DefaultInvokeFuture dispatch(Request request, RegisterMeta.ServiceMeta serviceMeta, Class<?> returnType);
 
-    private String version;
-
-    private Long id;
-
-    public Request() {
-    }
-
-    public Request(long id) {
-        this.id = id;
-    }
-
-
-    public void timestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
 }

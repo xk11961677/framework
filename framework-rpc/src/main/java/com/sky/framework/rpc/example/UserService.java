@@ -30,13 +30,23 @@ import com.sky.framework.rpc.invoker.annotation.Consumer;
 @Consumer(group = "test")
 public interface UserService {
     /**
+     * hello
+     *
      * @param msg
      * @return
      */
     String hello(String msg);
 
     /**
-     *
+     * hello
      */
     void hello();
+
+    /**
+     * 获取user
+     *
+     * @param user
+     * @return
+     */
+    User getUser(User user);
 }

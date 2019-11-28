@@ -33,7 +33,8 @@ import com.sky.framework.rpc.serializer.FastJsonSerializer;
 import com.sky.framework.rpc.util.ReflectAsmUtils;
 import com.sky.framework.threadpool.AsyncThreadPoolProperties;
 import com.sky.framework.threadpool.core.CommonThreadPool;
-import com.sky.framework.threadpool.core.IAsynchronousHandler;
+import com.sky.framework.threadpool.core.DefaultAsynchronousHandler;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
@@ -59,40 +60,35 @@ public class ProviderProcessorHandler extends AbstractProcessor {
 
     @Override
     public void handler(ChannelHandlerContext ctx, Request request) {
-        CommonThreadPool.execute(new IAsynchronousHandler() {
-
-            private RpcInvocation rpcInvocation = null;
-
-            private Object result = null;
-
-            @Override
-            public void executeAfter(Throwable t) {
-                Response response = new Response(request.getId());
-                response.setStatus(Status.OK.value());
-                byte[] serialize = fastjsonSerializer.serialize(result);
-                response.bytes(SerializeEnum.FASTJSON.getSerializerCode(), serialize);
-                ctx.writeAndFlush(response).addListener((ChannelFutureListener) channelFuture -> {
-                    log.info("the server response completion:{}");
-                });
-                rpcInvocation = null;
-                result = null;
-            }
-
-            @Override
-            public void executeBefore(Thread t) {
-                //todo default fastJson
-                SerializeEnum serialize = SerializeEnum.acquire(request.serializerCode());
-                byte[] bytes = request.bytes();
-                rpcInvocation = fastjsonSerializer.deSerialize(bytes, RpcInvocation.class);
-            }
+        CommonThreadPool.execute(new DefaultAsynchronousHandler() {
 
             @Override
             public Object call() throws Exception {
+                Response response = new Response(request.getId());
+                response.setStatus(Status.OK.value());
+                response.setSerializerCode(request.getSerializerCode());
                 try {
-                    result = ReflectAsmUtils.invoke(rpcInvocation.getClazzName(), rpcInvocation.getMethodName(),
+                    SerializeEnum serializeType = SerializeEnum.acquire(request.getSerializerCode());
+                    byte[] bytes = request.bytes();
+                    RpcInvocation rpcInvocation = fastjsonSerializer.deSerialize(bytes, RpcInvocation.class);
+
+                    Object result = ReflectAsmUtils.invoke(rpcInvocation.getClazzName(),
+                            rpcInvocation.getMethodName(),
                             rpcInvocation.getParameterTypes(), rpcInvocation.getArguments());
+
+                    byte[] body = fastjsonSerializer.serialize(result);
+                    response.bytes(body);
+
                 } catch (Exception e) {
-                    log.error("the provider reflect exception !", e.getMessage());
+                    response.setStatus(Status.SERVER_ERROR.value());
+                    log.error("the server exception :{}", e);
+                } finally {
+                    Channel channel = ctx.channel();
+                    if (channel.isActive() && channel.isWritable()) {
+                        channel.writeAndFlush(response).addListener((ChannelFutureListener) channelFuture -> {
+                            log.info("the server response completed:{}");
+                        });
+                    }
                 }
                 return null;
             }

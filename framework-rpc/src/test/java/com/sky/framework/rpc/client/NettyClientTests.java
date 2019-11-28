@@ -23,12 +23,16 @@
 package com.sky.framework.rpc.client;
 
 import com.sky.framework.rpc.BaseApplicationTests;
+import com.sky.framework.rpc.example.User;
 import com.sky.framework.rpc.example.UserService;
 import com.sky.framework.rpc.invoker.annotation.Consumer;
-import com.sky.framework.rpc.invoker.consumer.proxy.Proxy;
+import com.sky.framework.rpc.invoker.consumer.proxy.ProxyFactory;
+import com.sky.framework.rpc.invoker.consumer.proxy.bytebuddy.ByteBuddyProxyFactory;
 import com.sky.framework.rpc.invoker.consumer.proxy.javassist.JavassistProxyFactory;
+import com.sky.framework.rpc.invoker.consumer.proxy.jdk.JdkProxyFactory;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.client.NettyClient;
+import com.sky.framework.rpc.util.IdUtils;
 import org.junit.Test;
 
 /**
@@ -48,16 +52,29 @@ public class NettyClientTests extends BaseApplicationTests {
         serviceMeta.setVersion(annotation.version());
         nettyClient.getRegistryService().subscribe(serviceMeta);
 
-        JavassistProxyFactory javassistProxyFactory = new JavassistProxyFactory();
-        UserService userService = javassistProxyFactory.newInstance(UserService.class);
+        ProxyFactory factory = new JavassistProxyFactory();
+//        ProxyFactory factory = new JdkProxyFactory();
+//        ProxyFactory factory = new ByteBuddyProxyFactory();
+
+        UserService userService = factory.newInstance(UserService.class);
+
         String hello = userService.hello("123");
-        System.out.println("=====result:{}" + hello);
+        System.out.println("=====result hello:{}" + hello);
+
+        User user = User.builder().id(IdUtils.getId()).name("sky:" + IdUtils.getId() + ":").build();
+        user = userService.getUser(user);
+        System.out.println("=====result user:{}" + user);
+
         userService.hello();
 
         while (true) {
             Thread.sleep(10000);
             hello = userService.hello("123");
             System.out.println("=====result:{}" + hello);
+
+            user = User.builder().id(IdUtils.getId()).name("sky:" + IdUtils.getId() + ":").build();
+            user = userService.getUser(user);
+            System.out.println("=====result user:{}" + user);
         }
     }
 }

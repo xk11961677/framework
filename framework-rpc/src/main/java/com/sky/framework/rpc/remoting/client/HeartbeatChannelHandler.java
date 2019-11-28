@@ -49,7 +49,7 @@ public class HeartbeatChannelHandler extends ChannelInboundHandlerAdapter {
         if (evt instanceof IdleStateEvent) {
             IdleState state = ((IdleStateEvent) evt).state();
             if (state == IdleState.WRITER_IDLE) {
-                log.info("the client send heartbeat package !");
+                //log.info("the client send heartbeat package !");
                 ctx.writeAndFlush(heartbeatContent());
             }
         } else {

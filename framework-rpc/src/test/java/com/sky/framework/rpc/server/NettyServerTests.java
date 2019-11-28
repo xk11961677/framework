@@ -30,22 +30,23 @@ import com.sky.framework.rpc.invoker.annotation.Provider;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.server.NettyServer;
 import com.sky.framework.rpc.util.ReflectAsmUtils;
+import org.junit.Before;
 import org.junit.Test;
 
 public class NettyServerTests extends BaseApplicationTests {
 
     private int port = 8081;
 
-    private void build() {
+    @Before
+    public void build() {
         MethodAccess access = MethodAccess.get(UserService.class);
-        ReflectAsmUtils.accessConstainer.put(UserService.class, access);
-        ReflectAsmUtils.clazzConstainer.put(UserService.class.getName(), UserService.class);
-        ReflectAsmUtils.objectConstainer.put(UserService.class, new UserServiceImpl());
+        ReflectAsmUtils.accessMap.put(UserService.class, access);
+        ReflectAsmUtils.clazzMap.put(UserService.class.getName(), UserService.class);
+        ReflectAsmUtils.objectMap.put(UserService.class, new UserServiceImpl());
     }
 
     @Test
     public void start() {
-        build();
 
         NettyServer nettyServer = new NettyServer(port);
 

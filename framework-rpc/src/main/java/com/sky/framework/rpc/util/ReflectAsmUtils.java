@@ -32,11 +32,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ReflectAsmUtils {
 
-    public static Map<String, Class> clazzConstainer = new ConcurrentHashMap<>();
+    public static Map<String, Class> clazzMap = new ConcurrentHashMap<>();
 
-    public static Map<Class, MethodAccess> accessConstainer = new ConcurrentHashMap<>();
+    public static Map<Class, MethodAccess> accessMap = new ConcurrentHashMap<>();
 
-    public static Map<Class, Object> objectConstainer = new ConcurrentHashMap<>();
+    public static Map<Class, Object> objectMap = new ConcurrentHashMap<>();
 
     /**
      * @param clazz
@@ -46,9 +46,9 @@ public class ReflectAsmUtils {
      * @return
      */
     public static Object invoke(String clazz, String method, Class<?>[] parameterTypes, Object[] arguments) {
-        Class aClass = clazzConstainer.get(clazz);
-        MethodAccess access = accessConstainer.get(aClass);
-        Object target = objectConstainer.get(aClass);
+        Class aClass = clazzMap.get(clazz);
+        MethodAccess access = accessMap.get(aClass);
+        Object target = objectMap.get(aClass);
         int index = access.getIndex(method, parameterTypes);
         Object result = access.invoke(target, index, arguments);
         return result;

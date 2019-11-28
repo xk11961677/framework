@@ -79,10 +79,10 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
                 // 消息体内容
                 switch (header.getMessageCode()) {
                     case ProtocolHeader.HEARTBEAT:
-                        log.info("the protocol decoder recv heartbeat");
+                        //log.info("the protocol decoder recv heartbeat");
                         break;
                     case ProtocolHeader.REQUEST: {
-                        log.info("the protocol decoder recv REQUEST");
+                        //log.info("the protocol decoder recv REQUEST");
                         int length = checkBodySize(header.getBodySize());
                         byte[] bytes = new byte[length];
                         in.readBytes(bytes);
@@ -93,7 +93,7 @@ public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
                         break;
                     }
                     case ProtocolHeader.RESPONSE: {
-                        log.info("the protocol decoder recv RESPONSE");
+                        //log.info("the protocol decoder recv RESPONSE");
                         int length = checkBodySize(header.getBodySize());
                         byte[] bytes = new byte[length];
                         in.readBytes(bytes);

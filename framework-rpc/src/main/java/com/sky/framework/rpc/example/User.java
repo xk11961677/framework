@@ -20,32 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.remoting;
+package com.sky.framework.rpc.example;
 
-import com.sky.framework.rpc.remoting.protocol.PayloadHolder;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * @author
  */
+@Builder
 @Data
-public class Request extends PayloadHolder {
+@AllArgsConstructor
+@Accessors
+@NoArgsConstructor
+public class User implements Serializable {
 
-    private long timestamp;
-
-    private String version;
+    private static final long serialVersionUID = 476354502678847722L;
 
     private Long id;
 
-    public Request() {
-    }
-
-    public Request(long id) {
-        this.id = id;
-    }
-
-
-    public void timestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
+    private String name;
 }

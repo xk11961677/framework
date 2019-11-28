@@ -22,10 +22,10 @@
  */
 package com.sky.framework.rpc.invoker.future;
 
+import com.sky.framework.rpc.common.exception.RpcException;
 import com.sky.framework.rpc.remoting.Response;
 import com.sky.framework.rpc.remoting.Status;
 import com.sky.framework.rpc.serializer.FastJsonSerializer;
-import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.*;
@@ -47,6 +47,8 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
     private final Class<V> returnType;
 
     private final long timeout;
+
+    private Throwable cause;
 
     private final long startTime = System.nanoTime();
 
@@ -90,27 +92,26 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
             V v = serializer.deSerialize(bytes, returnType);
             complete(v);
         } else {
-            setException(status, response);
+            setException(status);
         }
     }
 
     /**
      * set complete exception
      *
-     * @param status
-     * @param response
+     * @param statusKey
      */
-    private void setException(byte status, Response response) {
-        Throwable cause = new RuntimeException("todo exception"+status);
-        //todo exception
+    private void setException(byte statusKey) {
+        Status status = Status.parse(statusKey);
+        Throwable cause = new RpcException(status);
+        setCause(cause);
         completeExceptionally(cause);
     }
 
     /**
-     * @param ctx
      * @param response
      */
-    public static void received(ChannelHandlerContext ctx, Response response) {
+    public static void received(Response response) {
         long invokeId = response.id();
         DefaultInvokeFuture<?> future = roundFutures.remove(invokeId);
         future.doReceived(response);
@@ -123,5 +124,14 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
         long invokeId = response.id();
         DefaultInvokeFuture<?> future = roundFutures.remove(invokeId);
         future.doReceived(response);
+    }
+
+
+    public Throwable getCause() {
+        return cause;
+    }
+
+    public void setCause(Throwable cause) {
+        this.cause = cause;
     }
 }
