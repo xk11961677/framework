@@ -22,8 +22,40 @@
  */
 package com.sky.framework.rpc.cluster;
 
-///**
-// * @author
-// */
-//public class FailfastClusterInvoker implements ClusterInvoker {
-//}
+import com.sky.framework.rpc.common.exception.RpcException;
+import com.sky.framework.rpc.invoker.consumer.Dispatcher;
+import com.sky.framework.rpc.invoker.future.DefaultInvokeFuture;
+import com.sky.framework.rpc.register.meta.RegisterMeta;
+import com.sky.framework.rpc.remoting.Request;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * @author
+ */
+@Slf4j
+public class FailfastClusterInvoker implements ClusterInvoker {
+
+    private Dispatcher dispatcher;
+
+    public FailfastClusterInvoker(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
+    }
+
+    @Override
+    public <T> T invoke(Request request, RegisterMeta.ServiceMeta serviceMeta, Class<?> returnType) {
+        Object result = null;
+        DefaultInvokeFuture future = dispatcher.dispatch(request, serviceMeta, returnType);
+        try {
+            result = future.getResult();
+            if (future.isCompletedExceptionally()) {
+                throw future.getCause();
+            }
+        } catch (Throwable throwable) {
+            log.error("failfastClusterInvoker invoke exception:{}", throwable);
+            RpcException rpcException = throwable instanceof RpcException ? (RpcException) throwable :
+                    new RpcException(throwable);
+            throw rpcException;
+        }
+        return (T) result;
+    }
+}
