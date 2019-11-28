@@ -47,11 +47,10 @@ public class ProtocolEncoder extends MessageToByteEncoder<PayloadHolder> {
     }
 
     private void doEncodeRequest(Request request, ByteBuf out) {
-        byte sign = ProtocolHeader.toSign(request.serializerCode(), ProtocolHeader.REQUEST);
+        byte sign = ProtocolHeader.toSign(request.getSerializerCode(), ProtocolHeader.REQUEST);
         long invokeId = request.getId();
         byte[] bytes = request.bytes();
         int length = bytes.length;
-        log.info("doEncodeRequest");
         out.writeShort(ProtocolHeader.MAGIC)
                 .writeByte(sign)
                 .writeByte(0x00)
@@ -62,12 +61,11 @@ public class ProtocolEncoder extends MessageToByteEncoder<PayloadHolder> {
 
 
     private void doEncodeResponse(Response response, ByteBuf out) {
-        byte sign = ProtocolHeader.toSign(response.serializerCode(), ProtocolHeader.RESPONSE);
+        byte sign = ProtocolHeader.toSign(response.getSerializerCode(), ProtocolHeader.RESPONSE);
         byte status = response.status();
         long invokeId = response.id();
         byte[] bytes = response.bytes();
         int length = bytes.length;
-        log.info("doEncodeResponse");
         out.writeShort(ProtocolHeader.MAGIC)
                 .writeByte(sign)
                 .writeByte(status)

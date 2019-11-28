@@ -42,4 +42,11 @@ public class UserServiceImpl implements UserService {
     public void hello() {
         log.info("no msg:{}");
     }
+
+    @Override
+    public User getUser(User user) {
+        log.info("msg:{}" + user);
+        user.setName(user.getName() + "response");
+        return user;
+    }
 }

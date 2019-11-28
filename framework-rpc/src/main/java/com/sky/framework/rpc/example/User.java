@@ -20,38 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.cluster;
+package com.sky.framework.rpc.example;
 
-import com.sky.framework.rpc.invoker.consumer.Dispatcher;
-import com.sky.framework.rpc.invoker.future.DefaultInvokeFuture;
-import com.sky.framework.rpc.register.meta.RegisterMeta;
-import com.sky.framework.rpc.remoting.Request;
-import lombok.extern.slf4j.Slf4j;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * @author
  */
-@Slf4j
-public class FailsafeClusterInvoker implements ClusterInvoker {
+@Builder
+@Data
+@AllArgsConstructor
+@Accessors
+@NoArgsConstructor
+public class User implements Serializable {
 
-    private Dispatcher dispatcher;
+    private static final long serialVersionUID = 476354502678847722L;
 
-    public FailsafeClusterInvoker(Dispatcher dispatcher) {
-        this.dispatcher = dispatcher;
-    }
+    private Long id;
 
-    @Override
-    public <T> T invoke(Request request, RegisterMeta.ServiceMeta serviceMeta, Class<?> returnType) {
-        Object result = null;
-        DefaultInvokeFuture future = dispatcher.dispatch(request, serviceMeta, returnType);
-        try {
-            result = future.getResult();
-            if (future.isCompletedExceptionally()) {
-                throw future.getCause();
-            }
-        } catch (Throwable throwable) {
-            log.warn("failsafeClusterInvoker invoke exception:{}", throwable);
-        }
-        return (T) result;
-    }
+    private String name;
 }

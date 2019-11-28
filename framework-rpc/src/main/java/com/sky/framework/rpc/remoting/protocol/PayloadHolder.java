@@ -22,25 +22,30 @@
  */
 package com.sky.framework.rpc.remoting.protocol;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author
  */
 public abstract class PayloadHolder {
 
+
+    @Getter
+    @Setter
     private byte serializerCode;
 
-    private byte[] bytes;
-
-    public byte serializerCode() {
-        return serializerCode;
-    }
+    private byte[] bytes = new byte[0];
 
     public byte[] bytes() {
         return bytes;
     }
 
+    public void bytes(byte[] bytes) {
+        this.bytes = bytes;
+    }
 
-    public void bytes(byte serializerCode,byte[] bytes) {
+    public void bytes(byte serializerCode, byte[] bytes) {
         this.bytes = bytes;
         this.serializerCode = serializerCode;
     }

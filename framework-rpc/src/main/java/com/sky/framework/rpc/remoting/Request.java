@@ -37,6 +37,9 @@ public class Request extends PayloadHolder {
 
     private Long id;
 
+    public Request() {
+    }
+
     public Request(long id) {
         this.id = id;
     }

@@ -22,8 +22,16 @@
  */
 package com.sky.framework.rpc.cluster;
 
+import com.sky.framework.rpc.register.meta.RegisterMeta;
+import com.sky.framework.rpc.remoting.Request;
+
 /**
  * @author
  */
 public class FailbackClusterInvoker implements ClusterInvoker {
+
+    @Override
+    public <T> T invoke(Request request, RegisterMeta.ServiceMeta serviceMeta, Class<?> returnType) {
+        return null;
+    }
 }

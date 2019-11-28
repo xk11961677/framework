@@ -30,13 +30,17 @@ import java.util.concurrent.CompletionStage;
 public interface InvokeFuture<V> extends CompletionStage<V> {
 
     /**
-     * invoke interface returnType
+     * 接口返回值类型
+     *
      * @return
      */
     Class<V> returnType();
 
     /**
-     * Waits for this future to be completed and get the result.
+     * 获取结果
+     *
+     * @return
+     * @throws Throwable
      */
     V getResult() throws Throwable;
 }

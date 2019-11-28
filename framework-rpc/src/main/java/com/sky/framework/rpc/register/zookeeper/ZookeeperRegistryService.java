@@ -23,11 +23,11 @@
 package com.sky.framework.rpc.register.zookeeper;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
-import com.sky.framework.common.IpUtils;
+import cn.hutool.core.net.NetUtil;
 import com.sky.framework.rpc.register.AbstractRegistryService;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -58,7 +58,7 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
     /**
      * 本机IP地址
      */
-    private final String address = IpUtils.getLocalIp();
+    private final String address = NetUtil.getLocalhostStr();
 
     /**
      * children node watcher

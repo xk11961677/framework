@@ -20,38 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.cluster;
+package com.sky.framework.rpc.invoker.consumer;
 
-import com.sky.framework.rpc.invoker.consumer.Dispatcher;
 import com.sky.framework.rpc.invoker.future.DefaultInvokeFuture;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.Request;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author
  */
-@Slf4j
-public class FailsafeClusterInvoker implements ClusterInvoker {
+public interface Dispatcher {
 
-    private Dispatcher dispatcher;
+    /**
+     * 执行远程调用,获取结果
+     *
+     * @param request
+     * @param serviceMeta
+     * @param returnType
+     * @return
+     */
+    DefaultInvokeFuture dispatch(Request request, RegisterMeta.ServiceMeta serviceMeta, Class<?> returnType);
 
-    public FailsafeClusterInvoker(Dispatcher dispatcher) {
-        this.dispatcher = dispatcher;
-    }
-
-    @Override
-    public <T> T invoke(Request request, RegisterMeta.ServiceMeta serviceMeta, Class<?> returnType) {
-        Object result = null;
-        DefaultInvokeFuture future = dispatcher.dispatch(request, serviceMeta, returnType);
-        try {
-            result = future.getResult();
-            if (future.isCompletedExceptionally()) {
-                throw future.getCause();
-            }
-        } catch (Throwable throwable) {
-            log.warn("failsafeClusterInvoker invoke exception:{}", throwable);
-        }
-        return (T) result;
-    }
 }

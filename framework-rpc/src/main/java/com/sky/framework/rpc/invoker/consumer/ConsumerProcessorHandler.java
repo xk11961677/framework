@@ -51,7 +51,7 @@ public class ConsumerProcessorHandler extends AbstractProcessor {
         CommonThreadPool.execute(new DefaultAsynchronousHandler() {
             @Override
             public Object call() throws Exception {
-                DefaultInvokeFuture.received(ctx, response);
+                DefaultInvokeFuture.received(response);
                 return null;
             }
         });

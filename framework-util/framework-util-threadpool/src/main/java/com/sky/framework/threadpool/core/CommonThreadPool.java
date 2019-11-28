@@ -42,9 +42,9 @@ public final class CommonThreadPool {
 
     public static final String LONG_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    private static ExecutorService excutorService;
+    private static ExecutorService executorService;
 
-    private static final long EXECUTETIME = 10000L;
+    private static final long EXECUTE_TIME = 10000L;
 
     private CommonThreadPool() {
 
@@ -58,8 +58,8 @@ public final class CommonThreadPool {
      * @since
      */
     public static Future<Object> execute(IAsynchronousHandler command) {
-        ThreadPoolAdaptor handler = new ThreadPoolAdaptor(command, EXECUTETIME);
-        Future<Object> future = excutorService.submit(handler);
+        ThreadPoolAdaptor handler = new ThreadPoolAdaptor(command, EXECUTE_TIME);
+        Future<Object> future = executorService.submit(handler);
         return future;
     }
 
@@ -84,8 +84,8 @@ public final class CommonThreadPool {
      */
     @SuppressWarnings("unused")
     public static boolean shutDown() {
-        if (excutorService != null) {
-            excutorService.shutdown();
+        if (executorService != null) {
+            executorService.shutdown();
             return true;
         }
         return false;
@@ -115,7 +115,7 @@ public final class CommonThreadPool {
 
         taskqueue.setParent(executeNew);
 
-        excutorService = executeNew;
+        executorService = executeNew;
         return executeNew;
     }
 
@@ -126,7 +126,7 @@ public final class CommonThreadPool {
      */
     @SuppressWarnings("unused")
     public static ThreadPoolExecutorExtend getThreadPool() {
-        return (ThreadPoolExecutorExtend) excutorService;
+        return (ThreadPoolExecutorExtend) executorService;
     }
 
     /**
