@@ -21,3 +21,24 @@
  * THE SOFTWARE.
  */
 package com.sky.framework.rpc.monitor;
+
+import com.sky.framework.rpc.BaseApplicationTests;
+import org.junit.Test;
+
+public class MetricsMonitorTest extends BaseApplicationTests {
+
+    @Test
+    public void test() {
+        try{
+            for(int i=1000; i>=0; i--) {
+                MetricsMonitor.getServerChannelCount().incrementAndGet();
+                Thread.sleep(100);
+                MetricsMonitor.getServerChannelCount().decrementAndGet();
+                MetricsMonitor.getServerChannelCount().incrementAndGet();
+                System.out.println(MetricsMonitor.getServerChannelCount().get());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
