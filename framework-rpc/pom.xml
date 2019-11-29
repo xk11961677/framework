@@ -13,11 +13,6 @@
 
     <dependencies>
 
-        <!--<dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>framework-util-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>-->
 
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -116,15 +111,21 @@
         </dependency>
 
         <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-core</artifactId>
-            <version>3.0.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
         </dependency>
+
+
+        <!--<dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>-->
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-jmx</artifactId>
+        </dependency>
+
 
     </dependencies>
 

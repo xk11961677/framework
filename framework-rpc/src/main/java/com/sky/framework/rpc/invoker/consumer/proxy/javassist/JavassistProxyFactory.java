@@ -29,7 +29,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -110,12 +109,12 @@ public class JavassistProxyFactory implements ProxyFactory {
             addConstructor(pool, proxyCtClass, invocationHandler);
             // 添加方法
             addMethod(pool, proxyCtClass, targetCtClass, targetClass);
-            // 从指定ClassLoader加载Class
+            // 从指定ClassLoader加载Class,调用此方法后,proxyCtClass不能再被修改,需要调用defrost解冻
             proxyClass = proxyCtClass.toClass(classLoader, null);
             // 缓存
             saveProxyClassCache(classLoader, targetClass, proxyClass);
-            File outputFile = new File("/Users/sky/Desktop/");
-            proxyCtClass.writeFile(outputFile.getAbsolutePath());
+//            File outputFile = new File("/Users/sky/Desktop/");
+//            proxyCtClass.writeFile(outputFile.getAbsolutePath());
             proxyCtClass.defrost();
             return proxyClass.getConstructor(JavassistProxy.class).newInstance(invocationHandler);
         } catch (Exception e) {
