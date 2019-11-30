@@ -20,45 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.invoker.consumer.proxy.jdk;
+package com.sky.framework.rpc.spring;
 
-import com.sky.framework.rpc.invoker.consumer.proxy.AbstractProxyFactory;
+import com.sky.framework.rpc.common.spi.SpiExchange;
 import com.sky.framework.rpc.spring.annotation.Reference;
-
-import java.lang.reflect.Proxy;
 
 /**
  * @author
  */
-public class JdkProxyFactory extends AbstractProxyFactory {
+public abstract class ReferenceConfig implements Config {
 
+    private Reference reference;
 
-    public JdkProxyFactory() {
+    private Class<?> interfaceClass;
+
+    public <T> T get() {
+        return SpiExchange.getInstance().getProxyFactory().newInstance(interfaceClass,reference);
     }
 
-    private JdkProxyFactory(Class<?> interfaceClass) {
-        super.setInterfaceClass(interfaceClass);
+    public Reference getReference() {
+        return reference;
     }
 
-    @Override
-    public String getScheme() {
-        return "jdk";
+    public void setReference(Reference reference) {
+        this.reference = reference;
     }
 
-    @Override
-    public <T> T newInstance(Class<?> interfaceClass, Reference reference) {
-        JdkProxyFactory jdkProxyFactory = new JdkProxyFactory(interfaceClass);
-        return (T) jdkProxyFactory.newInstance();
+    public void setInterfaceClass(Class<?> interfaceClass) {
+        this.interfaceClass = interfaceClass;
     }
 
-    private <T> T newInstance() {
-        JdkProxy jdkProxy = new JdkProxy(getInterfaceClass(), getReference());
-        return newInstance(jdkProxy);
+    public Class<?> getInterfaceClass() {
+        return interfaceClass;
     }
-
-    private <T> T newInstance(JdkProxy jdkProxy) {
-        return (T) Proxy.newProxyInstance(JdkProxyFactory.class.getClassLoader(), new Class[]{getInterfaceClass()}, jdkProxy);
-    }
-
-
 }

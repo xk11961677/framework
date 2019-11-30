@@ -24,6 +24,7 @@ package com.sky.framework.rpc.invoker.consumer.proxy.javassist;
 
 import com.sky.framework.rpc.invoker.consumer.proxy.InvocationHandler;
 import com.sky.framework.rpc.invoker.consumer.proxy.Proxy;
+import com.sky.framework.rpc.spring.annotation.Reference;
 
 import java.lang.reflect.Method;
 
@@ -32,8 +33,8 @@ import java.lang.reflect.Method;
  */
 public class JavassistProxy extends Proxy implements InvocationHandler {
 
-    public JavassistProxy(Class<?> interfaceClass) {
-        super(interfaceClass);
+    public JavassistProxy(Class<?> interfaceClass, Reference reference) {
+        super(interfaceClass, reference);
     }
 
     @Override

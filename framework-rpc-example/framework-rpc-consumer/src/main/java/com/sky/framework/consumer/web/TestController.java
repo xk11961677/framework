@@ -20,45 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.invoker.consumer.proxy.jdk;
+package com.sky.framework.consumer.web;
 
-import com.sky.framework.rpc.invoker.consumer.proxy.AbstractProxyFactory;
+import com.sky.framework.model.dto.MessageRes;
+import com.sky.framework.rpc.api.ExampleApi;
+import com.sky.framework.rpc.api.dto.UserDTO;
 import com.sky.framework.rpc.spring.annotation.Reference;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.lang.reflect.Proxy;
 
 /**
  * @author
  */
-public class JdkProxyFactory extends AbstractProxyFactory {
+@Controller
+@RequestMapping("test")
+@Slf4j
+public class TestController {
 
+    @Reference(group = "example")
+    private ExampleApi exampleApi;
 
-    public JdkProxyFactory() {
+    @RequestMapping
+    @ResponseBody
+    public MessageRes test() {
+        UserDTO userDTO = UserDTO.builder().
+                id(1L).
+                name("sky")
+                .build();
+        UserDTO user = exampleApi.getUser(userDTO);
+        return MessageRes.success(user);
     }
-
-    private JdkProxyFactory(Class<?> interfaceClass) {
-        super.setInterfaceClass(interfaceClass);
-    }
-
-    @Override
-    public String getScheme() {
-        return "jdk";
-    }
-
-    @Override
-    public <T> T newInstance(Class<?> interfaceClass, Reference reference) {
-        JdkProxyFactory jdkProxyFactory = new JdkProxyFactory(interfaceClass);
-        return (T) jdkProxyFactory.newInstance();
-    }
-
-    private <T> T newInstance() {
-        JdkProxy jdkProxy = new JdkProxy(getInterfaceClass(), getReference());
-        return newInstance(jdkProxy);
-    }
-
-    private <T> T newInstance(JdkProxy jdkProxy) {
-        return (T) Proxy.newProxyInstance(JdkProxyFactory.class.getClassLoader(), new Class[]{getInterfaceClass()}, jdkProxy);
-    }
-
-
 }

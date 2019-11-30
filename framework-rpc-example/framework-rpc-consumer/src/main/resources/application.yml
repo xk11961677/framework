@@ -1,0 +1,7 @@
+server:
+  port: 8081
+
+rpc:
+  registry:
+    address: 127.0.0.1:2181
+    group: example

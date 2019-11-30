@@ -68,6 +68,7 @@
         <module>framework-util</module>
         <module>framework-dao</module>
         <module>framework-rpc</module>
+        <module>framework-rpc-example</module>
     </modules>
 
 

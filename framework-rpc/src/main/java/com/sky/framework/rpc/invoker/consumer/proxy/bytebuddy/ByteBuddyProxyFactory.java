@@ -22,7 +22,8 @@
  */
 package com.sky.framework.rpc.invoker.consumer.proxy.bytebuddy;
 
-import com.sky.framework.rpc.invoker.consumer.proxy.ProxyFactory;
+import com.sky.framework.rpc.invoker.consumer.proxy.AbstractProxyFactory;
+import com.sky.framework.rpc.spring.annotation.Reference;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
@@ -33,15 +34,15 @@ import net.bytebuddy.matcher.ElementMatchers;
  * @author
  */
 @Slf4j
-public class ByteBuddyProxyFactory implements ProxyFactory {
+public class ByteBuddyProxyFactory extends AbstractProxyFactory {
     @Override
     public String getScheme() {
         return "byteBuddy";
     }
 
     @Override
-    public <T> T newInstance(Class<?> interfaceClass) {
-        ByteBuddyProxy byteBuddyProxy = new ByteBuddyProxy(interfaceClass);
+    public <T> T newInstance(Class<?> interfaceClass, Reference reference) {
+        ByteBuddyProxy byteBuddyProxy = new ByteBuddyProxy(interfaceClass, reference);
         Class<?> cls = new ByteBuddy()
                 .subclass(interfaceClass)
                 .method(ElementMatchers.isDeclaredBy(interfaceClass))

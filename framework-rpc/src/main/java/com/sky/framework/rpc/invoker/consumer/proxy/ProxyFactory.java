@@ -23,13 +23,28 @@
 package com.sky.framework.rpc.invoker.consumer.proxy;
 
 
+import com.sky.framework.rpc.spring.annotation.Reference;
+
 /**
  * @author
  */
 public interface ProxyFactory {
 
+    /**
+     * 代理子类类型
+     *
+     * @return
+     */
     String getScheme();
 
-    <T> T newInstance(Class<?> interfaceClass);
+    /**
+     * 创建代理对象
+     *
+     * @param interfaceClass
+     * @param reference
+     * @param <T>
+     * @return
+     */
+    <T> T newInstance(Class<?> interfaceClass, Reference reference);
 
 }

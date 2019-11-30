@@ -20,45 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.invoker.consumer.proxy.jdk;
+package com.sky.framework.rpc.spring;
 
-import com.sky.framework.rpc.invoker.consumer.proxy.AbstractProxyFactory;
-import com.sky.framework.rpc.spring.annotation.Reference;
-
-import java.lang.reflect.Proxy;
+import lombok.Data;
 
 /**
  * @author
  */
-public class JdkProxyFactory extends AbstractProxyFactory {
 
+@Data
+public class RegistryProperties {
 
-    public JdkProxyFactory() {
-    }
+    private String address;
 
-    private JdkProxyFactory(Class<?> interfaceClass) {
-        super.setInterfaceClass(interfaceClass);
-    }
-
-    @Override
-    public String getScheme() {
-        return "jdk";
-    }
-
-    @Override
-    public <T> T newInstance(Class<?> interfaceClass, Reference reference) {
-        JdkProxyFactory jdkProxyFactory = new JdkProxyFactory(interfaceClass);
-        return (T) jdkProxyFactory.newInstance();
-    }
-
-    private <T> T newInstance() {
-        JdkProxy jdkProxy = new JdkProxy(getInterfaceClass(), getReference());
-        return newInstance(jdkProxy);
-    }
-
-    private <T> T newInstance(JdkProxy jdkProxy) {
-        return (T) Proxy.newProxyInstance(JdkProxyFactory.class.getClassLoader(), new Class[]{getInterfaceClass()}, jdkProxy);
-    }
-
+    private String group;
 
 }

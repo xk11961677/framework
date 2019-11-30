@@ -35,7 +35,7 @@ import org.junit.Test;
 
 public class NettyServerTests extends BaseApplicationTests {
 
-    private int port = 8081;
+    private int port = 8090;
 
     @Before
     public void build() {

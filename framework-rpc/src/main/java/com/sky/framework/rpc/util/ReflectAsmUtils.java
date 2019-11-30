@@ -53,4 +53,19 @@ public class ReflectAsmUtils {
         Object result = access.invoke(target, index, arguments);
         return result;
     }
+
+    public static void add(Class<?> clazz, Object bean) {
+        MethodAccess access = MethodAccess.get(clazz);
+        accessMap.put(clazz, access);
+        clazzMap.put(clazz.getName(), clazz);
+        objectMap.put(clazz, bean);
+    }
+
+    /*public static void add(Object bean) {
+        Class clazz = AopTargetUtils.getTargetClass(bean);
+        MethodAccess access = MethodAccess.get(clazz);
+        accessMap.put(clazz, access);
+        clazzMap.put(clazz.getName(), clazz);
+        objectMap.put(clazz, bean);
+    }*/
 }

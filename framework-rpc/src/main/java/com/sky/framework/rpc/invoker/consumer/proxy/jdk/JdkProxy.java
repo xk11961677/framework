@@ -24,6 +24,7 @@ package com.sky.framework.rpc.invoker.consumer.proxy.jdk;
 
 
 import com.sky.framework.rpc.invoker.consumer.proxy.Proxy;
+import com.sky.framework.rpc.spring.annotation.Reference;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -34,8 +35,8 @@ import java.lang.reflect.Method;
  */
 public class JdkProxy extends Proxy implements InvocationHandler {
 
-    public JdkProxy(Class<?> interfaceClass) {
-        super(interfaceClass);
+    public JdkProxy(Class<?> interfaceClass, Reference reference) {
+        super(interfaceClass, reference);
     }
 
     @Override

@@ -27,40 +27,49 @@ import com.sky.framework.rpc.cluster.ClusterInvoker;
 import com.sky.framework.rpc.cluster.FailoverClusterInvoker;
 import com.sky.framework.rpc.common.enums.SerializeEnum;
 import com.sky.framework.rpc.invoker.RpcInvocation;
-import com.sky.framework.rpc.invoker.annotation.Consumer;
 import com.sky.framework.rpc.invoker.consumer.Dispatcher;
 import com.sky.framework.rpc.invoker.consumer.InvokerDispatcher;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.Request;
 import com.sky.framework.rpc.serializer.FastJsonSerializer;
+import com.sky.framework.rpc.spring.annotation.Reference;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 
 /**
+ * todo 每个代理类都会实例化,需要调整成单例
+ * serializer
+ * dispatcher
+ * invoker
+ *
  * @author
  */
 @Slf4j
 public class Proxy {
 
+    //todo spi extension
     private FastJsonSerializer serializer = new FastJsonSerializer();
 
     private Dispatcher dispatcher = new InvokerDispatcher();
 
+    //todo spi extension
     private ClusterInvoker invoker = new FailoverClusterInvoker(dispatcher);
 
     private Class<?> interfaceClass;
 
-    public Proxy(Class<?> interfaceClass) {
+    private Reference reference;
+
+    public Proxy(Class<?> interfaceClass, Reference reference) {
         this.interfaceClass = interfaceClass;
+        this.reference = reference;
     }
 
     public Object remoteCall(Method method, Object[] args) {
-        Consumer annotation = interfaceClass.getAnnotation(Consumer.class);
         RegisterMeta.ServiceMeta serviceMeta = new RegisterMeta.ServiceMeta();
-        serviceMeta.setGroup(annotation.group());
+        serviceMeta.setGroup(reference.group());
         serviceMeta.setServiceProviderName(interfaceClass.getName());
-        serviceMeta.setVersion(annotation.version());
+        serviceMeta.setVersion(reference.version());
 
         Request request = new Request();
         RpcInvocation rpcInvocation = new RpcInvocation();

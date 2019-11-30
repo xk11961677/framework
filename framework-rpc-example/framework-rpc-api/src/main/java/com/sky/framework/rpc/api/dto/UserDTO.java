@@ -20,45 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.invoker.consumer.proxy.jdk;
+package com.sky.framework.rpc.api.dto;
 
-import com.sky.framework.rpc.invoker.consumer.proxy.AbstractProxyFactory;
-import com.sky.framework.rpc.spring.annotation.Reference;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
-import java.lang.reflect.Proxy;
+import java.io.Serializable;
 
 /**
  * @author
  */
-public class JdkProxyFactory extends AbstractProxyFactory {
+@Builder
+@Data
+@AllArgsConstructor
+@Accessors
+@NoArgsConstructor
+public class UserDTO implements Serializable {
 
+    private static final long serialVersionUID = 476354502678847722L;
 
-    public JdkProxyFactory() {
-    }
+    private Long id;
 
-    private JdkProxyFactory(Class<?> interfaceClass) {
-        super.setInterfaceClass(interfaceClass);
-    }
-
-    @Override
-    public String getScheme() {
-        return "jdk";
-    }
-
-    @Override
-    public <T> T newInstance(Class<?> interfaceClass, Reference reference) {
-        JdkProxyFactory jdkProxyFactory = new JdkProxyFactory(interfaceClass);
-        return (T) jdkProxyFactory.newInstance();
-    }
-
-    private <T> T newInstance() {
-        JdkProxy jdkProxy = new JdkProxy(getInterfaceClass(), getReference());
-        return newInstance(jdkProxy);
-    }
-
-    private <T> T newInstance(JdkProxy jdkProxy) {
-        return (T) Proxy.newProxyInstance(JdkProxyFactory.class.getClassLoader(), new Class[]{getInterfaceClass()}, jdkProxy);
-    }
-
-
+    private String name;
 }
