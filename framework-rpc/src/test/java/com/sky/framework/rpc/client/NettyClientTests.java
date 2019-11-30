@@ -27,13 +27,14 @@ import com.sky.framework.rpc.example.User;
 import com.sky.framework.rpc.example.UserService;
 import com.sky.framework.rpc.invoker.annotation.Consumer;
 import com.sky.framework.rpc.invoker.consumer.proxy.ProxyFactory;
-import com.sky.framework.rpc.invoker.consumer.proxy.bytebuddy.ByteBuddyProxyFactory;
 import com.sky.framework.rpc.invoker.consumer.proxy.javassist.JavassistProxyFactory;
-import com.sky.framework.rpc.invoker.consumer.proxy.jdk.JdkProxyFactory;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.client.NettyClient;
+import com.sky.framework.rpc.spring.annotation.Reference;
 import com.sky.framework.rpc.util.IdUtils;
 import org.junit.Test;
+
+import java.lang.annotation.Annotation;
 
 /**
  * @author
@@ -45,18 +46,33 @@ public class NettyClientTests extends BaseApplicationTests {
         NettyClient nettyClient = new NettyClient();
         nettyClient.connectToRegistryServer("127.0.0.1:2181");
 
+        Reference reference = new Reference() {
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Reference.class;
+            }
+
+            @Override
+            public String group() {
+                return "test";
+            }
+
+            @Override
+            public String version() {
+                return "1.0.0";
+            }
+        };
         RegisterMeta.ServiceMeta serviceMeta = new RegisterMeta.ServiceMeta();
-        Consumer annotation = UserService.class.getAnnotation(Consumer.class);
-        serviceMeta.setGroup(annotation.group());
+        serviceMeta.setGroup(reference.group());
         serviceMeta.setServiceProviderName(UserService.class.getName());
-        serviceMeta.setVersion(annotation.version());
+        serviceMeta.setVersion(reference.version());
         nettyClient.getRegistryService().subscribe(serviceMeta);
 
         ProxyFactory factory = new JavassistProxyFactory();
 //        ProxyFactory factory = new JdkProxyFactory();
 //        ProxyFactory factory = new ByteBuddyProxyFactory();
 
-        UserService userService = factory.newInstance(UserService.class);
+        UserService userService = factory.newInstance(UserService.class, reference);
 
         String hello = userService.hello("123");
         System.out.println("=====result hello:{}" + hello);
@@ -68,7 +84,8 @@ public class NettyClientTests extends BaseApplicationTests {
         userService.hello();
 
         while (true) {
-            Thread.sleep(10000);
+//            Thread.sleep(10000);
+            Thread.sleep(3000);
             hello = userService.hello("123");
             System.out.println("=====result:{}" + hello);
 

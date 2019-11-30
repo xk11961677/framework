@@ -20,41 +20,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.invoker.consumer.proxy;
+package com.sky.framework.consumer;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import com.sky.framework.rpc.spring.annotation.EnableRPC;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author
  */
-public class CallType {
+@EnableRPC(scan = "com.sky.framework.consumer.web")
+@SpringBootApplication
+public class ConsumerApplication {
 
-    private Type[] types;
-
-    private Class rawType;
-
-    public CallType(Class rawType, Type[] types) {
-        this.types = types;
-        this.rawType = rawType;
-    }
-
-    public Type getType() {
-        return new ParameterizedType() {
-            @Override
-            public Type[] getActualTypeArguments() {
-                return types;
-            }
-
-            @Override
-            public Type getRawType() {
-                return rawType;
-            }
-
-            @Override
-            public Type getOwnerType() {
-                return null;
-            }
-        };
+    public static void main(String[] args) {
+        SpringApplication.run(ConsumerApplication.class, args);
     }
 }

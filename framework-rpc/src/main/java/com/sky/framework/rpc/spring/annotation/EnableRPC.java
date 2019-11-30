@@ -20,4 +20,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.spring;
+package com.sky.framework.rpc.spring.annotation;
+
+
+import com.sky.framework.rpc.spring.AnnotationRegistrar;
+import com.sky.framework.rpc.spring.RpcAutoConfiguration;
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
+
+
+/**
+ * @author
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Import({RpcAutoConfiguration.class, AnnotationRegistrar.class})
+@Documented
+public @interface EnableRPC {
+
+    /**
+     * 要扫描的包名
+     *
+     * @return
+     */
+    String scan();
+
+    /**
+     * 代理方式
+     *
+     * @return
+     */
+    String proxy() default "javassist";
+}

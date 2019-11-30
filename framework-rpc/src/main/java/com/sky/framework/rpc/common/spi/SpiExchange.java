@@ -23,15 +23,27 @@
 package com.sky.framework.rpc.common.spi;
 
 import com.sky.framework.rpc.invoker.consumer.proxy.ProxyFactory;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author
  */
 public class SpiExchange {
 
-    @Getter
-    @Setter
-    private static ProxyFactory proxyFactory;
+    private static SpiExchange instance = new SpiExchange();
+
+    private ProxyFactory proxyFactory;
+
+    public static SpiExchange getInstance() {
+        return instance;
+    }
+
+    public ProxyFactory getProxyFactory() {
+        return proxyFactory;
+    }
+
+    public void setProxyFactory(ProxyFactory proxyFactory) {
+        this.proxyFactory = proxyFactory;
+    }
+
+
 }

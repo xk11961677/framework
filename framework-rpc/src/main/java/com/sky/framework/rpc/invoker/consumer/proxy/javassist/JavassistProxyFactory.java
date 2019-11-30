@@ -22,11 +22,10 @@
  */
 package com.sky.framework.rpc.invoker.consumer.proxy.javassist;
 
+import com.sky.framework.rpc.invoker.consumer.proxy.AbstractProxyFactory;
 import com.sky.framework.rpc.invoker.consumer.proxy.InvocationHandler;
-import com.sky.framework.rpc.invoker.consumer.proxy.ProxyFactory;
+import com.sky.framework.rpc.spring.annotation.Reference;
 import javassist.*;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
@@ -40,7 +39,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author
  */
 @Slf4j
-public class JavassistProxyFactory implements ProxyFactory {
+public class JavassistProxyFactory extends AbstractProxyFactory {
 
     private static final String PROXY_CLASS_NAME_PREFIX = "$JavassistProxy";
 
@@ -48,15 +47,12 @@ public class JavassistProxyFactory implements ProxyFactory {
 
     private static final Map<String, Class<?>> proxyClassCache = new HashMap<>();
 
-    @Getter
-    @Setter
-    private Class<?> interfaceClass;
-
     public JavassistProxyFactory() {
     }
 
-    private JavassistProxyFactory(Class<?> interfaceClass) {
-        this.interfaceClass = interfaceClass;
+    private JavassistProxyFactory(Class<?> interfaceClass, Reference reference) {
+        super.setInterfaceClass(interfaceClass);
+        super.setReference(reference);
     }
 
     @Override
@@ -65,20 +61,19 @@ public class JavassistProxyFactory implements ProxyFactory {
     }
 
     @Override
-    public <T> T newInstance(Class<?> interfaceClass) {
-        JavassistProxyFactory javassistProxyFactory = new JavassistProxyFactory(interfaceClass);
+    public <T> T newInstance(Class<?> interfaceClass, Reference reference) {
+        JavassistProxyFactory javassistProxyFactory = new JavassistProxyFactory(interfaceClass, reference);
         return (T) javassistProxyFactory.newInstance();
     }
 
-    private <T> T newInstance(JavassistProxy javassistProxy) {
-        return (T) newInstance(interfaceClass, javassistProxy);
-    }
-
     private <T> T newInstance() {
-        JavassistProxy invocationHandler = new JavassistProxy(interfaceClass);
+        JavassistProxy invocationHandler = new JavassistProxy(getInterfaceClass(), getReference());
         return newInstance(invocationHandler);
     }
 
+    private <T> T newInstance(JavassistProxy invocationHandler) {
+        return (T) newInstance(getInterfaceClass(), invocationHandler);
+    }
 
     private Object newInstance(Class<?> targetClass, JavassistProxy invocationHandler) {
         try {

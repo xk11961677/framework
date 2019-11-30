@@ -20,45 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.invoker.consumer.proxy.jdk;
+package com.sky.framework.rpc.util;
 
-import com.sky.framework.rpc.invoker.consumer.proxy.AbstractProxyFactory;
-import com.sky.framework.rpc.spring.annotation.Reference;
-
-import java.lang.reflect.Proxy;
+import java.lang.annotation.*;
 
 /**
  * @author
  */
-public class JdkProxyFactory extends AbstractProxyFactory {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface SpiMetadata {
 
+    /**
+     * 名称
+     *
+     * @return
+     */
+    String name();
 
-    public JdkProxyFactory() {
-    }
-
-    private JdkProxyFactory(Class<?> interfaceClass) {
-        super.setInterfaceClass(interfaceClass);
-    }
-
-    @Override
-    public String getScheme() {
-        return "jdk";
-    }
-
-    @Override
-    public <T> T newInstance(Class<?> interfaceClass, Reference reference) {
-        JdkProxyFactory jdkProxyFactory = new JdkProxyFactory(interfaceClass);
-        return (T) jdkProxyFactory.newInstance();
-    }
-
-    private <T> T newInstance() {
-        JdkProxy jdkProxy = new JdkProxy(getInterfaceClass(), getReference());
-        return newInstance(jdkProxy);
-    }
-
-    private <T> T newInstance(JdkProxy jdkProxy) {
-        return (T) Proxy.newProxyInstance(JdkProxyFactory.class.getClassLoader(), new Class[]{getInterfaceClass()}, jdkProxy);
-    }
-
-
+    /**
+     * 优先级
+     *
+     * @return
+     */
+    int priority() default 0;
 }

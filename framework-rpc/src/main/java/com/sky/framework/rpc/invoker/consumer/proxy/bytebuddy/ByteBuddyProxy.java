@@ -23,6 +23,7 @@
 package com.sky.framework.rpc.invoker.consumer.proxy.bytebuddy;
 
 import com.sky.framework.rpc.invoker.consumer.proxy.Proxy;
+import com.sky.framework.rpc.spring.annotation.Reference;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
@@ -37,8 +38,8 @@ import java.lang.reflect.Method;
  */
 public class ByteBuddyProxy extends Proxy implements InvocationHandler {
 
-    public ByteBuddyProxy(Class<?> interfaceClass) {
-        super(interfaceClass);
+    public ByteBuddyProxy(Class<?> interfaceClass, Reference reference) {
+        super(interfaceClass, reference);
     }
 
     @Override

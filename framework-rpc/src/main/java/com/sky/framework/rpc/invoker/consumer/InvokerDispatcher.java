@@ -45,7 +45,9 @@ public class InvokerDispatcher implements Dispatcher {
 
     @Override
     public DefaultInvokeFuture dispatch(Request request, RegisterMeta.ServiceMeta serviceMeta, Class<?> returnType) {
+        //todo spi extension
         LoadBalance instance = RoundRobinLoadBalance.getInstance();
+
         RegisterMeta.Address select = instance.select(serviceMeta);
         ChannelGenericPool channelGenericPool = ChannelGenericPoolFactory.getClientPoolMap().get(select);
         Channel channel = null;
