@@ -20,35 +20,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.provider.service;
+package com.sky.framework.rpc.provider;
 
-import com.sky.framework.rpc.api.ExampleApi;
-import com.sky.framework.rpc.api.dto.UserDTO;
-import com.sky.framework.rpc.invoker.annotation.Provider;
-import lombok.extern.slf4j.Slf4j;
+import com.sky.framework.rpc.spring.annotation.EnableRPC;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author
  */
-@Slf4j
-@Provider(name = "com.sky.framework.rpc.api.ExampleApi", group = "example")
-public class ExampleApiImpl implements ExampleApi {
+@EnableRPC(scan = "com.sky.framework.rpc.provider.service")
+@SpringBootApplication
+public class ProviderApplication {
 
-    @Override
-    public String hello(String msg) {
-        log.info("msg:{}" + msg);
-        return msg + "[response]";
-    }
-
-    @Override
-    public void hello() {
-        log.info("no msg:{}");
-    }
-
-    @Override
-    public UserDTO getUser(UserDTO user) {
-        log.info("msg:{}" + user);
-        user.setName(user.getName() + "response");
-        return user;
+    public static void main(String[] args) {
+        SpringApplication.run(ProviderApplication.class, args);
     }
 }

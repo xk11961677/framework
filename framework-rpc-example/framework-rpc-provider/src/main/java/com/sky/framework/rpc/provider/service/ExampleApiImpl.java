@@ -20,37 +20,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.consumer.web;
+package com.sky.framework.rpc.provider.service;
 
-import com.sky.framework.model.dto.MessageRes;
 import com.sky.framework.rpc.api.ExampleApi;
 import com.sky.framework.rpc.api.dto.UserDTO;
-import com.sky.framework.rpc.spring.annotation.Reference;
+import com.sky.framework.rpc.invoker.annotation.Provider;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 
 /**
  * @author
  */
-@Controller
-@RequestMapping("test")
 @Slf4j
-public class TestController {
+@Provider(name = "com.sky.framework.rpc.api.ExampleApi", group = "example")
+public class ExampleApiImpl implements ExampleApi {
 
-    @Reference(group = "example")
-    private ExampleApi exampleApi;
+    @Override
+    public String hello(String msg) {
+        log.info("msg:{}" + msg);
+        return msg + "[response]";
+    }
 
-    @RequestMapping
-    @ResponseBody
-    public MessageRes test() {
-        UserDTO userDTO = UserDTO.builder().
-                id(1L).
-                name("sky")
-                .build();
-        UserDTO user = exampleApi.getUser(userDTO);
-        return MessageRes.success(user);
+    @Override
+    public void hello() {
+        log.info("no msg:{}");
+    }
+
+    @Override
+    public UserDTO getUser(UserDTO user) {
+        log.info("msg:{}" + user);
+        user.setName(user.getName() + "response");
+        return user;
     }
 }

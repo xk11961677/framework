@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.provider;
+package com.sky.framework.rpc.consumer;
 
 import com.sky.framework.rpc.spring.annotation.EnableRPC;
 import org.springframework.boot.SpringApplication;
@@ -29,11 +29,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author
  */
-@EnableRPC(scan = "com.sky.framework.provider.service")
+@EnableRPC(scan = "com.sky.framework.rpc.consumer.web")
 @SpringBootApplication
-public class ProviderApplication {
+public class ConsumerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ProviderApplication.class, args);
+        SpringApplication.run(ConsumerApplication.class, args);
     }
 }
