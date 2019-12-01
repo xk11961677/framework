@@ -23,7 +23,12 @@
     -  [framework-dao-mybatis-plus](framework-dao/framework-dao-mybatis-plus) 
 - [framework-web](framework-web) Spring Boot Web 脚手架依赖
 - [framework-model](framework-model) 公共DTO实体与分页实体
-- [framework-rpc](framework-rpc) 远程调用框架(暂时用于学习)
+- [framework-rpc](framework-rpc) 远程调用框架
+- [framework-rpc-example](framework-rpc-example) 远程调用框架示列
+    -  [framework-rpc-api](framework-rpc-example/framework-rpc-api)  api定义
+    -  [framework-rpc-provider](framework-rpc-example/framework-rpc-provider)   rpc provider
+    -  [framework-rpc-consumer](framework-rpc-example/framework-rpc-consumer)   rpc consumer
+    -  [framework-rpc-benchmark](framework-rpc-example/framework-rpc-benchmark) rpc benchmark
 - [framework-integrate](framework-integrate) 整合其他三方库,如netty、spark等
     -  [framework-integrate-canal](framework-integrate/framework-integrate-canal)  同步mysql binlog 
     -  [framework-integrate-validator](framework-integrate/framework-integrate-validator)  业务参数验证器,使用方法请读本项目[readme.md](framework-integrate/framework-integrate-validator/readme.md)
