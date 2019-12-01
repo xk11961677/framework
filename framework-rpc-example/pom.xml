@@ -16,5 +16,6 @@
         <module>framework-rpc-api</module>
         <module>framework-rpc-provider</module>
         <module>framework-rpc-consumer</module>
+        <module>framework-rpc-benchmark</module>
     </modules>
 </project>

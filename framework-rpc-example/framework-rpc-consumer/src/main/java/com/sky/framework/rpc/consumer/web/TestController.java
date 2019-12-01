@@ -20,20 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.consumer;
+package com.sky.framework.rpc.consumer.web;
 
-import com.sky.framework.rpc.spring.annotation.EnableRPC;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.sky.framework.model.dto.MessageRes;
+import com.sky.framework.rpc.api.ExampleApi;
+import com.sky.framework.rpc.api.dto.UserDTO;
+import com.sky.framework.rpc.spring.annotation.Reference;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 
 /**
  * @author
  */
-@EnableRPC(scan = "com.sky.framework.consumer.web")
-@SpringBootApplication
-public class ConsumerApplication {
+@Controller
+@RequestMapping("test")
+@Slf4j
+public class TestController {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ConsumerApplication.class, args);
+    @Reference(group = "example")
+    private ExampleApi exampleApi;
+
+    @RequestMapping
+    @ResponseBody
+    public MessageRes test() {
+        UserDTO userDTO = UserDTO.builder().
+                id(1L).
+                name("sky")
+                .build();
+        UserDTO user = exampleApi.getUser(userDTO);
+        return MessageRes.success(user);
     }
 }

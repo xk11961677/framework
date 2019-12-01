@@ -89,7 +89,7 @@ public class NettyClient extends AbstractBootstrap implements Registry {
                     @Override
                     public void initChannel(SocketChannel ch) throws Exception {
                         ChannelPipeline p = ch.pipeline();
-                        p.addLast("loggingHandler", loggingHandler);
+//                        p.addLast("loggingHandler", loggingHandler);
                         p.addLast(new ClientIdleStateTrigger());
                         p.addLast(new HeartbeatChannelHandler());
                         p.addLast("protocolEncoder", new ProtocolEncoder());
