@@ -23,7 +23,6 @@
 package com.sky.framework.rpc.remoting.server;
 
 import com.sky.framework.rpc.invoker.provider.ProviderProcessorHandler;
-import com.sky.framework.rpc.monitor.MetricsMonitor;
 import com.sky.framework.rpc.remoting.Request;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -44,7 +43,6 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        MetricsMonitor.getServerChannelCount().incrementAndGet();
         super.channelActive(ctx);
     }
 
@@ -54,7 +52,6 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        MetricsMonitor.getServerChannelCount().decrementAndGet();
         super.channelInactive(ctx);
     }
 

@@ -22,7 +22,9 @@
  */
 package com.sky.framework.rpc.util;
 
+import cn.hutool.core.lang.Pair;
 import com.esotericsoftware.reflectasm.MethodAccess;
+import com.sky.framework.rpc.invoker.annotation.Provider;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,40 +34,31 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ReflectAsmUtils {
 
-    public static Map<String, Class> clazzMap = new ConcurrentHashMap<>();
-
-    public static Map<Class, MethodAccess> accessMap = new ConcurrentHashMap<>();
-
-    public static Map<Class, Object> objectMap = new ConcurrentHashMap<>();
+    private static Map<String, Pair<MethodAccess, Object>> reflectAsmMapping = new ConcurrentHashMap<>();
 
     /**
-     * @param clazz
+     * 通过反射调用业务类
+     *
+     * @param serviceProviderName
      * @param method
      * @param parameterTypes
      * @param arguments
      * @return
      */
-    public static Object invoke(String clazz, String method, Class<?>[] parameterTypes, Object[] arguments) {
-        Class aClass = clazzMap.get(clazz);
-        MethodAccess access = accessMap.get(aClass);
-        Object target = objectMap.get(aClass);
+    public static Object invoke(String serviceProviderName, String method, Class<?>[] parameterTypes, Object[] arguments) {
+        Pair<MethodAccess, Object> pair = reflectAsmMapping.get(serviceProviderName);
+        MethodAccess access = pair.getKey();
         int index = access.getIndex(method, parameterTypes);
-        Object result = access.invoke(target, index, arguments);
+        Object result = access.invoke(pair.getValue(), index, arguments);
         return result;
     }
 
-    public static void add(Class<?> clazz, Object bean) {
-        MethodAccess access = MethodAccess.get(clazz);
-        accessMap.put(clazz, access);
-        clazzMap.put(clazz.getName(), clazz);
-        objectMap.put(clazz, bean);
+    public static void add(Provider provider, Object bean) {
+        MethodAccess access = MethodAccess.get(bean.getClass());
+        reflectAsmMapping.put(provider.name(), new Pair<>(access, bean));
     }
 
-    /*public static void add(Object bean) {
-        Class clazz = AopTargetUtils.getTargetClass(bean);
-        MethodAccess access = MethodAccess.get(clazz);
-        accessMap.put(clazz, access);
-        clazzMap.put(clazz.getName(), clazz);
-        objectMap.put(clazz, bean);
-    }*/
+    public static Map<String, Pair<MethodAccess, Object>> getReflectAsmMapping() {
+        return reflectAsmMapping;
+    }
 }

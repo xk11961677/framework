@@ -32,7 +32,9 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 public @interface Provider {
 
-    String group();
+    String name();
+
+    String group() default "";
 
     String version() default "1.0.0";
 

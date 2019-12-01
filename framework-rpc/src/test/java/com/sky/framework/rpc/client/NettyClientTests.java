@@ -25,7 +25,6 @@ package com.sky.framework.rpc.client;
 import com.sky.framework.rpc.BaseApplicationTests;
 import com.sky.framework.rpc.example.User;
 import com.sky.framework.rpc.example.UserService;
-import com.sky.framework.rpc.invoker.annotation.Consumer;
 import com.sky.framework.rpc.invoker.consumer.proxy.ProxyFactory;
 import com.sky.framework.rpc.invoker.consumer.proxy.javassist.JavassistProxyFactory;
 import com.sky.framework.rpc.register.meta.RegisterMeta;

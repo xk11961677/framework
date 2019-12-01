@@ -22,9 +22,7 @@
  */
 package com.sky.framework.rpc.server;
 
-import com.esotericsoftware.reflectasm.MethodAccess;
 import com.sky.framework.rpc.BaseApplicationTests;
-import com.sky.framework.rpc.example.UserService;
 import com.sky.framework.rpc.example.UserServiceImpl;
 import com.sky.framework.rpc.invoker.annotation.Provider;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
@@ -39,10 +37,8 @@ public class NettyServerTests extends BaseApplicationTests {
 
     @Before
     public void build() {
-        MethodAccess access = MethodAccess.get(UserService.class);
-        ReflectAsmUtils.accessMap.put(UserService.class, access);
-        ReflectAsmUtils.clazzMap.put(UserService.class.getName(), UserService.class);
-        ReflectAsmUtils.objectMap.put(UserService.class, new UserServiceImpl());
+        Provider annotation = UserServiceImpl.class.getAnnotation(Provider.class);
+        ReflectAsmUtils.add(annotation, new UserServiceImpl());
     }
 
     @Test
@@ -64,7 +60,7 @@ public class NettyServerTests extends BaseApplicationTests {
 
         Provider annotation = UserServiceImpl.class.getAnnotation(Provider.class);
         registerMeta.setGroup(annotation.group());
-        registerMeta.setServiceProviderName(UserService.class.getName());
+        registerMeta.setServiceProviderName(annotation.name());
         registerMeta.setVersion(annotation.version());
         nettyServer.getRegistryService().register(registerMeta);
     }

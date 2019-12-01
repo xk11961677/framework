@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author
  */
 @Slf4j
-@Provider(group = "example")
+@Provider(name = "com.sky.framework.rpc.api.ExampleApi", group = "example")
 public class ExampleApiImpl implements ExampleApi {
 
     @Override
