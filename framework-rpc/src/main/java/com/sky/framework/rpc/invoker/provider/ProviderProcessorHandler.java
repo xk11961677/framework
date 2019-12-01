@@ -45,17 +45,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProviderProcessorHandler extends AbstractProcessor {
 
-    static {
-        instance = new ProviderProcessorHandler();
-        AsyncThreadPoolProperties properties = new AsyncThreadPoolProperties();
-        CommonThreadPool.initThreadPool(properties);
-    }
+    private static ProviderProcessorHandler instance = new ProviderProcessorHandler();
 
     private FastJsonSerializer fastjsonSerializer = new FastJsonSerializer();
 
-    private static ProviderProcessorHandler instance;
-
     public ProviderProcessorHandler() {
+        AsyncThreadPoolProperties properties = new AsyncThreadPoolProperties();
+        CommonThreadPool.initThreadPool(properties);
     }
 
     @Override

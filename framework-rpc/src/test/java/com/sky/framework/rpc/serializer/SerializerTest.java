@@ -22,13 +22,13 @@
  */
 package com.sky.framework.rpc.serializer;
 
-import com.esotericsoftware.reflectasm.MethodAccess;
 import com.sky.framework.rpc.BaseApplicationTests;
 import com.sky.framework.rpc.common.enums.SerializeEnum;
 import com.sky.framework.rpc.example.User;
 import com.sky.framework.rpc.example.UserService;
 import com.sky.framework.rpc.example.UserServiceImpl;
 import com.sky.framework.rpc.invoker.RpcInvocation;
+import com.sky.framework.rpc.invoker.annotation.Provider;
 import com.sky.framework.rpc.remoting.Request;
 import com.sky.framework.rpc.util.ReflectAsmUtils;
 import org.junit.Before;
@@ -40,14 +40,12 @@ public class SerializerTest extends BaseApplicationTests {
 
     @Before
     public void build() {
-        MethodAccess access = MethodAccess.get(UserService.class);
-        ReflectAsmUtils.accessMap.put(UserService.class, access);
-        ReflectAsmUtils.clazzMap.put(UserService.class.getName(), UserService.class);
-        ReflectAsmUtils.objectMap.put(UserService.class, new UserServiceImpl());
+        Provider annotation = UserServiceImpl.class.getAnnotation(Provider.class);
+        ReflectAsmUtils.add(annotation, new UserServiceImpl());
     }
 
     @Test
-    public void test4() throws Exception{
+    public void test4() throws Exception {
         test1();
         test2();
         test3();

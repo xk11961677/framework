@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author
  */
 @Slf4j
-@Provider(group = "test")
+@Provider(name = "com.sky.framework.rpc.example.UserService", group = "test")
 public class UserServiceImpl implements UserService {
 
     @Override

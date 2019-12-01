@@ -35,7 +35,6 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -101,12 +100,16 @@ public class RpcAutoConfiguration implements CommandLineRunner {
         public void run() {
             NettyServer nettyServer = new NettyServer(Integer.parseInt(properties.getPort()));
             nettyServer.connectToRegistryServer(properties.getRegistry().getAddress());
-            for (Map.Entry<Class, Provider> entry : AnnotationBean.providerConfigs.entrySet()) {
-                Provider provider = entry.getValue();
+            Collection<Provider> providers = AnnotationBean.providerConfigs.values();
+            for (Provider provider : providers) {
                 RegisterMeta registerMeta = new RegisterMeta();
                 registerMeta.setPort(Integer.parseInt(properties.getPort()));
-                registerMeta.setGroup(provider.group());
-                registerMeta.setServiceProviderName(entry.getKey().getName());
+                String group = provider.group();
+                if (group == null || "".equals(group)) {
+                    group = properties.getRegistry().getGroup();
+                }
+                registerMeta.setGroup(group);
+                registerMeta.setServiceProviderName(provider.name());
                 registerMeta.setVersion(provider.version());
                 nettyServer.getRegistryService().register(registerMeta);
             }
@@ -132,7 +135,7 @@ public class RpcAutoConfiguration implements CommandLineRunner {
             for (ReferenceBean referenceBean : referenceBeans) {
                 Reference reference = referenceBean.getReference();
                 String group = reference.group();
-                if (group == null) {
+                if (group == null || "".equals(group)) {
                     group = properties.getRegistry().getGroup();
                 }
                 RegisterMeta.ServiceMeta serviceMeta = new RegisterMeta.ServiceMeta();

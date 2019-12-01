@@ -91,16 +91,11 @@ public class AnnotationBean implements InitializingBean, BeanPostProcessor {
         if (!isMatchPackage(bean)) {
             return bean;
         }
-        Provider annotation = AnnotationUtils.findAnnotation(AopTargetUtils.getTarget(bean).getClass(), Provider.class);
+        Object target = AopTargetUtils.getTarget(bean);
+        Provider annotation = AnnotationUtils.findAnnotation(target.getClass(), Provider.class);
         if (annotation != null) {
-            Object target = AopTargetUtils.getTarget(bean);
-            Class clazz = target.getClass();
-            Class<?>[] interfaces = target.getClass().getInterfaces();
-            if (interfaces != null && interfaces.length != 0) {
-                clazz = interfaces[0];
-            }
-            ReflectAsmUtils.add(clazz, bean);
-            providerConfigs.put(clazz, annotation);
+            ReflectAsmUtils.add(annotation, bean);
+            providerConfigs.put(target.getClass(), annotation);
         }
         return bean;
     }

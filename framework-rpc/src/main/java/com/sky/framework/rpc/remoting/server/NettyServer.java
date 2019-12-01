@@ -115,6 +115,7 @@ public class NettyServer extends AbstractBootstrap implements Registry {
         bossGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("boss"));
         workerGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("worker"));
         ServerChannelHandler serverChannelHandler = new ServerChannelHandler();
+        MetricsChannelHandler metricsChannelHandler = new MetricsChannelHandler();
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.INFO);
         try {
             bootstrap = new ServerBootstrap();
@@ -126,12 +127,13 @@ public class NettyServer extends AbstractBootstrap implements Registry {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
-//                            p.addLast("flushEnhance", new FlushConsolidationHandler(10, true));
+                            p.addLast("metrics", metricsChannelHandler);
                             p.addLast(new ServerIdleStateTrigger());
                             p.addLast(new ServerHeartbeatChannelHandler());
                             p.addLast("protocolEncoder", new ProtocolEncoder());
                             p.addLast("protocolDecoder", new ProtocolDecoder());
 //                            p.addLast("loggingHandler", loggingHandler);
+                            p.addLast("flushEnhance", new FlushConsolidationHandler(5, true));
                             p.addLast("serverChannelHandler", serverChannelHandler);
                         }
                     })
