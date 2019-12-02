@@ -31,19 +31,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 
 /**
  * @author
  */
 @Controller
-@RequestMapping("test")
+@RequestMapping
 @Slf4j
 public class TestController {
 
     @Reference(group = "example")
     private ExampleApi exampleApi;
 
-    @RequestMapping
+    @RequestMapping("test")
     @ResponseBody
     public MessageRes test() {
         UserDTO userDTO = UserDTO.builder().
@@ -51,6 +53,19 @@ public class TestController {
                 name("sky")
                 .build();
         UserDTO user = exampleApi.getUser(userDTO);
+        log.info("user info :{}", user);
         return MessageRes.success(user);
+    }
+
+    @RequestMapping("testList")
+    @ResponseBody
+    public MessageRes testList() {
+        UserDTO userDTO = UserDTO.builder().
+                id(1L).
+                name("sky")
+                .build();
+        MessageRes<List<UserDTO>> users = exampleApi.getUsers(userDTO);
+        log.info("user list :{}", users.getData());
+        return users;
     }
 }

@@ -22,7 +22,10 @@
  */
 package com.sky.framework.rpc.api;
 
+import com.sky.framework.model.dto.MessageRes;
 import com.sky.framework.rpc.api.dto.UserDTO;
+
+import java.util.List;
 
 /**
  * @author
@@ -48,4 +51,13 @@ public interface ExampleApi {
      * @return
      */
     UserDTO getUser(UserDTO user);
+
+
+    /**
+     * 获取users
+     *
+     * @param user
+     * @return
+     */
+    MessageRes<List<UserDTO>> getUsers(UserDTO user);
 }

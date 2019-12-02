@@ -23,14 +23,13 @@
 package com.sky.framework.rpc.invoker.provider;
 
 
-import com.sky.framework.rpc.common.enums.SerializeEnum;
-import com.sky.framework.rpc.common.spi.SpiExchange;
 import com.sky.framework.rpc.invoker.AbstractProcessor;
 import com.sky.framework.rpc.invoker.RpcInvocation;
 import com.sky.framework.rpc.remoting.Request;
 import com.sky.framework.rpc.remoting.Response;
 import com.sky.framework.rpc.remoting.Status;
 import com.sky.framework.rpc.serializer.ObjectSerializer;
+import com.sky.framework.rpc.serializer.SerializerHolder;
 import com.sky.framework.rpc.util.ReflectAsmUtils;
 import com.sky.framework.threadpool.AsyncThreadPoolProperties;
 import com.sky.framework.threadpool.core.CommonThreadPool;
@@ -40,8 +39,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * @author
  */
@@ -50,9 +47,7 @@ public class ProviderProcessorHandler extends AbstractProcessor {
 
     private static ProviderProcessorHandler instance = new ProviderProcessorHandler();
 
-    private static ConcurrentHashMap<Byte, ObjectSerializer> serializerMap = new ConcurrentHashMap();
-
-    public ProviderProcessorHandler() {
+    private ProviderProcessorHandler() {
         AsyncThreadPoolProperties properties = new AsyncThreadPoolProperties();
         CommonThreadPool.initThreadPool(properties);
     }
@@ -67,7 +62,7 @@ public class ProviderProcessorHandler extends AbstractProcessor {
                 response.setStatus(Status.OK.value());
                 response.setSerializerCode(request.getSerializerCode());
                 try {
-                    ObjectSerializer serializer = getSerializer(request.getSerializerCode());
+                    ObjectSerializer serializer = SerializerHolder.getInstance().getSerializer(request.getSerializerCode());
 
                     byte[] bytes = request.bytes();
                     RpcInvocation rpcInvocation = serializer.deSerialize(bytes, RpcInvocation.class);
@@ -100,19 +95,5 @@ public class ProviderProcessorHandler extends AbstractProcessor {
         return instance;
     }
 
-    /**
-     * 获取序列化
-     *
-     * @param serializerCode
-     * @return
-     */
-    private static synchronized ObjectSerializer getSerializer(Byte serializerCode) {
-        ObjectSerializer objectSerializer = serializerMap.get(serializerCode);
-        if (objectSerializer == null) {
-            SerializeEnum serializeEnum = SerializeEnum.acquire(serializerCode);
-            objectSerializer = SpiExchange.getInstance().loadSpiSupport(ObjectSerializer.class, serializeEnum.getSerialize());
-            serializerMap.putIfAbsent(serializerCode, objectSerializer);
-        }
-        return objectSerializer;
-    }
+
 }

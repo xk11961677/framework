@@ -45,8 +45,17 @@ public class AnnotationRegistrar implements ImportBeanDefinitionRegistrar {
         AnnotationAttributes attributes = AnnotationAttributes.fromMap(annotationMetadata.getAnnotationAttributes(EnableRPC.class.getName(), false));
         String scans = (String) attributes.get("scan");
         String proxy = (String) attributes.get("proxy");
+        String cluster = (String) attributes.get("cluster");
+        String serialize = (String) attributes.get("serialize");
+        String loadBalance = (String) attributes.get("loadBalance");
+        AnnotationBeanProperties build = AnnotationBeanProperties.builder()
+                .proxy(proxy)
+                .cluster(cluster)
+                .serializer(serialize)
+                .loadBalance(loadBalance)
+                .build();
 
-        addRpcAnnotationBean(registry, scans, proxy);
+        addRpcAnnotationBean(registry, scans, build);
         addRpcDefinitionScanner(registry, scans);
     }
 
@@ -55,12 +64,12 @@ public class AnnotationRegistrar implements ImportBeanDefinitionRegistrar {
      *
      * @param registry
      * @param scans
-     * @param proxy
+     * @param properties
      */
-    private void addRpcAnnotationBean(BeanDefinitionRegistry registry, String scans, String proxy) {
+    private void addRpcAnnotationBean(BeanDefinitionRegistry registry, String scans, AnnotationBeanProperties properties) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(AnnotationBean.class);
         builder.addPropertyValue("annotationPackage", scans);
-        builder.addPropertyValue("proxy", proxy);
+        builder.addPropertyValue("annotationBeanProperties", properties);
         registry.registerBeanDefinition(AnnotationBean.class.getName(), builder.getRawBeanDefinition());
     }
 

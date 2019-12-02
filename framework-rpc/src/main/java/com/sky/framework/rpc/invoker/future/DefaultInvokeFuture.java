@@ -25,7 +25,7 @@ package com.sky.framework.rpc.invoker.future;
 import com.sky.framework.rpc.common.exception.RpcException;
 import com.sky.framework.rpc.remoting.Response;
 import com.sky.framework.rpc.remoting.Status;
-import com.sky.framework.rpc.serializer.FastJsonSerializer;
+import com.sky.framework.rpc.serializer.SerializerHolder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.*;
@@ -39,8 +39,6 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
     private static final ConcurrentMap<Long, DefaultInvokeFuture<?>> roundFutures = new ConcurrentHashMap<>();
 
     private static final long DEFAULT_TIMEOUT_NANOSECONDS = TimeUnit.MILLISECONDS.toNanos(30000);
-
-    private static final FastJsonSerializer serializer = new FastJsonSerializer();
 
     private final long invokeId;
 
@@ -89,7 +87,8 @@ public class DefaultInvokeFuture<V> extends CompletableFuture<V> implements Invo
         byte status = response.status();
         if (status == Status.OK.value()) {
             byte[] bytes = response.bytes();
-            V v = serializer.deSerialize(bytes, returnType);
+            byte serializerCode = response.getSerializerCode();
+            V v = SerializerHolder.getInstance().getSerializer(serializerCode).deSerialize(bytes, returnType);
             complete(v);
         } else {
             setException(status);

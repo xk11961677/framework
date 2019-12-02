@@ -31,13 +31,6 @@ import com.sky.framework.rpc.spring.annotation.Reference;
 public interface ProxyFactory {
 
     /**
-     * 代理子类类型
-     *
-     * @return
-     */
-    String getScheme();
-
-    /**
      * 创建代理对象
      *
      * @param interfaceClass

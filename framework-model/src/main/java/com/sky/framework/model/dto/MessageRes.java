@@ -28,6 +28,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 外部接口响应结果定义
  *
@@ -36,7 +38,9 @@ import lombok.Data;
  */
 @Data
 @ApiModel(value = "通用返回结果")
-public class MessageRes<T> {
+public class MessageRes<T> implements Serializable {
+
+    private static final long serialVersionUID = -6788609721062977943L;
 
     @ApiModelProperty("返回码")
     private Integer code;

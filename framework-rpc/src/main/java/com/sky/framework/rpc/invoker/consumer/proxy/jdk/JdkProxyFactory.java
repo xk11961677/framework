@@ -38,18 +38,14 @@ public class JdkProxyFactory extends AbstractProxyFactory {
     public JdkProxyFactory() {
     }
 
-    private JdkProxyFactory(Class<?> interfaceClass) {
+    private JdkProxyFactory(Class<?> interfaceClass, Reference reference) {
         super.setInterfaceClass(interfaceClass);
-    }
-
-    @Override
-    public String getScheme() {
-        return "jdk";
+        super.setReference(reference);
     }
 
     @Override
     public <T> T newInstance(Class<?> interfaceClass, Reference reference) {
-        JdkProxyFactory jdkProxyFactory = new JdkProxyFactory(interfaceClass);
+        JdkProxyFactory jdkProxyFactory = new JdkProxyFactory(interfaceClass, reference);
         return (T) jdkProxyFactory.newInstance();
     }
 
