@@ -25,7 +25,7 @@ package com.sky.framework.rpc.serializer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.sky.framework.rpc.common.enums.SerializeEnum;
+import com.sky.framework.rpc.util.SpiMetadata;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 /**
  * @author
  */
+@SpiMetadata(name = "kryo")
 public class KryoSerializer implements ObjectSerializer {
     /**
      * 序列化
@@ -77,15 +78,5 @@ public class KryoSerializer implements ObjectSerializer {
             throw new RuntimeException("kryo deSerialize error" + e.getMessage());
         }
         return object;
-    }
-
-    /**
-     * 设置scheme
-     *
-     * @return scheme 命名
-     */
-    @Override
-    public String getScheme() {
-        return SerializeEnum.KRYO.getSerialize();
     }
 }

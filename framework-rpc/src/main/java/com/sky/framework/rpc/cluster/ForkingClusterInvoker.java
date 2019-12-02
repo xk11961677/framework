@@ -22,19 +22,18 @@
  */
 package com.sky.framework.rpc.cluster;
 
-import com.sky.framework.rpc.invoker.consumer.Dispatcher;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.Request;
+import com.sky.framework.rpc.util.SpiMetadata;
 
 /**
  * @author
  */
+@SpiMetadata(name = "forking")
 public class ForkingClusterInvoker implements ClusterInvoker {
 
-    private Dispatcher dispatcher;
 
-    public ForkingClusterInvoker(Dispatcher dispatcher) {
-        this.dispatcher = dispatcher;
+    public ForkingClusterInvoker() {
     }
 
     @Override

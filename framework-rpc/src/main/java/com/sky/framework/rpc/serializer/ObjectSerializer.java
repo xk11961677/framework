@@ -23,8 +23,6 @@
 package com.sky.framework.rpc.serializer;
 
 
-
-
 /**
  * @author
  */
@@ -50,11 +48,4 @@ public interface ObjectSerializer {
      */
     <T> T deSerialize(byte[] param, Class<T> clazz) throws RuntimeException;
 
-
-    /**
-     * 设置scheme
-     *
-     * @return scheme 命名
-     */
-    String getScheme();
 }

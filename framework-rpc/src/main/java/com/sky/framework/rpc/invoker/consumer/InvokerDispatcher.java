@@ -25,6 +25,7 @@ package com.sky.framework.rpc.invoker.consumer;
 import com.sky.framework.rpc.cluster.loadbalance.LoadBalance;
 import com.sky.framework.rpc.cluster.loadbalance.RoundRobinLoadBalance;
 import com.sky.framework.rpc.common.exception.RpcException;
+import com.sky.framework.rpc.common.spi.SpiExchange;
 import com.sky.framework.rpc.invoker.future.DefaultInvokeFuture;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.Request;
@@ -45,8 +46,7 @@ public class InvokerDispatcher implements Dispatcher {
 
     @Override
     public DefaultInvokeFuture dispatch(Request request, RegisterMeta.ServiceMeta serviceMeta, Class<?> returnType) {
-        //todo spi extension
-        LoadBalance instance = RoundRobinLoadBalance.getInstance();
+        LoadBalance instance = SpiExchange.getInstance().getLoadBalance();
 
         RegisterMeta.Address select = instance.select(serviceMeta);
         ChannelGenericPool channelGenericPool = ChannelGenericPoolFactory.getClientPoolMap().get(select);

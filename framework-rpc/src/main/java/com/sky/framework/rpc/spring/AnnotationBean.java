@@ -22,14 +22,20 @@
  */
 package com.sky.framework.rpc.spring;
 
+import com.sky.framework.rpc.cluster.ClusterInvoker;
+import com.sky.framework.rpc.cluster.loadbalance.LoadBalance;
+import com.sky.framework.rpc.common.enums.ClusterEnum;
+import com.sky.framework.rpc.common.enums.LoadBalanceEnum;
 import com.sky.framework.rpc.common.enums.ProxyEnum;
+import com.sky.framework.rpc.common.enums.SerializeEnum;
 import com.sky.framework.rpc.common.spi.SpiExchange;
 import com.sky.framework.rpc.invoker.annotation.Provider;
 import com.sky.framework.rpc.invoker.consumer.proxy.ProxyFactory;
+import com.sky.framework.rpc.serializer.ObjectSerializer;
 import com.sky.framework.rpc.spring.annotation.Reference;
 import com.sky.framework.rpc.util.AopTargetUtils;
 import com.sky.framework.rpc.util.ReflectAsmUtils;
-import com.sky.framework.rpc.util.SpiLoader;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -40,12 +46,9 @@ import org.springframework.util.Assert;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Objects;
-import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
-import java.util.stream.StreamSupport;
 
 /**
  * 注入客户端代理与加载服务端
@@ -62,8 +65,17 @@ public class AnnotationBean implements InitializingBean, BeanPostProcessor {
 
     static final ConcurrentMap<Class, Provider> providerConfigs = new ConcurrentHashMap();
 
-
+    @Setter
     private String proxy;
+
+    @Setter
+    private String cluster;
+
+    @Setter
+    private String serializer;
+
+    @Setter
+    private String loadBalance;
 
     private String annotationPackage;
 
@@ -196,21 +208,31 @@ public class AnnotationBean implements InitializingBean, BeanPostProcessor {
     }
 
     private void loadSpiSupport() {
+        SpiExchange instance = SpiExchange.getInstance();
+        //加载proxy spi
         ProxyEnum proxyEnum = ProxyEnum.acquire(proxy);
-        ServiceLoader<ProxyFactory> proxy = SpiLoader.loadAll(ProxyFactory.class);
-        final ProxyFactory proxyFactory = StreamSupport.stream(proxy.spliterator(), true)
-                .filter(p -> Objects.equals(p.getScheme(), proxyEnum.getProxy()))
-                .findFirst().orElse(null);
-        SpiExchange.getInstance().setProxyFactory(proxyFactory);
+        ProxyFactory proxyFactory = instance.loadSpiSupport(ProxyFactory.class, proxyEnum.getKey());
+        instance.setProxyFactory(proxyFactory);
+
+        //加载cluster spi
+        ClusterEnum clusterEnum = ClusterEnum.acquire(cluster);
+        ClusterInvoker invoker = instance.loadSpiSupport(ClusterInvoker.class, clusterEnum.getKey());
+        instance.setClusterInvoker(invoker);
+
+        //加载serialize spi
+        SerializeEnum serializeEnum = SerializeEnum.acquire(serializer);
+        ObjectSerializer objectSerializer = instance.loadSpiSupport(ObjectSerializer.class, serializeEnum.getSerialize());
+        instance.setSerializer(objectSerializer);
+        instance.setSerializerCode(serializeEnum.getSerializerCode());
+
+        //加载loadBalance spi
+        LoadBalanceEnum loadBalanceEnum = LoadBalanceEnum.acquire(loadBalance);
+        LoadBalance loadBalance = instance.loadSpiSupport(LoadBalance.class, loadBalanceEnum.getKey());
+        instance.setLoadBalance(loadBalance);
     }
 
     public void setAnnotationPackage(String annotationPackage) {
         this.annotationPackage = annotationPackage;
         this.annotationPackages = (annotationPackage == null || annotationPackage.length() == 0) ? null : COMMA_SPLIT_PATTERN.split(annotationPackage);
     }
-
-    public void setProxy(String proxy) {
-        this.proxy = proxy;
-    }
-
 }

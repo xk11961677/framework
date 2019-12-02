@@ -25,6 +25,7 @@ package com.sky.framework.rpc.invoker.consumer.proxy.javassist;
 import com.sky.framework.rpc.invoker.consumer.proxy.AbstractProxyFactory;
 import com.sky.framework.rpc.invoker.consumer.proxy.InvocationHandler;
 import com.sky.framework.rpc.spring.annotation.Reference;
+import com.sky.framework.rpc.util.SpiMetadata;
 import javassist.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +40,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author
  */
 @Slf4j
+@SpiMetadata(name = "javassist")
 public class JavassistProxyFactory extends AbstractProxyFactory {
 
     private static final String PROXY_CLASS_NAME_PREFIX = "$JavassistProxy";

@@ -1,0 +1,4 @@
+com.sky.framework.rpc.cluster.FailoverClusterInvoker
+com.sky.framework.rpc.cluster.FailbackClusterInvoker
+com.sky.framework.rpc.cluster.FailfastClusterInvoker
+com.sky.framework.rpc.cluster.FailsafeClusterInvoker
