@@ -23,20 +23,14 @@
 package com.sky.framework.rpc.serializer;
 
 
+import com.sky.framework.rpc.util.SpiMetadata;
 
-import com.sky.framework.rpc.common.enums.SerializeEnum;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 /**
  * @author
  */
+@SpiMetadata(name = "jdk")
 public class JavaSerializer implements ObjectSerializer {
     @Override
     public byte[] serialize(Object obj) throws RuntimeException {
@@ -60,15 +54,5 @@ public class JavaSerializer implements ObjectSerializer {
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException("JAVA deSerialize error " + e.getMessage());
         }
-    }
-
-    /**
-     * 设置scheme
-     *
-     * @return scheme 命名
-     */
-    @Override
-    public String getScheme() {
-        return SerializeEnum.JDK.getSerialize();
     }
 }

@@ -24,12 +24,14 @@ package com.sky.framework.rpc.invoker.consumer.proxy.jdk;
 
 import com.sky.framework.rpc.invoker.consumer.proxy.AbstractProxyFactory;
 import com.sky.framework.rpc.spring.annotation.Reference;
+import com.sky.framework.rpc.util.SpiMetadata;
 
 import java.lang.reflect.Proxy;
 
 /**
  * @author
  */
+@SpiMetadata(name = "jdk")
 public class JdkProxyFactory extends AbstractProxyFactory {
 
 

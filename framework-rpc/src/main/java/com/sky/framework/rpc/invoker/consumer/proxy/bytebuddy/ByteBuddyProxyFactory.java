@@ -24,6 +24,7 @@ package com.sky.framework.rpc.invoker.consumer.proxy.bytebuddy;
 
 import com.sky.framework.rpc.invoker.consumer.proxy.AbstractProxyFactory;
 import com.sky.framework.rpc.spring.annotation.Reference;
+import com.sky.framework.rpc.util.SpiMetadata;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
@@ -34,6 +35,7 @@ import net.bytebuddy.matcher.ElementMatchers;
  * @author
  */
 @Slf4j
+@SpiMetadata(name = "byteBuddy")
 public class ByteBuddyProxyFactory extends AbstractProxyFactory {
     @Override
     public String getScheme() {

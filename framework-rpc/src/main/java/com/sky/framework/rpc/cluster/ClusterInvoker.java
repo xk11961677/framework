@@ -22,6 +22,8 @@
  */
 package com.sky.framework.rpc.cluster;
 
+import com.sky.framework.rpc.invoker.consumer.Dispatcher;
+import com.sky.framework.rpc.invoker.consumer.InvokerDispatcher;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.Request;
 
@@ -29,6 +31,8 @@ import com.sky.framework.rpc.remoting.Request;
  * @author
  */
 public interface ClusterInvoker {
+
+    Dispatcher dispatcher = new InvokerDispatcher();
 
     /**
      * 执行请求

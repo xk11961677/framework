@@ -24,14 +24,11 @@ package com.sky.framework.rpc.invoker.consumer.proxy;
 
 
 import com.sky.framework.rpc.cluster.ClusterInvoker;
-import com.sky.framework.rpc.cluster.FailoverClusterInvoker;
-import com.sky.framework.rpc.common.enums.SerializeEnum;
+import com.sky.framework.rpc.common.spi.SpiExchange;
 import com.sky.framework.rpc.invoker.RpcInvocation;
-import com.sky.framework.rpc.invoker.consumer.Dispatcher;
-import com.sky.framework.rpc.invoker.consumer.InvokerDispatcher;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.Request;
-import com.sky.framework.rpc.serializer.FastJsonSerializer;
+import com.sky.framework.rpc.serializer.ObjectSerializer;
 import com.sky.framework.rpc.spring.annotation.Reference;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,14 +45,6 @@ import java.lang.reflect.Method;
 @Slf4j
 public class Proxy {
 
-    //todo spi extension
-    private FastJsonSerializer serializer = new FastJsonSerializer();
-
-    private Dispatcher dispatcher = new InvokerDispatcher();
-
-    //todo spi extension
-    private ClusterInvoker invoker = new FailoverClusterInvoker(dispatcher);
-
     private Class<?> interfaceClass;
 
     private Reference reference;
@@ -66,6 +55,7 @@ public class Proxy {
     }
 
     public Object remoteCall(Method method, Object[] args) {
+        //todo 将信息抽取context 方便filter和interceptor
         RegisterMeta.ServiceMeta serviceMeta = new RegisterMeta.ServiceMeta();
         serviceMeta.setGroup(reference.group());
         serviceMeta.setServiceProviderName(interfaceClass.getName());
@@ -78,9 +68,12 @@ public class Proxy {
         rpcInvocation.setParameterTypes(method.getParameterTypes());
         rpcInvocation.setArguments(args);
 
+        ObjectSerializer serializer = SpiExchange.getInstance().getSerializer();
+        byte serializerCode = SpiExchange.getInstance().getSerializerCode();
         byte[] serialize = serializer.serialize(rpcInvocation);
-        request.bytes(SerializeEnum.FASTJSON.getSerializerCode(), serialize);
+        request.bytes(serializerCode, serialize);
 
+        ClusterInvoker invoker = SpiExchange.getInstance().getClusterInvoker();
         Object result = invoker.invoke(request, serviceMeta, method.getReturnType());
 
         return result;

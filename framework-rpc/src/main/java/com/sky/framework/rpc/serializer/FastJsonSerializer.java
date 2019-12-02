@@ -25,11 +25,12 @@ package com.sky.framework.rpc.serializer;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.sky.framework.rpc.common.enums.SerializeEnum;
+import com.sky.framework.rpc.util.SpiMetadata;
 
 /**
  * @author
  */
+@SpiMetadata(name = "fastjson")
 public class FastJsonSerializer implements ObjectSerializer {
 
     @Override
@@ -39,11 +40,6 @@ public class FastJsonSerializer implements ObjectSerializer {
 
     @Override
     public <T> T deSerialize(byte[] param, Class<T> clazz) throws RuntimeException {
-        return (T)JSON.parse(param, Feature.SupportAutoType);
-    }
-
-    @Override
-    public String getScheme() {
-        return SerializeEnum.FASTJSON.getSerialize();
+        return (T) JSON.parse(param, Feature.SupportAutoType);
     }
 }

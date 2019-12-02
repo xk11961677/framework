@@ -42,17 +42,17 @@ public enum ProxyEnum {
 
     @Getter
     @Setter
-    private String proxy;
+    private String key;
 
-    ProxyEnum(String proxy) {
-        this.proxy = proxy;
+    ProxyEnum(String key) {
+        this.key = key;
     }
 
 
-    public static ProxyEnum acquire(String proxy) {
+    public static ProxyEnum acquire(String key) {
         Optional<ProxyEnum> serializeEnum =
                 Arrays.stream(ProxyEnum.values())
-                        .filter(v -> Objects.equals(v.getProxy(), proxy))
+                        .filter(v -> Objects.equals(v.getKey(), key))
                         .findFirst();
         return serializeEnum.orElse(ProxyEnum.JAVASSIST);
     }

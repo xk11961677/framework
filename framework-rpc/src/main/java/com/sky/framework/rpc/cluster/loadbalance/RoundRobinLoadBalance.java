@@ -25,6 +25,7 @@ package com.sky.framework.rpc.cluster.loadbalance;
 import cn.hutool.core.collection.ConcurrentHashSet;
 import com.sky.framework.rpc.register.AbstractRegistryService;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
+import com.sky.framework.rpc.util.SpiMetadata;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
@@ -34,6 +35,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
  *
  * @author
  */
+@SpiMetadata(name = "round")
 public class RoundRobinLoadBalance extends AbstractLoadBalance {
 
     /**
@@ -45,10 +47,6 @@ public class RoundRobinLoadBalance extends AbstractLoadBalance {
             AtomicIntegerFieldUpdater.newUpdater(RoundRobinLoadBalance.class, "index");
 
     private volatile int index = 0;
-
-    public static LoadBalance getInstance() {
-        return new RoundRobinLoadBalance();
-    }
 
     @Override
     public <T> T doSelect(RegisterMeta.ServiceMeta serviceMeta) {

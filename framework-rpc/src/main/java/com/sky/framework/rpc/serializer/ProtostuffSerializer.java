@@ -25,7 +25,7 @@ package com.sky.framework.rpc.serializer;
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
-import com.sky.framework.rpc.common.enums.SerializeEnum;
+import com.sky.framework.rpc.util.SpiMetadata;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 
@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 /**
  * @author
  */
+@SpiMetadata(name = "protostuff")
 public class ProtostuffSerializer implements ObjectSerializer {
     private static final SchemaCache CACHED_SCHEMA = SchemaCache.getInstance();
     private static final Objenesis OBJENESIS_STD = new ObjenesisStd(true);
@@ -89,16 +90,6 @@ public class ProtostuffSerializer implements ObjectSerializer {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
-    }
-
-    /**
-     * 设置scheme
-     *
-     * @return scheme 命名
-     */
-    @Override
-    public String getScheme() {
-        return SerializeEnum.PROTOSTUFF.getSerialize();
     }
 }
 

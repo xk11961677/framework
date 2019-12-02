@@ -22,28 +22,77 @@
  */
 package com.sky.framework.rpc.common.spi;
 
+import com.sky.framework.rpc.cluster.ClusterInvoker;
+import com.sky.framework.rpc.cluster.FailoverClusterInvoker;
+import com.sky.framework.rpc.cluster.loadbalance.LoadBalance;
+import com.sky.framework.rpc.cluster.loadbalance.RoundRobinLoadBalance;
+import com.sky.framework.rpc.common.enums.SerializeEnum;
 import com.sky.framework.rpc.invoker.consumer.proxy.ProxyFactory;
+import com.sky.framework.rpc.invoker.consumer.proxy.javassist.JavassistProxyFactory;
+import com.sky.framework.rpc.serializer.FastJsonSerializer;
+import com.sky.framework.rpc.serializer.ObjectSerializer;
+import com.sky.framework.rpc.util.SpiLoader;
+import com.sky.framework.rpc.util.SpiMetadata;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Objects;
+import java.util.ServiceLoader;
+import java.util.stream.StreamSupport;
 
 /**
+ * todo 需要修改
+ *
  * @author
  */
 public class SpiExchange {
 
     private static SpiExchange instance = new SpiExchange();
 
-    private ProxyFactory proxyFactory;
+    /**
+     * consumer 代理方式
+     */
+    @Getter
+    @Setter
+    private ProxyFactory proxyFactory = new JavassistProxyFactory();
+
+    /**
+     * 序列化方式
+     */
+    @Getter
+    @Setter
+    private ObjectSerializer serializer = new FastJsonSerializer();
+
+    /**
+     * 序列化方式code
+     */
+    @Getter
+    @Setter
+    private byte serializerCode = SerializeEnum.FASTJSON.getSerializerCode();
+
+    /**
+     * 集群调用方式
+     */
+    @Getter
+    @Setter
+    private ClusterInvoker clusterInvoker = new FailoverClusterInvoker();
+
+    /**
+     * 负载均衡方式
+     */
+    @Getter
+    @Setter
+    private LoadBalance loadBalance = new RoundRobinLoadBalance();
 
     public static SpiExchange getInstance() {
         return instance;
     }
 
-    public ProxyFactory getProxyFactory() {
-        return proxyFactory;
+
+    public <T> T loadSpiSupport(Class<T> clazz, String name) {
+        ServiceLoader<?> services = SpiLoader.loadAll(clazz);
+        return (T) StreamSupport.stream(services.spliterator(), true)
+                .filter(p -> Objects.equals(p.getClass().getAnnotation(SpiMetadata.class).name(), name))
+                .findFirst().orElse(null);
     }
-
-    public void setProxyFactory(ProxyFactory proxyFactory) {
-        this.proxyFactory = proxyFactory;
-    }
-
-
 }

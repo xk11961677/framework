@@ -22,22 +22,21 @@
  */
 package com.sky.framework.rpc.cluster;
 
-import com.sky.framework.rpc.invoker.consumer.Dispatcher;
 import com.sky.framework.rpc.invoker.future.DefaultInvokeFuture;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.Request;
+import com.sky.framework.rpc.util.SpiMetadata;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author
  */
 @Slf4j
+@SpiMetadata(name = "failsafe")
 public class FailsafeClusterInvoker implements ClusterInvoker {
 
-    private Dispatcher dispatcher;
 
-    public FailsafeClusterInvoker(Dispatcher dispatcher) {
-        this.dispatcher = dispatcher;
+    public FailsafeClusterInvoker() {
     }
 
     @Override

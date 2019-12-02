@@ -46,10 +46,39 @@ public @interface EnableRPC {
      */
     String scan();
 
+
     /**
      * 代理方式
+     * Consumer端参数
      *
      * @return
+     * @see com.sky.framework.rpc.common.enums.ProxyEnum
      */
     String proxy() default "javassist";
+
+    /**
+     * 集群方式
+     * Consumer端参数
+     *
+     * @return
+     * @see com.sky.framework.rpc.common.enums.ClusterEnum
+     */
+    String cluster() default "failover";
+
+    /**
+     * 序列化方式
+     * Consumer端参数
+     *
+     * @return
+     * @see com.sky.framework.rpc.common.enums.SerializeEnum
+     */
+    String serialize() default "fastjson";
+
+    /**
+     * 负载均衡方式
+     *
+     * @return
+     * @see com.sky.framework.rpc.common.enums.LoadBalanceEnum
+     */
+    String loadBalance() default "round";
 }

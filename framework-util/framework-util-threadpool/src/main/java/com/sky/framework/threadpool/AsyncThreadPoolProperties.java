@@ -40,7 +40,7 @@ public class AsyncThreadPoolProperties {
     /**
      * 默认线程池最大线程数
      */
-    private static final int MAXIMUM_POOLSIZE = 200;
+    private static final int MAXIMUM_POOL_SIZE = 200;
     /**
      * 默认队列大小
      */
@@ -67,7 +67,7 @@ public class AsyncThreadPoolProperties {
      */
     @Getter
     @Setter
-    private int maximumPoolSize = MAXIMUM_POOLSIZE;
+    private int maximumPoolSize = MAXIMUM_POOL_SIZE;
     /**
      * 队列大小
      */

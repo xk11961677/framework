@@ -24,10 +24,12 @@ package com.sky.framework.rpc.cluster;
 
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import com.sky.framework.rpc.remoting.Request;
+import com.sky.framework.rpc.util.SpiMetadata;
 
 /**
  * @author
  */
+@SpiMetadata(name = "failback")
 public class FailbackClusterInvoker implements ClusterInvoker {
 
     @Override

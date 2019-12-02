@@ -24,7 +24,7 @@ package com.sky.framework.rpc.serializer;
 
 import com.caucho.hessian.io.Hessian2Input;
 import com.caucho.hessian.io.Hessian2Output;
-import com.sky.framework.rpc.common.enums.SerializeEnum;
+import com.sky.framework.rpc.util.SpiMetadata;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,6 +34,7 @@ import java.io.IOException;
 /**
  * @author
  */
+@SpiMetadata(name = "hessian")
 public class HessianSerializer implements ObjectSerializer {
     @Override
     public byte[] serialize(Object obj) throws RuntimeException {
@@ -60,15 +61,5 @@ public class HessianSerializer implements ObjectSerializer {
         } catch (IOException e) {
             throw new RuntimeException("Hessian deSerialize error " + e.getMessage());
         }
-    }
-
-    /**
-     * 设置scheme
-     *
-     * @return scheme 命名
-     */
-    @Override
-    public String getScheme() {
-        return SerializeEnum.HESSIAN.getSerialize();
     }
 }
