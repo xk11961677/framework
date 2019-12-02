@@ -37,10 +37,6 @@ import net.bytebuddy.matcher.ElementMatchers;
 @Slf4j
 @SpiMetadata(name = "byteBuddy")
 public class ByteBuddyProxyFactory extends AbstractProxyFactory {
-    @Override
-    public String getScheme() {
-        return "byteBuddy";
-    }
 
     @Override
     public <T> T newInstance(Class<?> interfaceClass, Reference reference) {

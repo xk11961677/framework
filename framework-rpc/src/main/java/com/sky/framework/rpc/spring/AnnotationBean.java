@@ -66,16 +66,7 @@ public class AnnotationBean implements InitializingBean, BeanPostProcessor {
     static final ConcurrentMap<Class, Provider> providerConfigs = new ConcurrentHashMap();
 
     @Setter
-    private String proxy;
-
-    @Setter
-    private String cluster;
-
-    @Setter
-    private String serializer;
-
-    @Setter
-    private String loadBalance;
+    private AnnotationBeanProperties annotationBeanProperties;
 
     private String annotationPackage;
 
@@ -208,25 +199,26 @@ public class AnnotationBean implements InitializingBean, BeanPostProcessor {
     }
 
     private void loadSpiSupport() {
+        ;
         SpiExchange instance = SpiExchange.getInstance();
         //加载proxy spi
-        ProxyEnum proxyEnum = ProxyEnum.acquire(proxy);
+        ProxyEnum proxyEnum = ProxyEnum.acquire(annotationBeanProperties.getProxy());
         ProxyFactory proxyFactory = instance.loadSpiSupport(ProxyFactory.class, proxyEnum.getKey());
         instance.setProxyFactory(proxyFactory);
 
         //加载cluster spi
-        ClusterEnum clusterEnum = ClusterEnum.acquire(cluster);
+        ClusterEnum clusterEnum = ClusterEnum.acquire(annotationBeanProperties.getCluster());
         ClusterInvoker invoker = instance.loadSpiSupport(ClusterInvoker.class, clusterEnum.getKey());
         instance.setClusterInvoker(invoker);
 
         //加载serialize spi
-        SerializeEnum serializeEnum = SerializeEnum.acquire(serializer);
+        SerializeEnum serializeEnum = SerializeEnum.acquire(annotationBeanProperties.getSerializer());
         ObjectSerializer objectSerializer = instance.loadSpiSupport(ObjectSerializer.class, serializeEnum.getSerialize());
         instance.setSerializer(objectSerializer);
         instance.setSerializerCode(serializeEnum.getSerializerCode());
 
         //加载loadBalance spi
-        LoadBalanceEnum loadBalanceEnum = LoadBalanceEnum.acquire(loadBalance);
+        LoadBalanceEnum loadBalanceEnum = LoadBalanceEnum.acquire(annotationBeanProperties.getLoadBalance());
         LoadBalance loadBalance = instance.loadSpiSupport(LoadBalance.class, loadBalanceEnum.getKey());
         instance.setLoadBalance(loadBalance);
     }

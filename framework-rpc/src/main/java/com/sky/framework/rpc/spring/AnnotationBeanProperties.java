@@ -20,45 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.model.dto;
+package com.sky.framework.rpc.spring;
 
-import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+import lombok.NoArgsConstructor;
 
 /**
- * 外部接口请求参数定义
- *
- * @param <T> 业务请求参数
  * @author
  */
 @Data
-public class MessageReq<T> implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class AnnotationBeanProperties {
 
-    private static final long serialVersionUID = -6566620839070950003L;
+    private String proxy;
 
-    @NotBlank(message = "clientId不能为空")
-    @ApiModelProperty(value = "客户端ID，服务端分配", required = true)
-    private String clientId;
+    private String cluster;
 
-    @NotNull(message = "timestamp不能为空")
-    @ApiModelProperty(value = "当前时间戳", required = true)
-    private String timestamp;
+    private String serializer;
 
-    @NotBlank(message = "sign不能为空")
-    @ApiModelProperty(value = "业务参数签名", required = true)
-    private String sign;
-
-    @NotNull(message = "param不能为空")
-    @Valid
-    @ApiModelProperty(value = "业务参数", required = true)
-    private T param;
-
-    public MessageReq() {
-    }
+    private String loadBalance;
 
 }

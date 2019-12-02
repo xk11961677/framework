@@ -22,10 +22,14 @@
  */
 package com.sky.framework.rpc.provider.service;
 
+import com.sky.framework.model.dto.MessageRes;
 import com.sky.framework.rpc.api.ExampleApi;
 import com.sky.framework.rpc.api.dto.UserDTO;
 import com.sky.framework.rpc.invoker.annotation.Provider;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author
@@ -50,5 +54,14 @@ public class ExampleApiImpl implements ExampleApi {
         log.info("msg:{}" + user);
         user.setName(user.getName() + "response");
         return user;
+    }
+
+    @Override
+    public MessageRes<List<UserDTO>> getUsers(UserDTO user) {
+        log.info("getUsers :{} msg:{}", user);
+        user.setName(user.getName() + "response");
+        List<UserDTO> list = new ArrayList<>();
+        list.add(user);
+        return MessageRes.success(list);
     }
 }

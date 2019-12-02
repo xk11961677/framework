@@ -58,11 +58,6 @@ public class JavassistProxyFactory extends AbstractProxyFactory {
     }
 
     @Override
-    public String getScheme() {
-        return "javassist";
-    }
-
-    @Override
     public <T> T newInstance(Class<?> interfaceClass, Reference reference) {
         JavassistProxyFactory javassistProxyFactory = new JavassistProxyFactory(interfaceClass, reference);
         return (T) javassistProxyFactory.newInstance();
