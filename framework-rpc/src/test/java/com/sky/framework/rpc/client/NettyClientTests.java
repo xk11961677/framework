@@ -27,7 +27,9 @@ import com.sky.framework.rpc.example.User;
 import com.sky.framework.rpc.example.UserService;
 import com.sky.framework.rpc.invoker.consumer.proxy.ProxyFactory;
 import com.sky.framework.rpc.invoker.consumer.proxy.javassist.JavassistProxyFactory;
+import com.sky.framework.rpc.register.Register;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
+import com.sky.framework.rpc.register.zookeeper.ZookeeperRegister;
 import com.sky.framework.rpc.remoting.client.NettyClient;
 import com.sky.framework.rpc.spring.annotation.Reference;
 import com.sky.framework.rpc.util.IdUtils;
@@ -43,7 +45,9 @@ public class NettyClientTests extends BaseApplicationTests {
     @Test
     public void start() throws Exception {
         NettyClient nettyClient = new NettyClient();
-        nettyClient.connectToRegistryServer("127.0.0.1:2181");
+        Register register = new ZookeeperRegister();
+        register.setConnect("127.0.0.1:2181");
+        nettyClient.connectToRegistryServer(register);
 
         Reference reference = new Reference() {
             @Override

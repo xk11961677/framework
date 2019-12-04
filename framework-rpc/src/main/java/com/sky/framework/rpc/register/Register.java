@@ -20,38 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rpc.common.enums;
+package com.sky.framework.rpc.register;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
+import lombok.Data;
 
 /**
  * @author
  */
-public enum LoadBalanceEnum {
-    ROUNDROBIN("roundrobin"),
-    RANDOM("random"),
-    ROUNDROBIN_WEIGHT("roundrobin_weight"),
-    LEAST_ACTIVE("leastactive");
+@Data
+public class Register {
+    /**
+     * 地址
+     */
+    private String connect;
 
-
-    String key;
-
-    LoadBalanceEnum(String key) {
-        this.key = key;
-    }
-
-
-    public static LoadBalanceEnum acquire(String key) {
-        Optional<LoadBalanceEnum> loadBalanceEnum =
-                Arrays.stream(LoadBalanceEnum.values())
-                        .filter(v -> Objects.equals(v.getKey(), key))
-                        .findFirst();
-        return loadBalanceEnum.orElse(LoadBalanceEnum.ROUNDROBIN);
-    }
-
-    public String getKey() {
-        return key;
-    }
+    /**
+     * 根目录
+     */
+    private String group;
 }

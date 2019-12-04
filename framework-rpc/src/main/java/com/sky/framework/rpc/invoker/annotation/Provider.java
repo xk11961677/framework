@@ -34,7 +34,7 @@ public @interface Provider {
 
     String name();
 
-    String group() default "";
+    String group() default "group";
 
     String version() default "1.0.0";
 

@@ -80,5 +80,5 @@ public @interface EnableRPC {
      * @return
      * @see com.sky.framework.rpc.common.enums.LoadBalanceEnum
      */
-    String loadBalance() default "round";
+    String loadBalance() default "roundrobin";
 }
