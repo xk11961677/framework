@@ -23,7 +23,9 @@
 package com.sky.framework.rpc.spring;
 
 import com.sky.framework.rpc.invoker.annotation.Provider;
+import com.sky.framework.rpc.register.Register;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
+import com.sky.framework.rpc.register.zookeeper.ZookeeperRegister;
 import com.sky.framework.rpc.remoting.client.NettyClient;
 import com.sky.framework.rpc.remoting.server.NettyServer;
 import com.sky.framework.rpc.spring.annotation.Reference;
@@ -99,16 +101,15 @@ public class RpcAutoConfiguration implements CommandLineRunner {
         @Override
         public void run() {
             NettyServer nettyServer = new NettyServer(Integer.parseInt(properties.getPort()));
-            nettyServer.connectToRegistryServer(properties.getRegistry().getAddress());
+            Register register = new ZookeeperRegister();
+            register.setConnect(properties.getRegistry().getAddress());
+            register.setGroup(properties.getRegistry().getGroup());
+            nettyServer.connectToRegistryServer(register);
             Collection<Provider> providers = AnnotationBean.providerConfigs.values();
             for (Provider provider : providers) {
                 RegisterMeta registerMeta = new RegisterMeta();
                 registerMeta.setPort(Integer.parseInt(properties.getPort()));
-                String group = provider.group();
-                if (group == null || "".equals(group)) {
-                    group = properties.getRegistry().getGroup();
-                }
-                registerMeta.setGroup(group);
+                registerMeta.setGroup(provider.group());
                 registerMeta.setServiceProviderName(provider.name());
                 registerMeta.setVersion(provider.version());
                 nettyServer.getRegistryService().register(registerMeta);
@@ -130,16 +131,15 @@ public class RpcAutoConfiguration implements CommandLineRunner {
         @Override
         public void run() {
             NettyClient nettyClient = new NettyClient();
-            nettyClient.connectToRegistryServer(properties.getRegistry().getAddress());
+            Register register = new ZookeeperRegister();
+            register.setConnect(properties.getRegistry().getAddress());
+            register.setGroup(properties.getRegistry().getGroup());
+            nettyClient.connectToRegistryServer(register);
             Collection<ReferenceBean> referenceBeans = AnnotationBean.referenceConfigs.values();
             for (ReferenceBean referenceBean : referenceBeans) {
                 Reference reference = referenceBean.getReference();
-                String group = reference.group();
-                if (group == null || "".equals(group)) {
-                    group = properties.getRegistry().getGroup();
-                }
                 RegisterMeta.ServiceMeta serviceMeta = new RegisterMeta.ServiceMeta();
-                serviceMeta.setGroup(group);
+                serviceMeta.setGroup(reference.group());
                 serviceMeta.setServiceProviderName(referenceBean.getInterfaceClass().getName());
                 serviceMeta.setVersion(reference.version());
                 nettyClient.getRegistryService().subscribe(serviceMeta);

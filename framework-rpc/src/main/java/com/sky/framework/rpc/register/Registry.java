@@ -32,7 +32,7 @@ public interface Registry {
     /**
      * 根据connect地址链接注册中心
      *
-     * @param connect 链接地址
+     * @param register 注册中心参数
      */
-    void connectToRegistryServer(String connect);
+    void connectToRegistryServer(Register register);
 }

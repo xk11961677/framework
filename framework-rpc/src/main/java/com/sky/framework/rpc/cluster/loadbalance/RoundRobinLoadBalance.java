@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
  *
  * @author
  */
-@SpiMetadata(name = "round")
+@SpiMetadata(name = "roundrobin")
 public class RoundRobinLoadBalance extends AbstractLoadBalance {
 
     /**

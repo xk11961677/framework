@@ -25,7 +25,9 @@ package com.sky.framework.rpc.server;
 import com.sky.framework.rpc.BaseApplicationTests;
 import com.sky.framework.rpc.example.UserServiceImpl;
 import com.sky.framework.rpc.invoker.annotation.Provider;
+import com.sky.framework.rpc.register.Register;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
+import com.sky.framework.rpc.register.zookeeper.ZookeeperRegister;
 import com.sky.framework.rpc.remoting.server.NettyServer;
 import com.sky.framework.rpc.util.ReflectAsmUtils;
 import org.junit.Before;
@@ -53,7 +55,9 @@ public class NettyServerTests extends BaseApplicationTests {
 
 
     private void register(NettyServer nettyServer) {
-        nettyServer.connectToRegistryServer("127.0.0.1:2181");
+        Register register = new ZookeeperRegister();
+        register.setConnect("127.0.0.1:2181");
+        nettyServer.connectToRegistryServer(register);
 
         RegisterMeta registerMeta = new RegisterMeta();
         registerMeta.setPort(port);

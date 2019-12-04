@@ -32,7 +32,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface Reference {
 
-    String group() default "";
+    String group() default "group";
 
     String version() default "1.0.0";
 

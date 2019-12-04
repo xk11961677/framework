@@ -23,6 +23,7 @@
 package com.sky.framework.rpc.remoting.client;
 
 
+import com.sky.framework.rpc.register.Register;
 import com.sky.framework.rpc.register.Registry;
 import com.sky.framework.rpc.register.RegistryService;
 import com.sky.framework.rpc.register.zookeeper.ZookeeperRegistryService;
@@ -117,8 +118,8 @@ public class NettyClient extends AbstractBootstrap implements Registry {
     }
 
     @Override
-    public void connectToRegistryServer(String connect) {
+    public void connectToRegistryServer(Register register) {
         registryService = new ZookeeperRegistryService();
-        registryService.connectToRegistryServer(connect);
+        registryService.connectToRegistryServer(register);
     }
 }

@@ -33,7 +33,8 @@ public enum ClusterEnum {
     FAILOVER("failover"),
     FAILBACK("failback"),
     FAILFAST("failfast"),
-    FAILSAFE("failsafe");
+    FAILSAFE("failsafe"),
+    FORKING("forking");
 
 
     String key;

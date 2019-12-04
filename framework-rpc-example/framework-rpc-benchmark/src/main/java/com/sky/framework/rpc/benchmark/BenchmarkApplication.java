@@ -25,7 +25,9 @@ package com.sky.framework.rpc.benchmark;
 import com.sky.framework.rpc.example.UserService;
 import com.sky.framework.rpc.invoker.consumer.proxy.ProxyFactory;
 import com.sky.framework.rpc.invoker.consumer.proxy.javassist.JavassistProxyFactory;
+import com.sky.framework.rpc.register.Register;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
+import com.sky.framework.rpc.register.zookeeper.ZookeeperRegister;
 import com.sky.framework.rpc.remoting.client.NettyClient;
 import com.sky.framework.rpc.spring.annotation.Reference;
 import org.openjdk.jmh.annotations.*;
@@ -64,7 +66,9 @@ public class BenchmarkApplication {
         }
         content = sb.toString();
         nettyClient = new NettyClient();
-        nettyClient.connectToRegistryServer("127.0.0.1:2181");
+        Register register = new ZookeeperRegister();
+        register.setConnect("127.0.0.1:2181");
+        nettyClient.connectToRegistryServer(register);
 
         reference = new Reference() {
             @Override

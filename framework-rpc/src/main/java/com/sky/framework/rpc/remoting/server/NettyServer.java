@@ -23,13 +23,16 @@
 package com.sky.framework.rpc.remoting.server;
 
 
+import com.sky.framework.rpc.register.Register;
 import com.sky.framework.rpc.register.Registry;
 import com.sky.framework.rpc.register.RegistryService;
 import com.sky.framework.rpc.register.zookeeper.ZookeeperRegistryService;
 import com.sky.framework.rpc.remoting.AbstractBootstrap;
 import com.sky.framework.rpc.remoting.protocol.ProtocolDecoder;
 import com.sky.framework.rpc.remoting.protocol.ProtocolEncoder;
+import com.sky.framework.threadpool.core.CommonThreadPool;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -60,6 +63,11 @@ public class NettyServer extends AbstractBootstrap implements Registry {
     private EventLoopGroup workerGroup = null;
 
     /**
+     *
+     */
+    private Channel channel = null;
+
+    /**
      * 服务端默认端口
      */
     private static final int DEFAULT_PORT = 8080;
@@ -85,7 +93,14 @@ public class NettyServer extends AbstractBootstrap implements Registry {
         try {
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
             log.info("the server start successfully !");
-            channelFuture.channel().closeFuture().sync();
+            channel = channelFuture.channel();
+            /*Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
+                public void run() {
+                    NettyServer.this.stop();
+                }
+            });*/
+            channel.closeFuture().sync();
         } catch (Exception e) {
             log.error("the server start failed:{}", e.getMessage());
             stop();
@@ -97,9 +112,28 @@ public class NettyServer extends AbstractBootstrap implements Registry {
     public void stop() {
         if (status()) {
             super.stop();
-            if (bootstrap != null) {
-                bossGroup.shutdownGracefully();
-                workerGroup.shutdownGracefully();
+            try {
+                boolean flag = CommonThreadPool.shutDown();
+                if (!flag) {
+                    CommonThreadPool.getThreadPool().shutdownNow();
+                }
+            } catch (Throwable e) {
+                log.warn(e.getMessage(), e);
+            }
+            try {
+                if (channel != null) {
+                    channel.close();
+                }
+            } catch (Throwable e) {
+                log.warn(e.getMessage(), e);
+            }
+            try {
+                if (bootstrap != null) {
+                    bossGroup.shutdownGracefully();
+                    workerGroup.shutdownGracefully();
+                }
+            } catch (Throwable e) {
+                log.warn(e.getMessage(), e);
             }
         } else {
             log.info(" the server has been shutdown !");
@@ -112,8 +146,8 @@ public class NettyServer extends AbstractBootstrap implements Registry {
     @Override
     public void init() {
         //epoll kqueue
-        bossGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("boss"));
-        workerGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("worker"));
+        bossGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("boss", true));
+        workerGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("worker", true));
         ServerChannelHandler serverChannelHandler = new ServerChannelHandler();
         MetricsChannelHandler metricsChannelHandler = new MetricsChannelHandler();
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.INFO);
@@ -138,16 +172,16 @@ public class NettyServer extends AbstractBootstrap implements Registry {
                         }
                     })
                     .childOption(ChannelOption.TCP_NODELAY, true)
-                    .childOption(ChannelOption.SO_REUSEADDR, true);
-//                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+                    .childOption(ChannelOption.SO_REUSEADDR, true)
+                    .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         } catch (Exception e) {
             log.error("the server init failed:{}", e.getMessage());
         }
     }
 
     @Override
-    public void connectToRegistryServer(String connect) {
+    public void connectToRegistryServer(Register register) {
         registryService = new ZookeeperRegistryService();
-        registryService.connectToRegistryServer(connect);
+        registryService.connectToRegistryServer(register);
     }
 }

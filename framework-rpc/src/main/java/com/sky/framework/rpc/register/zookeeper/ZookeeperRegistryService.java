@@ -25,6 +25,7 @@ package com.sky.framework.rpc.register.zookeeper;
 import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.net.NetUtil;
 import com.sky.framework.rpc.register.AbstractRegistryService;
+import com.sky.framework.rpc.register.Register;
 import com.sky.framework.rpc.register.meta.RegisterMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +42,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -49,6 +51,11 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Slf4j
 public class ZookeeperRegistryService extends AbstractRegistryService {
+
+    /**
+     * 根目录
+     */
+    private String root = "sky-rpc";
 
     /**
      * zk 客户端
@@ -72,7 +79,11 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
 
 
     @Override
-    public void connectToRegistryServer(String connect) {
+    public void connectToRegistryServer(Register register) {
+        ZookeeperRegister zkRegister = (ZookeeperRegister) register;
+        String connect = zkRegister.getConnect();
+        Optional.ofNullable(zkRegister.getGroup()).ifPresent(g -> root = g);
+
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         client = CuratorFrameworkFactory.builder()
                 .connectString(connect)
@@ -99,7 +110,7 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
 
     @Override
     public Collection<RegisterMeta> lookup(RegisterMeta.ServiceMeta serviceMeta) {
-        String directory = String.format("/rpc/provider/%s/%s/%s",
+        String directory = String.format("/" + root + "/provider/%s/%s/%s",
                 serviceMeta.getGroup(),
                 serviceMeta.getServiceProviderName(),
                 serviceMeta.getVersion());
@@ -120,7 +131,7 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
 
     @Override
     protected void doRegister(RegisterMeta meta) {
-        String directory = String.format("/rpc/provider/%s/%s/%s",
+        String directory = String.format("/" + root + "/provider/%s/%s/%s",
                 meta.getGroup(),
                 meta.getServiceProviderName(),
                 meta.getVersion());
@@ -155,7 +166,7 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
     protected void doSubscribe(RegisterMeta.ServiceMeta serviceMeta) {
         PathChildrenCache childrenCache = pathChildrenCaches.get(serviceMeta);
         if (childrenCache == null) {
-            String directory = String.format("/rpc/provider/%s/%s/%s",
+            String directory = String.format("/" + root + "/provider/%s/%s/%s",
                     serviceMeta.getGroup(),
                     serviceMeta.getServiceProviderName(),
                     serviceMeta.getVersion());
@@ -212,7 +223,7 @@ public class ZookeeperRegistryService extends AbstractRegistryService {
     @Override
     protected void doUnRegister(RegisterMeta meta) {
         RegisterMeta.ServiceMeta serviceMeta = meta.getServiceMeta();
-        String directory = String.format("/rpc/provider/%s/%s/%s",
+        String directory = String.format("/" + root + "/provider/%s/%s/%s",
                 serviceMeta.getGroup(),
                 serviceMeta.getServiceProviderName(),
                 serviceMeta.getVersion());
