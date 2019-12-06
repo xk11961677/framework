@@ -31,6 +31,7 @@ import com.sky.framework.rpc.register.zookeeper.ZookeeperRegister;
 import com.sky.framework.rpc.remoting.client.NettyClient;
 import com.sky.framework.rpc.spring.annotation.Reference;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
@@ -46,9 +47,13 @@ import java.util.concurrent.TimeUnit;
  *
  * @author
  */
-@Warmup(iterations = 5)
+@Warmup(iterations = 1)
 @OutputTimeUnit(TimeUnit.SECONDS)
+//@Measurement(iterations = 5, time = 60, timeUnit = TimeUnit.SECONDS)
+@BenchmarkMode({Mode.Throughput})
 @State(Scope.Benchmark)
+@Threads(10)
+//@GroupThreads(10)
 public class BenchmarkApplication {
 
     private Reference reference;
@@ -56,6 +61,8 @@ public class BenchmarkApplication {
     private NettyClient nettyClient;
 
     private String content;
+
+    private UserService userService;
 
     @Setup
     public void prepare() {
@@ -91,6 +98,11 @@ public class BenchmarkApplication {
         serviceMeta.setServiceProviderName(UserService.class.getName());
         serviceMeta.setVersion(reference.version());
         nettyClient.getRegistryService().subscribe(serviceMeta);
+
+        ProxyFactory factory = new JavassistProxyFactory();
+//        ProxyFactory factory = new JdkProxyFactory();
+//        ProxyFactory factory = new ByteBuddyProxyFactory();
+        userService = factory.newInstance(UserService.class, reference);
     }
 
     @TearDown
@@ -99,22 +111,11 @@ public class BenchmarkApplication {
         System.out.println("=============shutdown=============");
     }
 
-    private void doSomething() {
-        ProxyFactory factory = new JavassistProxyFactory();
-//        ProxyFactory factory = new JdkProxyFactory();
-//        ProxyFactory factory = new ByteBuddyProxyFactory();
-        UserService userService = factory.newInstance(UserService.class, reference);
+
+    @Benchmark
+    public void client() {
         String hello = userService.hello(content);
         System.out.println("=====result hello:{}");
-    }
-
-
-    @BenchmarkMode({Mode.Throughput})
-    @Benchmark
-//    @Threads(1)
-    @GroupThreads(10)
-    public void testClient() {
-        doSomething();
     }
 
     /**
@@ -142,7 +143,13 @@ public class BenchmarkApplication {
         Options opt = new OptionsBuilder()
                 .include(BenchmarkApplication.class.getSimpleName())
                 .forks(1)
+                .result("result.json")
+                .resultFormat(ResultFormatType.JSON)
                 .build();
         new Runner(opt).run();
+        /**
+         * 通过下面地址可将result.json文件上传查看图
+         * http://deepoove.com/jmh-visual-chart/
+         */
     }
 }
