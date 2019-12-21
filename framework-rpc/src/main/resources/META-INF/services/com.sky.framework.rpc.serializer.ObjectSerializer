@@ -1,5 +1,0 @@
-com.sky.framework.rpc.serializer.FastJsonSerializer
-com.sky.framework.rpc.serializer.HessianSerializer
-com.sky.framework.rpc.serializer.JavaSerializer
-com.sky.framework.rpc.serializer.KryoSerializer
-com.sky.framework.rpc.serializer.ProtostuffSerializer
