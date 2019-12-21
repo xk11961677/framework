@@ -63,19 +63,6 @@ public final class CommonThreadPool {
         return future;
     }
 
-
-    /**
-     * 异步执行公共执行方法
-     *
-     * @param command
-     * @return future, 返回异步等待对象
-     * @since
-     */
-    public static Future<Object> execute(DefaultAsynchronousHandler command) {
-        return execute((IAsynchronousHandler) command);
-
-    }
-
     /**
      * 关闭线程池
      *
@@ -111,7 +98,7 @@ public final class CommonThreadPool {
         TaskQueue taskqueue = new TaskQueue(initialCapacity, vo.isDiscard());
         ThreadPoolExecutorExtend executeNew = new ThreadPoolExecutorExtend(corePoolSize, maximumPoolSize,
                 keepAliveTime, TimeUnit.SECONDS,
-                taskqueue, new TaskThreadFactory(threadName), new ThreadPlloRejectedExecutionHandler(vo.isDiscard()));
+                taskqueue, new TaskThreadFactory(threadName), new ThreadPoolRejectedExecutionHandler(vo.isDiscard()));
 
         taskqueue.setParent(executeNew);
 
@@ -252,14 +239,14 @@ public final class CommonThreadPool {
      * 队列达到上限则打印详细日志
      * 轻量级管理线程池数量
      */
-    static class ThreadPlloRejectedExecutionHandler implements RejectedExecutionHandler {
+    static class ThreadPoolRejectedExecutionHandler implements RejectedExecutionHandler {
 
         boolean isDiscard = true;
 
-        public ThreadPlloRejectedExecutionHandler() {
+        public ThreadPoolRejectedExecutionHandler() {
         }
 
-        public ThreadPlloRejectedExecutionHandler(boolean isDiscard) {
+        public ThreadPoolRejectedExecutionHandler(boolean isDiscard) {
             this.isDiscard = isDiscard;
         }
 
