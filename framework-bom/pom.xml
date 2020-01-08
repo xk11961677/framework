@@ -30,7 +30,7 @@
         <commons-lang.verion>2.6</commons-lang.verion>
         <commons-lang3.version>3.5</commons-lang3.version>
         <commons-pool2.version>2.6.2</commons-pool2.version>
-        <hibernate-validator.version>6.0.16.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
         <httpclient.version>4.5.2</httpclient.version>
         <okhttp3.version>3.8.1</okhttp3.version>
         <redisson.starter.version>3.11.0</redisson.starter.version>
