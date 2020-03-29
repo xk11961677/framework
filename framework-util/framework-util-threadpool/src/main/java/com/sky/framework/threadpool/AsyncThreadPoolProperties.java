@@ -87,7 +87,7 @@ public class AsyncThreadPoolProperties {
     @Setter
     private String threadName = "sky-framework-threadpool-";
     /**
-     * 内存大小检测
+     * 是否丢弃,默认丢弃
      */
     @Getter
     @Setter
