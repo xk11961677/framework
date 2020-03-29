@@ -48,37 +48,23 @@ public class OperatorConstants {
         public static final String NOT_EQUAL_IGNORE_CASE = "14";
         public static final String MATCH = "15";
         public static final String UNMATCH = "16";
-
-        // alias
-        public static final String CONTAINS = INCLUDE;
-        public static final String NOT_CONTAINS = NOT_INCLUDE;
-        public static final String MEMBER_OF = INCLUDED_BY;
-        public static final String NOT_MEMBER_OF = NOT_INCLUDED_BY;
+        public static final String EXISTS = "17";
+        public static final String EXISTS_FIELD = "18";
 
         private static final String RESERVED_CODES[] = new String[]{EQUAL, GREATER, LESS, NOT_EQUAL, GREATER_EQUAL, LESS_EQUAL, INCLUDE, NOT_INCLUDE,
-                INCLUDED_BY, NOT_INCLUDED_BY, STRING_EQUAL, NOTSTRING_EQUAL, EQUAL_IGNORE_CASE, NOT_EQUAL_IGNORE_CASE, MATCH, UNMATCH, "17", "18", "19", "20"};
+                INCLUDED_BY, NOT_INCLUDED_BY, STRING_EQUAL, NOTSTRING_EQUAL, EQUAL_IGNORE_CASE, NOT_EQUAL_IGNORE_CASE, MATCH, UNMATCH, EXISTS, EXISTS_FIELD, "19", "20"};
 
         private static final String RESERVED_VALUES[] = new String[]{"EQUAL", "GREATER", "LESS", "NOT_EQUAL", "GREATER_EQUAL", "LESS_EQUAL", "INCLUDE",
                 "NOT_INCLUDE", "INCLUDED_BY", "NOT_INCLUDED_BY", "STRING_EQUAL", "NOTSTRING_EQUAL", "EQUAL_IGNORE_CASE",
-                "NOT_EQUAL_IGNORE_CASE", "MATCH,UNMATCH", "17", "18", "19", "20"};
+                "NOT_EQUAL_IGNORE_CASE", "MATCH,UNMATCH", "EXISTS", "EXISTS_FIELD", "19", "20"};
 
-        private static final String RESERVIED_ALIAS_CODES[] = new String[]{CONTAINS, NOT_CONTAINS, MEMBER_OF, NOT_MEMBER_OF, MATCH, UNMATCH};
-        private static final String RESERVIED_ALIAS_VALUES[] = new String[]{"CONTAINS", "NOT CONTAINS", "MEMBEROF", "NOT MEMBEROF", "MATCHES", "NOT MATCHES"};
 
-        private static final String RESERVED_LOGIC_ALIAS_VALUES[] = new String[]{"==", ">", "<", "!=", ">=", "<="};
+        private static final String RESERVED_ALIAS_VALUES[] = new String[]{"EQ", "GT", "LT", "NEQ", "GTE", "LTE", "IN",
+                "NOT_INCLUDE", "INCLUDED_BY", "NOT_INCLUDED_BY", "STRING_EQUAL", "NOTSTRING_EQUAL", "EQUAL_IGNORE_CASE",
+                "NOT_EQUAL_IGNORE_CASE", "MATCH,UNMATCH", "EXISTS", "EXISTS_FIELD", "19", "20"};
 
-        public static boolean isReserved(String code) {
-
-            for (int iLoop = 0; iLoop < RESERVED_CODES.length; iLoop++) {
-                if (RESERVED_CODES[iLoop].equals(code)) {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         public static String getCode(String value) {
-
             String temp = null;
             for (int iLoop = 0; iLoop < RESERVED_VALUES.length; iLoop++) {
                 if (RESERVED_VALUES[iLoop].equalsIgnoreCase(value)) {
@@ -87,29 +73,18 @@ public class OperatorConstants {
                 }
             }
 
-            if (null == temp) {
-                for (int iLoop = 0; iLoop < RESERVIED_ALIAS_VALUES.length; iLoop++) {
-                    if (RESERVIED_ALIAS_VALUES[iLoop].equalsIgnoreCase(value)) {
-                        temp = RESERVIED_ALIAS_CODES[iLoop];
-                        break;
-                    }
-                }
-            }
-
-            if (null == temp) {
-                for (int iLoop = 0; iLoop < RESERVED_LOGIC_ALIAS_VALUES.length; iLoop++) {
-                    if (RESERVED_LOGIC_ALIAS_VALUES[iLoop].equalsIgnoreCase(value)) {
+            if(temp == null) {
+                for (int iLoop = 0; iLoop < RESERVED_ALIAS_VALUES.length; iLoop++) {
+                    if (RESERVED_ALIAS_VALUES[iLoop].equalsIgnoreCase(value)) {
                         temp = RESERVED_CODES[iLoop];
                         break;
                     }
                 }
             }
-
             return temp;
         }
 
         public static String getValue(String code) {
-
             String temp = null;
             for (int iLoop = 0; iLoop < RESERVED_CODES.length; iLoop++) {
                 if (RESERVED_CODES[iLoop].equalsIgnoreCase(code)) {
@@ -117,7 +92,6 @@ public class OperatorConstants {
                     break;
                 }
             }
-
             return temp;
         }
     }
@@ -131,4 +105,10 @@ public class OperatorConstants {
         return instance;
     }
 
+
+    public static void main(String[] args) {
+        String eq = OPR_CODE.getCode("EQ");
+
+        System.out.println(eq);
+    }
 }

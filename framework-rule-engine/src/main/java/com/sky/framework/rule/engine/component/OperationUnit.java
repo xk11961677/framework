@@ -22,9 +22,8 @@
  */
 package com.sky.framework.rule.engine.component;
 
-import com.sky.framework.rule.engine.enums.TypeEnum;
 
-import java.util.List;
+import com.sky.framework.rule.engine.enums.TypeEnum;
 
 /**
  * 比较单元
@@ -41,5 +40,4 @@ public class OperationUnit {
         return "[type=" + type + " element = '" + element + "' level = " + level + "]";
     }
 
-    public List<OperationUnit> subUnit;
 }

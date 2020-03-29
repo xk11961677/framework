@@ -24,10 +24,12 @@ package com.sky.framework.rule.engine.component;
 
 import com.sky.framework.rule.engine.constant.OperatorConstants;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
+import com.sky.framework.rule.engine.model.EngineResultContext;
 import com.sky.framework.rule.engine.model.ItemResult;
 import com.sky.framework.rule.engine.model.RuleItem;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang.ObjectUtils;
 
 import java.math.BigDecimal;
 
@@ -36,9 +38,20 @@ import java.math.BigDecimal;
  */
 public abstract class AbstractRuleItem {
 
+    /**
+     * 源数据
+     */
     @Getter
     @Setter
     protected Object object;
+
+    /**
+     * 最终结果上下文
+     */
+    @Getter
+    @Setter
+    protected EngineResultContext resultContext;
+
 
     /**
      * 执行验证
@@ -52,20 +65,22 @@ public abstract class AbstractRuleItem {
     /**
      * 比较运算操作，将执行的结果和RuleItem中的baseline作比较。
      *
-     * @param subject        比较对象（运行结果）
-     * @param comparisonCode 比较操作符号，在OperatorConstants中定义。
+     * @param data           比较对象
+     * @param comparisonOperator 比较操作符号，在OperatorConstants中定义。
      * @param baseline       比较基线，用于比较的对象。
-     * @return 根据ComparisonCode运行的结果。 true or false。
+     * @return 根据comparisonOperator运行的结果。 true or false。
      * @throws RuleEngineException 参数不合法，或者比较操作符不合法。
      */
-    public static boolean comparisonOperate(String subject, String comparisonCode, String baseline) throws RuleEngineException {
+    public static boolean comparisonOperate(Object data, String comparisonOperator, String baseline) throws RuleEngineException {
         boolean bRet = false;
-        if (null == subject || null == baseline || null == comparisonCode) {
+        if (null == data || null == baseline || null == comparisonOperator) {
             throw new RuleEngineException("null pointer error of subject or baseline or comparison code.");
         }
         BigDecimal bdSubject = null;
         BigDecimal object = null;
-        switch (comparisonCode) {
+
+        String subject = ObjectUtils.toString(data);
+        switch (comparisonOperator) {
             case OperatorConstants.OPR_CODE.EQUAL:
                 try {
                     bdSubject = new BigDecimal(subject);
@@ -143,6 +158,12 @@ public abstract class AbstractRuleItem {
                 break;
             case OperatorConstants.OPR_CODE.UNMATCH:
                 bRet = !subject.matches(baseline);
+                break;
+            case OperatorConstants.OPR_CODE.EXISTS:
+                bRet = true;
+                break;
+            case OperatorConstants.OPR_CODE.EXISTS_FIELD:
+                bRet = !subject.equals("unknown");
                 break;
             default:
                 //todo

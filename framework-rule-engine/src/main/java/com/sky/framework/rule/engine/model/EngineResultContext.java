@@ -23,7 +23,13 @@
 package com.sky.framework.rule.engine.model;
 
 import com.sky.framework.rule.engine.enums.ResultEnum;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 整体执行结果
@@ -35,7 +41,27 @@ public class EngineResultContext {
 
     private ResultEnum result = ResultEnum.EMPTY;
 
-    private String resultDesc;
+    /**
+     * 规则容器
+     */
+    @Setter
+    @Getter
+    private List<RuleItem> ruleItems;
+
+    public void setRuleItems(List<RuleItem> ruleItems) {
+        this.ruleItems = ruleItems;
+        ruleItems.forEach(r -> map.put(r.getItemNo(), r));
+        for(Map.Entry entry : map.entrySet()) {
+            System.out.println(entry.getKey());
+        }
+
+    }
+
+    /**
+     * ruleId :  ruleItem
+     */
+    @Getter
+    private Map<String, RuleItem> map = new HashMap<>();
 
     public ResultEnum getResult() {
         return result;
@@ -45,7 +71,7 @@ public class EngineResultContext {
         this.result = result;
     }
 
-    public void setResult(String result) {
+    /*public void setResult(String result) {
         boolean bRet = this.result.parse(result);
         if (!bRet) {
             try {
@@ -58,15 +84,5 @@ public class EngineResultContext {
 
     public void setResult(int result) {
         this.result.setValue(result);
-    }
-
-    public String getResultDesc() {
-        return resultDesc;
-    }
-
-    public void setResultDesc(String resultDesc) {
-        this.resultDesc = resultDesc;
-        this.result.parse(resultDesc);
-    }
-
+    }*/
 }

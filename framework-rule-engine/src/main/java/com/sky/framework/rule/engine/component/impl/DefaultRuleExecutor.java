@@ -23,13 +23,17 @@
 package com.sky.framework.rule.engine.component.impl;
 
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.jayway.jsonpath.JsonPath;
 import com.sky.framework.rule.engine.component.AbstractRuleItem;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
 import com.sky.framework.rule.engine.model.ItemResult;
 import com.sky.framework.rule.engine.model.RuleItem;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.ObjectUtils;
+
+import java.util.Iterator;
 
 
 /**
@@ -41,33 +45,50 @@ import org.apache.commons.lang.StringUtils;
 public class DefaultRuleExecutor extends AbstractRuleItem {
 
     /**
-     * todo 计算规则是否匹配,并返回结果
-     *
      * @param item
      * @return
      * @throws RuleEngineException
      */
     @Override
     public ItemResult doCheck(RuleItem item) throws RuleEngineException {
-
         Object source = getObject();
+        //根据source 与 comparisonField 获取数据的当前值 (需要符合json-path格式)
+        Object subject = getValue(item.getComparisonField(), source);
 
-        //根据source 与 comparisonValue 获取数据的当前值
-        String subject = ((JSONObject) source).getString(item.getComparisonValue());
-
-        //执行操作表达式比较,返回结果
-        boolean bRet = comparisonOperate(subject, item.getComparisonCode(), item.getBaseline());
-
-        ItemResult checkResult = new ItemResult();
-        checkResult.pass(bRet);
-        if (bRet) {
-            checkResult.setResult(StringUtils.isBlank(item.getResult()) ? "1" : item.getResult());
-            checkResult.setRemark(checkResult.getResult().getName());
-            String continueFlag = StringUtils.isBlank(item.getContinueFlag()) ? "1" : item.getContinueFlag();
-            checkResult.setContinue(Integer.parseInt(continueFlag));
+        boolean bRet = false;
+        //如果是数组, 默认是 || 的关系
+        if (subject instanceof net.minidev.json.JSONArray) {
+            JSONArray jsonArray = JSON.parseArray(JSON.toJSONString(subject));
+            Iterator<Object> iterator = jsonArray.iterator();
+            while (iterator.hasNext()) {
+                String data = ObjectUtils.toString(iterator.next());
+                bRet = comparisonOperate(data, item.getComparisonOperator(), item.getBaseline());
+                if (bRet) {
+                    break;
+                }
+            }
         } else {
-            // add false result return.
+            //执行操作表达式比较,返回结果
+            bRet = comparisonOperate(subject, item.getComparisonOperator(), item.getBaseline());
         }
-        return checkResult;
+        return bRet ? ItemResult.pass(item) : ItemResult.fail(item);
+    }
+
+
+    /**
+     * 替换路径,并提取值,如果不报错则证明数据变化,需发送
+     *
+     * @param path
+     * @param data
+     * @return
+     */
+    private Object getValue(String path, Object data) {
+        try {
+            Object read = JsonPath.read(data, "$." + path);
+            return read;
+        } catch (Exception e) {
+            //证明字段不存在
+            return "unknown";
+        }
     }
 }

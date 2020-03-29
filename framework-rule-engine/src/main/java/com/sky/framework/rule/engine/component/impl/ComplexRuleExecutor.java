@@ -22,14 +22,13 @@
  */
 package com.sky.framework.rule.engine.component.impl;
 
-import com.sky.framework.rule.engine.RuleEngineService;
 import com.sky.framework.rule.engine.component.AbstractRuleItem;
 import com.sky.framework.rule.engine.component.ExpressionUnit;
 import com.sky.framework.rule.engine.component.OperationUnit;
+import com.sky.framework.rule.engine.enums.ResultEnum;
 import com.sky.framework.rule.engine.enums.TypeEnum;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
 import com.sky.framework.rule.engine.model.ItemResult;
-import com.sky.framework.rule.engine.enums.ResultEnum;
 import com.sky.framework.rule.engine.model.RuleItem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -50,17 +49,15 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
      * @return
      */
     private List<OperationUnit> parseExpress(String express) {
-
         List<OperationUnit> theStack = new ArrayList<>();
         StringBuffer element = new StringBuffer();
         int level = 0;
         OperationUnit unit = null;
-
         for (int iLoop = 0; iLoop < express.length(); iLoop++) {
             char alphabet = express.charAt(iLoop);
-
             switch (alphabet) {
-                case '(':            //单字节运算符
+                //单字节运算符
+                case '(':
                     if (element.length() > 0) {
                         unit = new OperationUnit();
                         unit.element = element.toString();
@@ -71,7 +68,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
                     unit = new OperationUnit();
                     unit.element = String.valueOf(alphabet);
                     unit.type = TypeEnum.LEFT_BRACKET;
-                    level++;            // ( 本身也属于下个level.
+                    level++;            // ( 增加到下个level.
                     unit.level = level;
                     theStack.add(unit);
                     element = new StringBuffer();
@@ -89,7 +86,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
                     unit.type = TypeEnum.RIGHT_BRACKET;
                     unit.level = level;
                     theStack.add(unit);
-                    level--;                    //// ) 本身也属于上一个level.
+                    level--;                    // ) 还原回上一个level.
                     element = new StringBuffer();
                     break;
                 case '!':
@@ -119,7 +116,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
                             theStack.add(unit);
                         }
                         unit = new OperationUnit();
-                        unit.element = String.valueOf(alphabet) + String.valueOf(alphabet);
+                        unit.element = alphabet + String.valueOf(alphabet);
                         unit.type = TypeEnum.BINOCULAR;
                         unit.level = level;
                         theStack.add(unit);
@@ -129,9 +126,12 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
                         element.append(alphabet);
                     }
                     break;
-                case ' ':        //去除空格。
-                case '\n':        //去除换行。
-                case '\r':        //去除回车。
+                //去除空格
+                case ' ':
+                    //去除换行
+                case '\n':
+                    //去除回车
+                case '\r':
                     break;
                 default:
                     element.append(alphabet);
@@ -140,7 +140,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
 
         }
 
-        //扫尾的字符串也要添加进去。
+        //最后的字符串也要添加进去
         if (element.length() > 0) {
             String end = element.toString();
             if (")".equals(end)) {
@@ -204,7 +204,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
             return list;
         }
         //依次拷贝到去除多余括号的数组中去。
-        List<OperationUnit> newList = new ArrayList<OperationUnit>();
+        List<OperationUnit> newList = new ArrayList<>();
         for (int iLoop = 0; iLoop < list.size(); iLoop++) {
             OperationUnit unit = list.get(iLoop);
             if (iLoop < minLevel) {
@@ -280,18 +280,13 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
             root.leftSubList = null;
             root.rightSubList = this.trimExpress(list.subList(firstNot + 1, list.size()), -1);
             root.setRight(breakExpress(root.rightSubList, root.getRight()));
-
             root.calculate();
             //不带运算符的情况。
         } else if (current == null && list.size() > 0) {
-
             if (list.get(0).type == TypeEnum.VARIABLE) {
                 root.setOperator(list.get(0).element);
                 root.setName("VARIABLE");
-
-                //todo 获取规则
-                System.out.println(root.getOperator());
-                RuleItem item = RuleEngineService.groupMap.get(root.getOperator());
+                RuleItem item = getResultContext().getMap().get(root.getOperator());
                 try {
                     root.setValue(calculate(item, this.object));
                 } catch (RuleEngineException e) {
@@ -306,31 +301,29 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
 
     @Override
     public ItemResult doCheck(RuleItem item) throws RuleEngineException {
-        ItemResult result = new ItemResult();
+        ItemResult result = ItemResult.pass(item);
         if (StringUtils.isNotEmpty(item.getGroupExpress())) {
             List<OperationUnit> stack = parseExpress(item.getGroupExpress());
             ExpressionUnit root = breakExpress(stack, null);
             boolean bRet = root.calculate();
-
-            //缺省认为是 passed
-            result.pass(bRet);
-
-            if (bRet) {
-                result.setResult(StringUtils.isBlank(item.getResult()) ? "1" : item.getResult());
-                result.setRemark(result.getResult().getName());
-                String continueFlag = StringUtils.isBlank(item.getContinueFlag()) ? "1" : item.getContinueFlag();
-                result.setContinue(Integer.parseInt(continueFlag));
-            } else {
-                // add false result return.
-            }
+            result = bRet ? ItemResult.pass(item) : ItemResult.fail(item);
         }
         return result;
     }
 
+    /**
+     * 单一计算某个item
+     *
+     * @param item
+     * @param object
+     * @return
+     * @throws RuleEngineException
+     */
     @SuppressWarnings("unchecked")
-    private static boolean calculate(RuleItem item, Object object) throws RuleEngineException {
+    private boolean calculate(RuleItem item, Object object) throws RuleEngineException {
         AbstractRuleItem auditInstance = new DefaultRuleExecutor();
         auditInstance.setObject(object);
+        auditInstance.setResultContext(resultContext);
         ItemResult result = auditInstance.doCheck(item);
         if (null != result) {
             return (result.getResult() == ResultEnum.PASSED);
@@ -346,7 +339,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
         //express = "True1 || True2 || True3 || True4 && True5 && True6 && !True7 && True8 || True9";
 
         List<OperationUnit> stack = t.parseExpress(express);
-        System.out.println(stack.toString());
+
         ExpressionUnit root;
         try {
             root = t.breakExpress(stack, null);

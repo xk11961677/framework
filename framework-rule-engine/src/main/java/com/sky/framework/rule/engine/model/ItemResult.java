@@ -22,6 +22,7 @@
  */
 package com.sky.framework.rule.engine.model;
 
+
 import com.sky.framework.rule.engine.enums.ResultEnum;
 
 /**
@@ -31,29 +32,19 @@ import com.sky.framework.rule.engine.enums.ResultEnum;
  */
 public class ItemResult {
 
-    //整体EngineResultContext是否继续
+    /**
+     * 是否继续
+     */
     public static final int CONTINUE = 1;
 
-    //是否继续循环执行自己
-    public static final int LOOP = 2;
-
-    //
-    public static final int BROKEN = 3;
-
+    /**
+     * 默认空结果
+     */
     private ResultEnum result = ResultEnum.EMPTY;
-    private String remark;
 
-    private boolean returnValue;
-
-    public boolean getReturnValue() {
-        return returnValue;
-    }
-
-    public void setReturnValue(boolean returnValue) {
-        this.returnValue = returnValue;
-    }
-
-    //默认可以继续
+    /**
+     * 默认可以继续
+     */
     private int continueFlag = CONTINUE;
 
     public ResultEnum getResult() {
@@ -62,32 +53,6 @@ public class ItemResult {
 
     public void setResult(ResultEnum result) {
         this.result = result;
-        if (this.result == ResultEnum.WAIT) {
-            continueFlag = BROKEN;
-        }
-        //continueFlag =  ( this.result != RESULT.WAIT);		//非中断状态
-    }
-
-    public void setResult(String result) {
-        int iResult = Integer.parseInt(result);
-        this.setResult(iResult);
-    }
-
-    public void setResult(int result) {
-        this.result.setValue(result);
-        if (this.result == ResultEnum.WAIT) {
-            continueFlag = BROKEN;
-        }
-        //continueFlag =  ( this.result != RESULT.WAIT);		//非中断状态
-    }
-
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
     }
 
     public boolean canBeContinue() {
@@ -98,20 +63,29 @@ public class ItemResult {
         this.continueFlag = continueFlag;
     }
 
-    public boolean shouldLoop() {
-        return continueFlag == LOOP;
+
+    /**
+     * 通过
+     *
+     * @param
+     */
+    public static ItemResult pass(RuleItem item) {
+        ItemResult result = new ItemResult();
+        result.setResult(ResultEnum.PASSED);
+        result.setContinue(item.getContinueFlag());
+        return result;
     }
 
     /**
-     * 默认通过
+     * 拒绝
      *
-     * @param bRet
+     * @return
      */
-    public void pass(boolean bRet) {
-        this.setResult(ResultEnum.PASSED);
-        this.setRemark(ResultEnum.PASSED.getName());
-        this.setContinue(ItemResult.CONTINUE);
-        this.setReturnValue(bRet);
+    public static ItemResult fail(RuleItem item) {
+        ItemResult result = new ItemResult();
+        result.setResult(ResultEnum.REJECTED);
+        result.setContinue(item.getContinueFlag());
+        return result;
     }
 }
 

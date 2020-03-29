@@ -26,6 +26,7 @@ package com.sky.framework.rule.engine.model;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author
@@ -39,11 +40,11 @@ public class RuleItem implements Serializable, Comparable {
     /**
      * 待比较字段
      */
-    private String comparisonValue;
+    private String comparisonField;
     /**
      * 比较操作符
      */
-    private String comparisonCode;
+    private String comparisonOperator;
     /**
      * 比较基线值
      */
@@ -57,9 +58,9 @@ public class RuleItem implements Serializable, Comparable {
      */
     private String priority;
     /**
-     * 是否继续标识
+     * 是否继续标识,默认是
      */
-    private String continueFlag;
+    private int continueFlag = 1;
     /**
      *
      */
@@ -72,5 +73,16 @@ public class RuleItem implements Serializable, Comparable {
     @Override
     public int compareTo(Object obj) {
         return this.priority.compareTo(((RuleItem) obj).getPriority());
+    }
+
+    public String getItemNo() {
+        if (this.groupExpress != null) {
+            return replace(this.groupExpress.replace(" ", ""));
+        }
+        return this.comparisonField + "##" + this.comparisonOperator + "##" + this.baseline + "##" + this.priority;
+    }
+
+    private String replace(String value) {
+        return Objects.toString(value).replace("(", "").replace(")", "");
     }
 }

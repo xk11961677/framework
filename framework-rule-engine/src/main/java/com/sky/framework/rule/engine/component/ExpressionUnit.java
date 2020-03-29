@@ -43,6 +43,11 @@ public class ExpressionUnit {
     public List<OperationUnit> leftSubList = null;
     public List<OperationUnit> rightSubList = null;
 
+    /**
+     * 计算 左右
+     *
+     * @return
+     */
     public boolean calculate() {
         if ("!".equals(operator)) {
             value = !right.calculate();
