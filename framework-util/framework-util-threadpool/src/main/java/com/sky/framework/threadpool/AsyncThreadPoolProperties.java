@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019-2020 <sky>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -87,7 +87,7 @@ public class AsyncThreadPoolProperties {
     @Setter
     private String threadName = "sky-framework-threadpool-";
     /**
-     * 内存大小检测
+     * 是否丢弃,默认丢弃
      */
     @Getter
     @Setter

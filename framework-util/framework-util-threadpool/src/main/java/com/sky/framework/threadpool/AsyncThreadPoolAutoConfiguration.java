@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019-2020 <sky>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -38,7 +38,7 @@ import javax.annotation.Resource;
  * 2.内存限制检测
  * 3.轻量化线程池数量管理
  * 4.自定义线程池拒绝策略实现
- * * *检测是否因并发造成线程池执行拒绝策略
+ * * *设置isDiscard false时,会重新尝试放回队列
  * * *队列达到上限则打印详细日志
  * * *轻量级管理线程池数量
  * 5.自定义线程创建方法
@@ -60,15 +60,15 @@ public class AsyncThreadPoolAutoConfiguration {
     @PostConstruct
     public void init() {
         if (CommonThreadPool.getThreadPool() == null) {
+            CommonThreadPool.init(asyncThreadPoolProperties);
             log.info("sky framework CommonThreadPool initialized successfully ! :{}" + asyncThreadPoolProperties);
-            CommonThreadPool.initThreadPool(asyncThreadPoolProperties);
         }
     }
 
     @PreDestroy
-    public void destory() {
+    public void destroy() {
         log.info("sky framework CommonThreadPool shutdown begin ! ");
-        boolean flag = CommonThreadPool.shutDown();
+        boolean flag = CommonThreadPool.shutdown();
         log.info("sky framework CommonThreadPool shutdown status is:{} " + flag);
     }
 }
