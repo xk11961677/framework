@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019-2020 <sky>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -25,13 +25,14 @@ package com.sky.framework.rule.engine;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sky.framework.rule.engine.component.AbstractRuleItem;
+import com.sky.framework.rule.engine.component.RuleExecutorTable;
 import com.sky.framework.rule.engine.component.impl.ComplexRuleExecutor;
 import com.sky.framework.rule.engine.component.impl.DefaultRuleExecutor;
 import com.sky.framework.rule.engine.constant.OperatorConstants;
 import com.sky.framework.rule.engine.enums.ResultEnum;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
-import com.sky.framework.rule.engine.model.EngineResultContext;
 import com.sky.framework.rule.engine.model.ItemResult;
+import com.sky.framework.rule.engine.model.RuleEngineContext;
 import com.sky.framework.rule.engine.model.RuleItem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +45,16 @@ import java.util.List;
  */
 @Slf4j
 public class RuleEngineService {
+
+    private Class executorClass;
+
+    public RuleEngineService() {
+        this(DefaultRuleExecutor.class);
+    }
+
+    public RuleEngineService(Class executorClass) {
+        this.executorClass = executorClass;
+    }
 
     private static List<RuleItem> itemList;
 
@@ -104,7 +115,7 @@ public class RuleEngineService {
         String source = "{'aaa':'gap','bbb':'121','ccc':'测试'}";
         JSONObject jsonObject = JSON.parseObject(source);
         RuleEngineService ruleEngineService = new RuleEngineService();
-        EngineResultContext result = ruleEngineService.start(jsonObject, itemList);
+        RuleEngineContext result = ruleEngineService.start(jsonObject, itemList);
         System.out.println(result.getResult());
     }
 
@@ -113,34 +124,36 @@ public class RuleEngineService {
      * @return
      * @throws RuleEngineException
      */
-    public EngineResultContext start(Object object, List<RuleItem> items) throws RuleEngineException {
-        EngineResultContext runResult = new EngineResultContext();
-        runResult.setRuleItems(items);
-        runResult.setResult(ResultEnum.PASSED);
+    public RuleEngineContext start(Object object, List<RuleItem> items) throws RuleEngineException {
+        RuleEngineContext ruleEngineContext = new RuleEngineContext();
+        ruleEngineContext.setRuleItems(items);
+        ruleEngineContext.setResult(ResultEnum.PASSED);
+        ruleEngineContext.setExecutorClass(executorClass);
+
         List<RuleItem> itemList = this.filterItem(items, null);
 
         for (RuleItem item : itemList) {
             if (StringUtils.isNotEmpty(item.getGroupExpress())) {
                 AbstractRuleItem executor = new ComplexRuleExecutor();
                 executor.setObject(object);
-                executor.setResultContext(runResult);
+                executor.setRuleEngineContext(ruleEngineContext);
                 ItemResult result = executor.doCheck(item);
-                runResult.setResult(result.getResult());
+                ruleEngineContext.setResult(result.getResult());
                 if (ResultEnum.PASSED.equals(result.getResult()) && !result.canBeContinue()) {
                     break;
                 }
             } else {
-                AbstractRuleItem executor = new DefaultRuleExecutor();
+                AbstractRuleItem executor = RuleExecutorTable.get(executorClass);
                 executor.setObject(object);
-                executor.setResultContext(runResult);
+                executor.setRuleEngineContext(ruleEngineContext);
                 ItemResult result = executor.doCheck(item);
-                runResult.setResult(result.getResult());
+                ruleEngineContext.setResult(result.getResult());
                 if (ResultEnum.PASSED.equals(result.getResult()) && !result.canBeContinue()) {
                     break;
                 }
             }
         }
-        return runResult;
+        return ruleEngineContext;
     }
 
 

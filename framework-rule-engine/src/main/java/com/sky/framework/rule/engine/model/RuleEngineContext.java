@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019-2020 <sky>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -32,30 +32,30 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 整体执行结果
+ * 整体规则上下文
  *
  * @author
  */
 @Slf4j
-public class EngineResultContext {
+public class RuleEngineContext {
 
+    /**
+     * 执行器类
+     */
+    @Getter
+    @Setter
+    private Class executorClass;
+
+    @Getter
+    @Setter
     private ResultEnum result = ResultEnum.EMPTY;
 
     /**
      * 规则容器
      */
-    @Setter
     @Getter
+    @Setter
     private List<RuleItem> ruleItems;
-
-    public void setRuleItems(List<RuleItem> ruleItems) {
-        this.ruleItems = ruleItems;
-        ruleItems.forEach(r -> map.put(r.getItemNo(), r));
-        for(Map.Entry entry : map.entrySet()) {
-            System.out.println(entry.getKey());
-        }
-
-    }
 
     /**
      * ruleId :  ruleItem
@@ -63,26 +63,8 @@ public class EngineResultContext {
     @Getter
     private Map<String, RuleItem> map = new HashMap<>();
 
-    public ResultEnum getResult() {
-        return result;
+    public void setRuleItems(List<RuleItem> ruleItems) {
+        this.ruleItems = ruleItems;
+        ruleItems.forEach(r -> map.put(r.getItemNo(), r));
     }
-
-    public void setResult(ResultEnum result) {
-        this.result = result;
-    }
-
-    /*public void setResult(String result) {
-        boolean bRet = this.result.parse(result);
-        if (!bRet) {
-            try {
-                this.result.setValue(Integer.parseInt(result));
-            } catch (NumberFormatException e) {
-                log.error(":{}", e.getMessage());
-            }
-        }
-    }
-
-    public void setResult(int result) {
-        this.result.setValue(result);
-    }*/
 }

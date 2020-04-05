@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019-2020 <sky>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -24,8 +24,8 @@ package com.sky.framework.rule.engine.component;
 
 import com.sky.framework.rule.engine.constant.OperatorConstants;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
-import com.sky.framework.rule.engine.model.EngineResultContext;
 import com.sky.framework.rule.engine.model.ItemResult;
+import com.sky.framework.rule.engine.model.RuleEngineContext;
 import com.sky.framework.rule.engine.model.RuleItem;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,7 +50,7 @@ public abstract class AbstractRuleItem {
      */
     @Getter
     @Setter
-    protected EngineResultContext resultContext;
+    protected RuleEngineContext ruleEngineContext;
 
 
     /**
@@ -65,9 +65,9 @@ public abstract class AbstractRuleItem {
     /**
      * 比较运算操作，将执行的结果和RuleItem中的baseline作比较。
      *
-     * @param data           比较对象
+     * @param data               比较对象
      * @param comparisonOperator 比较操作符号，在OperatorConstants中定义。
-     * @param baseline       比较基线，用于比较的对象。
+     * @param baseline           比较基线，用于比较的对象。
      * @return 根据comparisonOperator运行的结果。 true or false。
      * @throws RuleEngineException 参数不合法，或者比较操作符不合法。
      */
@@ -160,9 +160,6 @@ public abstract class AbstractRuleItem {
                 bRet = !subject.matches(baseline);
                 break;
             case OperatorConstants.OPR_CODE.EXISTS:
-                bRet = true;
-                break;
-            case OperatorConstants.OPR_CODE.EXISTS_FIELD:
                 bRet = !subject.equals("unknown");
                 break;
             default:

@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019-2020 <sky>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -23,8 +23,6 @@
 package com.sky.framework.rule.engine.component.impl;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.jayway.jsonpath.JsonPath;
 import com.sky.framework.rule.engine.component.AbstractRuleItem;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
@@ -32,8 +30,6 @@ import com.sky.framework.rule.engine.model.ItemResult;
 import com.sky.framework.rule.engine.model.RuleItem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ObjectUtils;
-
-import java.util.Iterator;
 
 
 /**
@@ -52,25 +48,10 @@ public class DefaultRuleExecutor extends AbstractRuleItem {
     @Override
     public ItemResult doCheck(RuleItem item) throws RuleEngineException {
         Object source = getObject();
-        //根据source 与 comparisonField 获取数据的当前值 (需要符合json-path格式)
-        Object subject = getValue(item.getComparisonField(), source);
-
-        boolean bRet = false;
-        //如果是数组, 默认是 || 的关系
-        if (subject instanceof net.minidev.json.JSONArray) {
-            JSONArray jsonArray = JSON.parseArray(JSON.toJSONString(subject));
-            Iterator<Object> iterator = jsonArray.iterator();
-            while (iterator.hasNext()) {
-                String data = ObjectUtils.toString(iterator.next());
-                bRet = comparisonOperate(data, item.getComparisonOperator(), item.getBaseline());
-                if (bRet) {
-                    break;
-                }
-            }
-        } else {
-            //执行操作表达式比较,返回结果
-            bRet = comparisonOperate(subject, item.getComparisonOperator(), item.getBaseline());
-        }
+        //根据source 与 comparisonValue 获取数据的当前值 (需要符合json-path格式)
+        String subject = getValue(item.getComparisonField(), source);
+        //执行操作表达式比较,返回结果
+        boolean bRet = comparisonOperate(subject, item.getComparisonOperator(), item.getBaseline());
         return bRet ? ItemResult.pass(item) : ItemResult.fail(item);
     }
 
@@ -82,10 +63,10 @@ public class DefaultRuleExecutor extends AbstractRuleItem {
      * @param data
      * @return
      */
-    private Object getValue(String path, Object data) {
+    private String getValue(String path, Object data) {
         try {
             Object read = JsonPath.read(data, "$." + path);
-            return read;
+            return ObjectUtils.toString(read);
         } catch (Exception e) {
             //证明字段不存在
             return "unknown";

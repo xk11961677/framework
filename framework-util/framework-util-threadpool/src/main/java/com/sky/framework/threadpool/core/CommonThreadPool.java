@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019-2020 <sky>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -73,6 +73,27 @@ public final class CommonThreadPool {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 优雅关闭线程池
+     *
+     * @param timeout
+     * @param unit
+     */
+    public static void shutdownGracefully(long timeout, TimeUnit unit) {
+        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(timeout, unit)) {
+                executorService.shutdownNow();
+                if (!executorService.awaitTermination(timeout, unit)) {
+                    log.warn(String.format("%s didn't terminate!", executorService));
+                }
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**

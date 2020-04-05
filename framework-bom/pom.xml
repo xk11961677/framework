@@ -39,6 +39,7 @@
         <aliyun-sdk-oss.version>3.5.0</aliyun-sdk-oss.version>
         <mybatis.plus.starter.version>3.2.0</mybatis.plus.starter.version>
         <jsonpath.version>2.2.0</jsonpath.version>
+        <reflectasm.version>1.11.0</reflectasm.version>
     </properties>
 
 
@@ -208,6 +209,12 @@
                 <groupId>com.jayway.jsonpath</groupId>
                 <artifactId>json-path</artifactId>
                 <version>${jsonpath.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.esotericsoftware</groupId>
+                <artifactId>reflectasm</artifactId>
+                <version>${reflectasm.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -20,37 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.common.validation.annotation;
+package com.sky.framework.rule.engine.component;
 
-import cn.hutool.core.lang.Validator;
-import org.apache.commons.lang.StringUtils;
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author
  */
-public class MacAddressValidator implements ConstraintValidator<MacAddress, String> {
+public class RuleExecutorTable {
 
-    private boolean notNull;
+    private static final Object lock = new Object();
 
-    @Override
-    public void initialize(MacAddress constraintAnnotation) {
-        this.notNull = constraintAnnotation.notNull();
-    }
+    private static final ConcurrentHashMap<String, ConstructorAccess> ruleExecutor = new ConcurrentHashMap<>();
 
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (StringUtils.isNotBlank(value)) {
-            return Validator.isMac(value);
+    /**
+     * 根据class获取执行器对象
+     *
+     * @param clazz
+     * @return
+     */
+    public static AbstractRuleItem get(Class clazz) {
+        ConstructorAccess constructorAccess = ruleExecutor.get(clazz.getName());
+        if (constructorAccess == null) {
+            synchronized (lock) {
+                constructorAccess = ruleExecutor.get(clazz.getName());
+                if (constructorAccess == null) {
+                    constructorAccess = ConstructorAccess.get(clazz);
+                    ruleExecutor.put(clazz.getName(), constructorAccess);
+                }
+            }
         }
-
-        if (notNull) {
-            return false;
-        }
-
-        return true;
+        return (AbstractRuleItem) constructorAccess.newInstance();
     }
-
 }

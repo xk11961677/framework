@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019-2020 <sky>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -49,19 +49,18 @@ public class OperatorConstants {
         public static final String MATCH = "15";
         public static final String UNMATCH = "16";
         public static final String EXISTS = "17";
-        public static final String EXISTS_FIELD = "18";
 
         private static final String RESERVED_CODES[] = new String[]{EQUAL, GREATER, LESS, NOT_EQUAL, GREATER_EQUAL, LESS_EQUAL, INCLUDE, NOT_INCLUDE,
-                INCLUDED_BY, NOT_INCLUDED_BY, STRING_EQUAL, NOTSTRING_EQUAL, EQUAL_IGNORE_CASE, NOT_EQUAL_IGNORE_CASE, MATCH, UNMATCH, EXISTS, EXISTS_FIELD, "19", "20"};
+                INCLUDED_BY, NOT_INCLUDED_BY, STRING_EQUAL, NOTSTRING_EQUAL, EQUAL_IGNORE_CASE, NOT_EQUAL_IGNORE_CASE, MATCH, UNMATCH, EXISTS, "18", "19", "20"};
 
         private static final String RESERVED_VALUES[] = new String[]{"EQUAL", "GREATER", "LESS", "NOT_EQUAL", "GREATER_EQUAL", "LESS_EQUAL", "INCLUDE",
                 "NOT_INCLUDE", "INCLUDED_BY", "NOT_INCLUDED_BY", "STRING_EQUAL", "NOTSTRING_EQUAL", "EQUAL_IGNORE_CASE",
-                "NOT_EQUAL_IGNORE_CASE", "MATCH,UNMATCH", "EXISTS", "EXISTS_FIELD", "19", "20"};
+                "NOT_EQUAL_IGNORE_CASE", "MATCH", "UNMATCH", "EXISTS", "18", "19", "20"};
 
 
-        private static final String RESERVED_ALIAS_VALUES[] = new String[]{"EQ", "GT", "LT", "NEQ", "GTE", "LTE", "IN",
-                "NOT_INCLUDE", "INCLUDED_BY", "NOT_INCLUDED_BY", "STRING_EQUAL", "NOTSTRING_EQUAL", "EQUAL_IGNORE_CASE",
-                "NOT_EQUAL_IGNORE_CASE", "MATCH,UNMATCH", "EXISTS", "EXISTS_FIELD", "19", "20"};
+        private static final String RESERVED_ALIAS_VALUES[] = new String[]{"EQ", "GT", "LT", "NEQ", "GTE", "LTE", "INCLUDE",
+                "NOT_INCLUDE", "IN", "NIN", "STRING_EQUAL", "NOTSTRING_EQUAL", "EQ_IGNORE_CASE",
+                "NEQ_IGNORE_CASE", "MATCH", "UNMATCH", "EXISTS", "18", "19", "20"};
 
 
         public static String getCode(String value) {
@@ -73,7 +72,7 @@ public class OperatorConstants {
                 }
             }
 
-            if(temp == null) {
+            if (temp == null) {
                 for (int iLoop = 0; iLoop < RESERVED_ALIAS_VALUES.length; iLoop++) {
                     if (RESERVED_ALIAS_VALUES[iLoop].equalsIgnoreCase(value)) {
                         temp = RESERVED_CODES[iLoop];

@@ -1,6 +1,6 @@
 /*
  * The MIT License (MIT)
- * Copyright © 2019 <sky>
+ * Copyright © 2019-2020 <sky>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -25,6 +25,7 @@ package com.sky.framework.rule.engine.component.impl;
 import com.sky.framework.rule.engine.component.AbstractRuleItem;
 import com.sky.framework.rule.engine.component.ExpressionUnit;
 import com.sky.framework.rule.engine.component.OperationUnit;
+import com.sky.framework.rule.engine.component.RuleExecutorTable;
 import com.sky.framework.rule.engine.enums.ResultEnum;
 import com.sky.framework.rule.engine.enums.TypeEnum;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
@@ -286,7 +287,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
             if (list.get(0).type == TypeEnum.VARIABLE) {
                 root.setOperator(list.get(0).element);
                 root.setName("VARIABLE");
-                RuleItem item = getResultContext().getMap().get(root.getOperator());
+                RuleItem item = getRuleEngineContext().getMap().get(root.getOperator());
                 try {
                     root.setValue(calculate(item, this.object));
                 } catch (RuleEngineException e) {
@@ -321,9 +322,9 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
      */
     @SuppressWarnings("unchecked")
     private boolean calculate(RuleItem item, Object object) throws RuleEngineException {
-        AbstractRuleItem auditInstance = new DefaultRuleExecutor();
+        AbstractRuleItem auditInstance = RuleExecutorTable.get(ruleEngineContext.getExecutorClass());
         auditInstance.setObject(object);
-        auditInstance.setResultContext(resultContext);
+        auditInstance.setRuleEngineContext(ruleEngineContext);
         ItemResult result = auditInstance.doCheck(item);
         if (null != result) {
             return (result.getResult() == ResultEnum.PASSED);
