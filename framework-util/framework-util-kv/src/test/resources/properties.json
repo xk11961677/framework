@@ -1,0 +1,31 @@
+{
+  "title":"test",
+  "sizeChart":[
+    {
+      "high":"150",
+      "weight":"120",
+      "value":[
+        {
+          "high":"150",
+          "weight":"120",
+          "value":"S"
+        },
+        {
+          "high":"150",
+          "weight":"125",
+          "value":"M"
+        }
+      ]
+    },
+    {
+      "high":"150",
+      "weight":"125",
+      "value":"M"
+    },
+    {
+      "high":"150",
+      "weight":"130",
+      "value":"L"
+    }
+  ]
+}
