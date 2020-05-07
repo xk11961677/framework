@@ -34,6 +34,12 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>framework-util-notify</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>framework-integrate-swagger</artifactId>
             <version>${project.version}</version>
         </dependency>
