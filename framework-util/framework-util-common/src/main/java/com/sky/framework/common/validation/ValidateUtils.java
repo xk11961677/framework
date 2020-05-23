@@ -22,7 +22,7 @@
  */
 package com.sky.framework.common.validation;
 
-import com.sky.framework.model.enums.FailureCodeEnum;
+import com.sky.framework.model.enums.SystemErrorCodeEnum;
 import com.sky.framework.model.exception.BusinessException;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.HibernateValidator;
@@ -115,7 +115,7 @@ public class ValidateUtils {
         }
         if (!StringUtils.isEmpty(errorMsg.toString())) {
             errorMsg.delete(errorMsg.length() - 1, errorMsg.length());
-            throw new BusinessException(FailureCodeEnum.GL990001.getCode(), errorMsg.toString());
+            throw new BusinessException(SystemErrorCodeEnum.GL990001.getCode(), errorMsg.toString());
         }
     }
 }

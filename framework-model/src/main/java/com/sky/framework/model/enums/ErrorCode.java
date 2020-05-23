@@ -29,15 +29,13 @@ package com.sky.framework.model.enums;
 public interface ErrorCode {
 
     /**
-     *
      * @return
      */
     String getMsg();
 
     /**
-     *
      * @return
      */
-    Integer getCode();
+    String getCode();
 
 }

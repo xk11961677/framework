@@ -25,7 +25,7 @@ package com.sky.framework.web.converter;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import com.sky.framework.model.enums.FailureCodeEnum;
+import com.sky.framework.model.enums.SystemErrorCodeEnum;
 import com.sky.framework.model.exception.BusinessException;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -49,8 +49,8 @@ public class CustomFastJsonHttpMessageConverter extends FastJsonHttpMessageConve
         try {
             result = JSON.parseObject(in, fastJsonConfig.getCharset(), type, fastJsonConfig.getFeatures());
         } catch (Exception e) {
-            BusinessException businessException = new BusinessException(FailureCodeEnum.GL990006.getMsg(), e);
-            businessException.setCode(FailureCodeEnum.GL990006.getCode());
+            BusinessException businessException = new BusinessException(SystemErrorCodeEnum.GL990006.getMsg(), e);
+            businessException.setCode(SystemErrorCodeEnum.GL990006.getCode());
             throw businessException;
         } finally {
             if (in != null) {
