@@ -272,7 +272,7 @@ public final class CommonThreadPool {
                         return;
                     }
                 } catch (InterruptedException e) {
-                    log.error("线程被中断:{}", e);
+                    log.error("线程被中断:{}", e.getMessage(), e);
                 }
             }
 

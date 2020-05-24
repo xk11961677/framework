@@ -34,6 +34,12 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>framework-util-notify</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>framework-integrate-swagger</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -54,14 +60,14 @@
             <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- 生成spring-configuration-metadata.json -->
+        <!-- 生成spring-configuration-metadata.json yml文件提示 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
 
-        <!-- 生成spring-autoconfigure-metadata.properties -->
+        <!-- 生成spring-autoconfigure-metadata.properties (不使用注解时,用于自动配置与书写ConditionalOn值) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure-processor</artifactId>

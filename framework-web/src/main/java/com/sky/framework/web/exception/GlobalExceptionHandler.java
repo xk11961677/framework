@@ -23,11 +23,11 @@
 package com.sky.framework.web.exception;
 
 import com.sky.framework.common.LogUtils;
-import com.sky.framework.common.ding.DingTalkMessage;
-import com.sky.framework.common.ding.DingTalkMessageBuilder;
 import com.sky.framework.model.dto.MessageRes;
-import com.sky.framework.model.enums.SystemErrorCodeEnum;
+import com.sky.framework.model.enums.FailureCodeEnum;
 import com.sky.framework.model.exception.BusinessException;
+import com.sky.framework.notify.dd.DingTalkBuilder;
+import com.sky.framework.notify.dd.DingTalkUtils;
 import com.sky.framework.threadpool.core.CommonThreadPool;
 import com.sky.framework.threadpool.core.DefaultAsynchronousHandler;
 import com.sky.framework.web.common.notice.HttpExceptionNotice;
@@ -81,13 +81,13 @@ public class GlobalExceptionHandler {
      * @param
      * @return
      */
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public MessageRes illegalArgumentException(IllegalArgumentException e) {
-        LogUtils.error(log, "参数非法异常:{}", e.getMessage(), e);
-        return MessageRes.fail(SystemErrorCodeEnum.GL990006.getCode(), e.getMessage());
-    }
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    @ResponseStatus(HttpStatus.OK)
+//    @ResponseBody
+//    public MessageRes illegalArgumentException(IllegalArgumentException e) {
+//        LogUtils.error(log, "参数非法异常={}", e.getMessage(), e);
+//        return MessageRes.fail(FailureCodeEnum.GL999999.getCode(), e.getMessage());
+//    }
 
     /**
      * 不支持的方法请求类型405
@@ -100,7 +100,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public MessageRes httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         LogUtils.error(log, "不支持的方法请求类型:{}", e.getMessage(), e);
-        return MessageRes.fail(SystemErrorCodeEnum.GL990007.getCode(), e.getMessage());
+        return MessageRes.fail(FailureCodeEnum.GL990007.getCode(), e.getMessage());
     }
 
 
@@ -115,7 +115,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public MessageRes businessException(BusinessException e) {
         LogUtils.error(log, "自定义业务异常:{}", e.getMessage(), e);
-        return MessageRes.fail((StringUtils.isBlank(e.getCode()) ? SystemErrorCodeEnum.GL999999.getCode() : e.getCode()), e.getMessage());
+        return MessageRes.fail((e.getCode() == 0 ? FailureCodeEnum.GL999999.getCode() : e.getCode()), e.getMessage());
     }
 
 
@@ -132,7 +132,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public MessageRes exception(Exception e) {
-        LogUtils.debug(log, "业务验证器异常:{}", e.getMessage(), e);
+        LogUtils.debug(log, "业务验证器异常:{}", e);
         BindingResult result = null;
         if (e instanceof MethodArgumentNotValidException) {
             result = ((MethodArgumentNotValidException) e).getBindingResult();
@@ -145,7 +145,7 @@ public class GlobalExceptionHandler {
                 errorMsg.append(violation.getMessage()).append(",");
             }
             errorMsg.delete(errorMsg.length() - 1, errorMsg.length());
-            return MessageRes.fail(SystemErrorCodeEnum.GL990001.getCode(), errorMsg.toString());
+            return MessageRes.fail(FailureCodeEnum.GL990001.getCode(), errorMsg.toString());
         }
         if (result != null) {
             StringBuilder errorMsg = new StringBuilder();
@@ -153,9 +153,9 @@ public class GlobalExceptionHandler {
                 errorMsg.append(error.getDefaultMessage()).append(",");
             }
             errorMsg.delete(errorMsg.length() - 1, errorMsg.length());
-            return MessageRes.fail(SystemErrorCodeEnum.GL990001.getCode(), errorMsg.toString());
+            return MessageRes.fail(FailureCodeEnum.GL990001.getCode(), errorMsg.toString());
         }
-        return MessageRes.fail(SystemErrorCodeEnum.GL990001.getCode(), SystemErrorCodeEnum.GL990001.getMsg());
+        return MessageRes.fail(FailureCodeEnum.GL990001.getCode(), FailureCodeEnum.GL990001.getMsg());
     }
 
 
@@ -173,8 +173,8 @@ public class GlobalExceptionHandler {
         LogUtils.error(log, "全局[Exception]异常:{}", e.getMessage(), e);
         this.asyncSendDingTalk(request, e);
         String message = e.getMessage();
-        message = StringUtils.isEmpty(message) ? SystemErrorCodeEnum.GL999999.getMsg() : message;
-        return MessageRes.fail(SystemErrorCodeEnum.GL999999.getCode(), message);
+        message = StringUtils.isEmpty(message) ? FailureCodeEnum.GL999999.getMsg() : message;
+        return MessageRes.fail(FailureCodeEnum.GL999999.getCode(), message);
     }
 
     /**
@@ -189,8 +189,8 @@ public class GlobalExceptionHandler {
     public MessageRes throwable(Throwable e) {
         LogUtils.error(log, "全局[Throwable]异常:{}", e.getMessage(), e);
         String message = e.getMessage();
-        message = StringUtils.isEmpty(message) ? SystemErrorCodeEnum.GL999999.getMsg() : message;
-        return MessageRes.fail(SystemErrorCodeEnum.GL999999.getCode(), message);
+        message = StringUtils.isEmpty(message) ? FailureCodeEnum.GL999999.getMsg() : message;
+        return MessageRes.fail(FailureCodeEnum.GL999999.getCode(), message);
     }
 
     /**
@@ -213,10 +213,10 @@ public class GlobalExceptionHandler {
                     HttpExceptionNotice httpExceptionNotice = new HttpExceptionNotice(e, null, uri, parameterMap, paramFromApplicationJson);
                     httpExceptionNotice.setProject(name);
                     String text = httpExceptionNotice.createText();
-                    DingTalkMessage dingTalkMessage = new DingTalkMessage(new DingTalkMessageBuilder().markdownMessage("异常信息", text));
+                    DingTalkUtils dingTalkMessage = new DingTalkUtils(new DingTalkBuilder().markdownMessage("异常信息", text));
                     dingTalkMessage.send();
                 } catch (Exception e) {
-                    LogUtils.error(log, "send ding talk exception:{}", e);
+                    LogUtils.error(log, "send ding talk exception:{}", e.getMessage(), e);
                 }
                 return null;
             }
