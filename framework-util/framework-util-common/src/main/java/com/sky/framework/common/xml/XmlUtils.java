@@ -126,7 +126,7 @@ public class XmlUtils {
             json.put(root.getName(), iterateElement(root));
             return json;
         } catch (Exception e) {
-            LogUtils.error(log, "xml2json exception:{}", e);
+            LogUtils.error(log, "xml2json exception:{}", e.getMessage(), e);
         }
         return null;
     }

@@ -291,7 +291,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
                 try {
                     root.setValue(calculate(item, this.object));
                 } catch (RuleEngineException e) {
-                    log.error(":{}", e.getMessage());
+                    log.error(":{}", e.getMessage(), e);
                     throw e;
                 }
             }

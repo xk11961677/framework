@@ -65,7 +65,7 @@ public class DingTalkUtils {
                         log.info(responseBody.string());
                     }
                 } catch (Exception e) {
-                    log.error("DingTalkMessage send exception:{}", e);
+                    log.error("DingTalkMessage send exception:{}", e.getMessage(), e);
                 }
             }
         });

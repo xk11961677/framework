@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public MessageRes httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        LogUtils.error(log, "不支持的方法请求类型:{}", e);
+        LogUtils.error(log, "不支持的方法请求类型:{}", e.getMessage(), e);
         return MessageRes.fail(FailureCodeEnum.GL990007.getCode(), e.getMessage());
     }
 
@@ -114,7 +114,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public MessageRes businessException(BusinessException e) {
-        LogUtils.error(log, "自定义业务异常:{}", e);
+        LogUtils.error(log, "自定义业务异常:{}", e.getMessage(), e);
         return MessageRes.fail((e.getCode() == 0 ? FailureCodeEnum.GL999999.getCode() : e.getCode()), e.getMessage());
     }
 
@@ -170,7 +170,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public MessageRes exception(HttpServletRequest request, Exception e) {
-        LogUtils.error(log, "全局[Exception]异常:{}", e);
+        LogUtils.error(log, "全局[Exception]异常:{}", e.getMessage(), e);
         this.asyncSendDingTalk(request, e);
         String message = e.getMessage();
         message = StringUtils.isEmpty(message) ? FailureCodeEnum.GL999999.getMsg() : message;
@@ -187,7 +187,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public MessageRes throwable(Throwable e) {
-        LogUtils.error(log, "全局[Throwable]异常:{}", e);
+        LogUtils.error(log, "全局[Throwable]异常:{}", e.getMessage(), e);
         String message = e.getMessage();
         message = StringUtils.isEmpty(message) ? FailureCodeEnum.GL999999.getMsg() : message;
         return MessageRes.fail(FailureCodeEnum.GL999999.getCode(), message);
@@ -216,7 +216,7 @@ public class GlobalExceptionHandler {
                     DingTalkUtils dingTalkMessage = new DingTalkUtils(new DingTalkBuilder().markdownMessage("异常信息", text));
                     dingTalkMessage.send();
                 } catch (Exception e) {
-                    LogUtils.error(log, "send ding talk exception:{}", e);
+                    LogUtils.error(log, "send ding talk exception:{}", e.getMessage(), e);
                 }
                 return null;
             }
@@ -240,7 +240,7 @@ public class GlobalExceptionHandler {
             String body = sb.toString();
             return body;
         } catch (Exception e) {
-            LogUtils.error(log, "get param exception:{}", e);
+            LogUtils.error(log, "get param exception:{}", e.getMessage(), e);
         }
         return null;
     }

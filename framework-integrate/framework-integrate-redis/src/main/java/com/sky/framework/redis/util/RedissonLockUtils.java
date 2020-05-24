@@ -53,7 +53,7 @@ public class RedissonLockUtils {
         try {
             return lock.tryLock(timeout, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            LogUtils.error(log, "lock interrupted:{}", e);
+            LogUtils.error(log, "lock interrupted:{}", e.getMessage(), e);
             return false;
         }
     }
@@ -69,7 +69,7 @@ public class RedissonLockUtils {
         try {
             return lock.tryLock(timeout, leaseTime, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            LogUtils.error(log, "lock interrupted:{}", e);
+            LogUtils.error(log, "lock interrupted:{}", e.getMessage(), e);
             return false;
         }
     }

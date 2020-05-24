@@ -66,7 +66,7 @@ public class WxSendUtils {
                         log.info(responseBody.string());
                     }
                 } catch (Exception e) {
-                    log.error("WxSendUtils send exception:{}", e);
+                    log.error("WxSendUtils send exception:{}", e.getMessage(), e);
                 }
             }
         });

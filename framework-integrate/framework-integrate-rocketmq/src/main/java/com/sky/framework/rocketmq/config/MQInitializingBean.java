@@ -81,7 +81,7 @@ public class MQInitializingBean implements InitializingBean {
                         producer.start();
                         RocketMqUtils.map.put(group, producer);
                     } catch (Exception e) {
-                        LogUtils.error(log, "init producer group:{} failed :{}", group, e);
+                        LogUtils.error(log, "init producer group:{} failed :{}", group, e.getMessage(), e);
                     }
                 }
             }
@@ -115,7 +115,7 @@ public class MQInitializingBean implements InitializingBean {
                 pushConsumer.registerMessageListener(new MQMessageListenerConcurrently(handler));
                 pushConsumer.start();
             } catch (Exception e) {
-                LogUtils.error(log, "init consumer key:{} failed :{}", key, e);
+                LogUtils.error(log, "init consumer key:{} failed :{}", key, e.getMessage(), e);
             }
         }
     }

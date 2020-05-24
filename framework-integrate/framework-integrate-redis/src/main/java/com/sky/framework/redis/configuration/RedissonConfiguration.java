@@ -55,7 +55,7 @@ public class RedissonConfiguration {
         try {
             config = Config.fromYAML(redisson);
         } catch (IOException e) {
-            LogUtils.error(log, "load redisson config exception:{}", e);
+            LogUtils.error(log, "load redisson config exception:{}", e.getMessage(), e);
         }
         return Redisson.create(config);
     }

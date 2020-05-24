@@ -96,7 +96,7 @@ public final class JsonSerialization {
             ObjectMapper mapper = new ObjectMapper();
             this.source = mapper.readTree(json);
         } catch (Exception e) {
-            log.error("read type of string content exception :{}", e.getMessage());
+            log.error("read type of string content exception :{}", e.getMessage(), e);
             this.kvObjects = newJsonifyArrayList();
         }
     }
@@ -168,7 +168,7 @@ public final class JsonSerialization {
             access.invoke(obj, setKeyIndex, key);
             access.invoke(obj, setValueIndex, ObjectUtils.toString(value));
         } catch (Exception e) {
-            log.error(":{}", e.getMessage());
+            log.error(":{}", e.getMessage(), e);
         }
         return obj;
     }

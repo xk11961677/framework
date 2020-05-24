@@ -64,7 +64,7 @@ public class RocketMqUtils {
             throw new MqException("topic不能为空");
         }
 
-        if(message.getBody() == null) {
+        if (message.getBody() == null) {
             throw new MqException("body不能为空");
         }
         Message mq = new Message();
@@ -102,7 +102,7 @@ public class RocketMqUtils {
                 }
             }
         } catch (Exception e) {
-            LogUtils.error(log, "message send failed :{}", e);
+            LogUtils.error(log, "message send failed :{}", e.getMessage(), e);
         }
     }
 }
