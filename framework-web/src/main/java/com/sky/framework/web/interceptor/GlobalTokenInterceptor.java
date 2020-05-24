@@ -25,7 +25,7 @@ package com.sky.framework.web.interceptor;
 import com.alibaba.fastjson.JSON;
 import com.sky.framework.common.LogUtils;
 import com.sky.framework.model.dto.MessageRes;
-import com.sky.framework.model.enums.FailureCodeEnum;
+import com.sky.framework.model.enums.SystemErrorCodeEnum;
 import com.sky.framework.web.common.annotation.IgnoreToken;
 import com.sky.framework.web.constant.WebConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -90,7 +90,7 @@ public class GlobalTokenInterceptor implements HandlerInterceptor {
      * @param response
      */
     private void response(HttpServletResponse response) {
-        String result = JSON.toJSONString(new MessageRes(FailureCodeEnum.AUZ100001.getCode(), FailureCodeEnum.AUZ100001.getMsg()));
+        String result = JSON.toJSONString(new MessageRes(SystemErrorCodeEnum.AUZ100001.getCode(), SystemErrorCodeEnum.AUZ100001.getMsg()));
         response.setCharacterEncoding(WebConstants.UTF8);
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         PrintWriter writer = null;

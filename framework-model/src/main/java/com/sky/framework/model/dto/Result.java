@@ -23,7 +23,7 @@
 package com.sky.framework.model.dto;
 
 
-import com.sky.framework.model.enums.ResultCodeEnum;
+import com.sky.framework.model.enums.SystemErrorCodeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -38,17 +38,11 @@ public class Result<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer resultCode;
-
-    /**
-     * 失败编码
-     */
-    private Integer failureCode;
-
+    private String code;
     /**
      * 失败原因
      */
-    private String failureMessage;
+    private String msg;
 
     /**
      * 处理结果
@@ -64,7 +58,8 @@ public class Result<T> implements Serializable {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static <T> Result success(T data) {
         Result result = new Result();
-        result.setResultCode(ResultCodeEnum.SUCCESS.getCode());
+        result.setCode(SystemErrorCodeEnum.SUCCESS.getCode());
+        result.setMsg(SystemErrorCodeEnum.SUCCESS.getMsg());
         result.setData(data);
         return result;
     }
@@ -78,7 +73,8 @@ public class Result<T> implements Serializable {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static <T> Result success(T data, Result result) {
-        result.setResultCode(ResultCodeEnum.SUCCESS.getCode());
+        result.setCode(SystemErrorCodeEnum.SUCCESS.getCode());
+        result.setMsg(SystemErrorCodeEnum.SUCCESS.getMsg());
         result.setData(data);
         return result;
     }
@@ -91,37 +87,37 @@ public class Result<T> implements Serializable {
     @SuppressWarnings("rawtypes")
     public static Result success() {
         Result result = new Result();
-        result.setResultCode(ResultCodeEnum.SUCCESS.getCode());
+        result.setCode(SystemErrorCodeEnum.SUCCESS.getCode());
+        result.setMsg(SystemErrorCodeEnum.SUCCESS.getMsg());
         return result;
     }
 
     /**
      * 获取失败返回结果
      *
-     * @param failureCode
+     * @param code
      * @return
      */
     @SuppressWarnings("rawtypes")
-    public static Result fail(Integer failureCode) {
+    public static Result fail(String code) {
         Result result = new Result();
-        result.setResultCode(ResultCodeEnum.FAILURE.getCode());
-        result.setFailureCode(failureCode);
+        result.setCode(SystemErrorCodeEnum.FAILURE.getCode());
+        result.setMsg(SystemErrorCodeEnum.FAILURE.getMsg());
         return result;
     }
 
     /**
      * 获取失败返回结果
      *
-     * @param failureCode
-     * @param failureMessage
+     * @param code
+     * @param msg
      * @return
      */
     @SuppressWarnings("rawtypes")
-    public static Result fail(Integer failureCode, String failureMessage) {
+    public static Result fail(String code, String msg) {
         Result result = new Result();
-        result.setResultCode(ResultCodeEnum.FAILURE.getCode());
-        result.setFailureCode(failureCode);
-        result.setFailureMessage(failureMessage);
+        result.setCode(code);
+        result.setMsg(msg);
         return result;
     }
 

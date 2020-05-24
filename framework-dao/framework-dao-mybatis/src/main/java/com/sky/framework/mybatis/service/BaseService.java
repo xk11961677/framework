@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.support;
+package com.sky.framework.mybatis.service;
 
 import com.sky.framework.model.exception.BusinessException;
 import org.apache.ibatis.session.RowBounds;

@@ -67,8 +67,8 @@ public class AsyncThreadPoolAutoConfiguration {
 
     @PreDestroy
     public void destroy() {
-        log.info("sky framework CommonThreadPool shutdown begin ! ");
-        boolean flag = CommonThreadPool.shutdown();
-        log.info("sky framework CommonThreadPool shutdown status is:{} " + flag);
+        log.info("sky framework CommonThreadPool shutdown starting !");
+        CommonThreadPool.shutdown();
+        log.info("sky framework CommonThreadPool shutdown successfully !");
     }
 }

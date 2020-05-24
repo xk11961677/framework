@@ -20,8 +20,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rule.engine.component.impl;
+package com.sky.framework.rule.engine.component.executor;
 
+
+import com.google.common.annotations.VisibleForTesting;
 import com.sky.framework.rule.engine.component.AbstractRuleItem;
 import com.sky.framework.rule.engine.component.ExpressionUnit;
 import com.sky.framework.rule.engine.component.OperationUnit;
@@ -49,7 +51,8 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
      * @param express
      * @return
      */
-    private List<OperationUnit> parseExpress(String express) {
+    @VisibleForTesting
+    public List<OperationUnit> parseExpress(String express) {
         List<OperationUnit> theStack = new ArrayList<>();
         StringBuffer element = new StringBuffer();
         int level = 0;
@@ -127,9 +130,9 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
                         element.append(alphabet);
                     }
                     break;
-                //去除空格
-                case ' ':
-                    //去除换行
+                /*//去除空格
+                case ' ':*/
+                //去除换行
                 case '\n':
                     //去除回车
                 case '\r':
@@ -227,7 +230,8 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
         return newList;
     }
 
-    private ExpressionUnit breakExpress(List<OperationUnit> list, ExpressionUnit current) throws RuleEngineException {
+    @VisibleForTesting
+    public ExpressionUnit breakExpress(List<OperationUnit> list, ExpressionUnit current) throws RuleEngineException {
         list = trimExpress(list, -1);
         ExpressionUnit root = current;
         if (root == null) {
@@ -291,7 +295,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
                 try {
                     root.setValue(calculate(item, this.object));
                 } catch (RuleEngineException e) {
-                    log.error(":{}", e.getMessage(), e);
+                    log.error(":{}", e.getMessage());
                     throw e;
                 }
             }
@@ -330,23 +334,6 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
             return (result.getResult() == ResultEnum.PASSED);
         } else {
             throw new RuleEngineException("do check returns NPE");
-        }
-    }
-
-    public static void main(String[] args) {
-        ComplexRuleExecutor t = new ComplexRuleExecutor();
-        String express = "";
-        express = "True1 || !(False2 && ( True3 || False4 && True5) && !(False6 || False7 && ( True8 || !True9 )) || False10)";
-        //express = "True1 || True2 || True3 || True4 && True5 && True6 && !True7 && True8 || True9";
-
-        List<OperationUnit> stack = t.parseExpress(express);
-
-        ExpressionUnit root;
-        try {
-            root = t.breakExpress(stack, null);
-            System.out.println(root.calculate());
-        } catch (RuleEngineException e) {
-            e.printStackTrace();
         }
     }
 }

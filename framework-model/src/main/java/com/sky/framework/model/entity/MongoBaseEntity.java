@@ -20,33 +20,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.model.enums;
+package com.sky.framework.model.entity;
 
+import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.util.Date;
 
 /**
  * @author
  */
-public enum ResultCodeEnum implements ErrorCode {
-    SUCCESS(0, "成功"),
-
-    FAILURE(500, "失败");
-
-    private Integer code;
-
-    private String msg;
-
-    private ResultCodeEnum(Integer code, String msg) {
-        this.msg = msg;
-        this.code = code;
-    }
-
-    @Override
-    public String getMsg() {
-        return this.msg;
-    }
-
-    @Override
-    public Integer getCode() {
-        return this.code;
-    }
+@Data
+public class MongoBaseEntity {
+    /**
+     * Object ID(MongoDB ObjectId)
+     */
+    private String id;
+    /**
+     * 创建时间
+     */
+    @CreatedDate
+    private Date createTime;
+    /**
+     * 更新时间
+     */
+    @LastModifiedDate
+    private Date updateTime;
+    /**
+     * 创建人
+     */
+    private String createBy;
+    /**
+     * 更新人
+     */
+    private String updateBy;
+    /**
+     * 状态 0 有效 1 无效
+     */
+    private Integer disabled;
 }

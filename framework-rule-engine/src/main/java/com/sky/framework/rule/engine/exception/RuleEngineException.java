@@ -25,7 +25,7 @@ package com.sky.framework.rule.engine.exception;
 /**
  * @author
  */
-public class RuleEngineException extends Exception {
+public class RuleEngineException extends RuntimeException {
 
     private static final long serialVersionUID = -2312238642591378363L;
 

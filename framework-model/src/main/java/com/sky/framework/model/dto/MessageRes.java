@@ -23,7 +23,7 @@
 package com.sky.framework.model.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.sky.framework.model.enums.ResultCodeEnum;
+import com.sky.framework.model.enums.SystemErrorCodeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -43,7 +43,7 @@ public class MessageRes<T> implements Serializable {
     private static final long serialVersionUID = -6788609721062977943L;
 
     @ApiModelProperty("返回码")
-    private Integer code;
+    private String code;
 
     @ApiModelProperty("返回码描述")
     private String msg;
@@ -54,26 +54,26 @@ public class MessageRes<T> implements Serializable {
     public MessageRes() {
     }
 
-    public MessageRes(Integer code, String msg) {
+    public MessageRes(String code, String msg) {
         this.code = code;
         this.msg = msg;
     }
 
-    public MessageRes(Integer code, String msg, T data) {
+    public MessageRes(String code, String msg, T data) {
         this(code, msg);
         this.data = data;
     }
 
-    public static MessageRes fail(Integer msgCode, String failureMessage) {
+    public static MessageRes fail(String msgCode, String failureMessage) {
         return new MessageRes(msgCode, failureMessage);
     }
 
-    public static <T> MessageRes success(Integer msgCode, String msgDesc, T data) {
+    public static <T> MessageRes success(String msgCode, String msgDesc, T data) {
         return new MessageRes(msgCode, msgDesc, data);
     }
 
     public static <T> MessageRes success(T data) {
-        return success(ResultCodeEnum.SUCCESS.getCode(), ResultCodeEnum.SUCCESS.getMsg(), data);
+        return success(SystemErrorCodeEnum.SUCCESS.getCode(), SystemErrorCodeEnum.SUCCESS.getMsg(), data);
     }
 
     public static <T> MessageRes success() {
@@ -83,7 +83,7 @@ public class MessageRes<T> implements Serializable {
     @ApiModelProperty(value = "是否成功", hidden = true)
     @JSONField(serialize = false)
     public boolean isSuccess() {
-        return (this.code.intValue() == ResultCodeEnum.SUCCESS.getCode().intValue());
+        return (SystemErrorCodeEnum.SUCCESS.getCode().equals(this.code));
     }
 
 }

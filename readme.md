@@ -81,12 +81,17 @@ mvn javadoc:javadoc
 ## 问题反馈
 - 在使用中有任何问题，欢迎反馈
 
+## FAQ
+- [mybatis代码生成器(本地版本)](https://github.com/xk11961677/framework-mybaits-codegen)
+- [mybatis代码生成器(web版本)](https://github.com/xk11961677/skycloud-base/tree/develop/skycloud-base-codegen)
+
+
 ## 开发计划
 
 
 ## 关于作者
 
-## [LICENSE](LICENSE)
+## [LICENSE](license)
 MIT License
 
 Copyright (c) 2019 framework

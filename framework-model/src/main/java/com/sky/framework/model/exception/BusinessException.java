@@ -33,7 +33,7 @@ public class BusinessException extends RuntimeException {
 	/**
 	 * 异常码
 	 */
-	protected int code;
+	protected String code;
 
 	private static final long serialVersionUID = 3160241586346324994L;
 
@@ -52,21 +52,21 @@ public class BusinessException extends RuntimeException {
 		super(message, cause);
 	}
 
-	public BusinessException(int code, String message) {
+	public BusinessException(String code, String message) {
 		super(message);
 		this.code = code;
 	}
 
-	public BusinessException(int code, String msgFormat, Object... args) {
+	public BusinessException(String code, String msgFormat, Object... args) {
 		super(String.format(msgFormat, args));
 		this.code = code;
 	}
 
-	public int getCode() {
+	public String getCode() {
 		return code;
 	}
 
-	public void setCode(int code) {
+	public void setCode(String code) {
 		this.code = code;
 	}
 }
