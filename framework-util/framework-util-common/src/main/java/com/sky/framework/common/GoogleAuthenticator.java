@@ -82,7 +82,7 @@ public class GoogleAuthenticator {
             byte[] bEncodedKey = codec.encode(buffer);
             return new String(bEncodedKey);
         } catch (NoSuchAlgorithmException e) {
-            LogUtils.error(log, "生成密钥异常:{}", e);
+            LogUtils.error(log, "生成密钥异常:{}", e.getMessage(), e);
         }
         return null;
     }
@@ -118,7 +118,7 @@ public class GoogleAuthenticator {
             } catch (Exception e) {
                 // Yes, this is bad form - but
                 // the exceptions thrown would be rare and a static configuration problem
-                LogUtils.error(log, ":{}", e);
+                LogUtils.error(log, ":{}", e.getMessage(), e);
                 throw new RuntimeException(e.getMessage());
                 //return false;
             }

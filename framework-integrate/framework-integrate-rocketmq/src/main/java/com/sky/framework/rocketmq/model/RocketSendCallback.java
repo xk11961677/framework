@@ -40,6 +40,6 @@ public class RocketSendCallback implements SendCallback {
 
     @Override
     public void onException(Throwable throwable) {
-        LogUtils.error(log, "rocketSendCallback exception:{}", throwable);
+        LogUtils.error(log, "rocketSendCallback exception:{}", throwable.getMessage(), throwable);
     }
 }

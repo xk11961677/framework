@@ -81,7 +81,7 @@ public class OssStrategyFactory {
             try {
                 ossStrategyAdapter.getOssStrategy().close();
             } catch (Exception e) {
-                LogUtils.error(log, "close oss client error !", e.getMessage());
+                LogUtils.error(log, "close oss client error !", e.getMessage(), e);
             }
         }
     }

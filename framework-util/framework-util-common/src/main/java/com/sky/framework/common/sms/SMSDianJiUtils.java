@@ -58,7 +58,7 @@ public class SMSDianJiUtils {
             String content = String.format(template, Object);
             return dianJiSms(mobiles, content) == 0;
         } catch (Exception e) {
-            LogUtils.error(log, "模板转换异常:{} mobiles :{}", e.getMessage(), mobiles);
+            LogUtils.error(log, "模板转换异常:{} mobiles :{}", e.getMessage(), mobiles, e);
         }
         return false;
     }

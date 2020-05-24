@@ -50,7 +50,7 @@ public class DefaultMd5Verifier implements Verifier {
             LogUtils.info(log, "server signature :{}", signature);
             isSame = sign.equals(signature);
         } catch (Exception e) {
-            LogUtils.error(log, "DefaultMd5Verifier verify exception :{}", e);
+            LogUtils.error(log, "DefaultMd5Verifier verify exception :{}", e.getMessage(), e);
         }
         return isSame;
     }

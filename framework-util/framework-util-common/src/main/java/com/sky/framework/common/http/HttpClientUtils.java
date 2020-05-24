@@ -202,8 +202,7 @@ public class HttpClientUtils {
 
             result = handleResponse(url, encoding, response);
         } catch (Exception e) {
-            log.error("-----> url:" + url + ",get请求异常:" + e.getMessage());
-            e.printStackTrace();
+            log.error("-----> url:" + url + ",get请求异常:" + e.getMessage(), e);
         } finally {
             closeResource(httpClient, response);
         }
@@ -234,7 +233,7 @@ public class HttpClientUtils {
         try {
             return JSONObject.parseObject(post);
         } catch (Exception e) {
-            LogUtils.error(log, "httpclient exception:{}", e);
+            LogUtils.error(log, "httpclient exception:{}", e.getMessage(), e);
         }
         return null;
     }
@@ -290,7 +289,7 @@ public class HttpClientUtils {
             response = httpClient.execute(httpPost);
             result = handleResponse(url, encoding, response);
         } catch (IOException e) {
-            LogUtils.error(log, "url:{} post请求异常:{}", url, e.getMessage());
+            LogUtils.error(log, "url:{} post请求异常:{}", url, e.getMessage(), e);
             e.printStackTrace();
         } finally {
             closeResource(httpClient, response);
@@ -342,7 +341,7 @@ public class HttpClientUtils {
             response = httpClient.execute(httpPost);
             result = handleResponse(url, encoding, response);
         } catch (IOException e) {
-            LogUtils.error(log, "url:{} post请求异常:{}", url, e.getMessage());
+            LogUtils.error(log, "url:{} post请求异常:{}", url, e.getMessage(), e);
             e.printStackTrace();
         } finally {
             closeResource(httpClient, response);
@@ -416,7 +415,7 @@ public class HttpClientUtils {
                 }
             }
         } catch (Exception e) {
-            LogUtils.error(log, "url:" + url + ",处理响应，获取响应报文异常：" + e.getMessage());
+            LogUtils.error(log, "url:" + url + ",处理响应，获取响应报文异常：" + e.getMessage(), e);
             e.printStackTrace();
         } finally {
             if (br != null) {
@@ -442,7 +441,7 @@ public class HttpClientUtils {
             try {
                 response.close();
             } catch (IOException e) {
-                LogUtils.error(log, "释放response资源异常:" + e.getMessage());
+                LogUtils.error(log, "释放response资源异常:" + e.getMessage(), e);
                 e.printStackTrace();
             }
         }
@@ -451,7 +450,7 @@ public class HttpClientUtils {
             try {
                 httpClient.close();
             } catch (Exception e) {
-                LogUtils.error(log, "释放httpclient资源异常:" + e.getMessage());
+                LogUtils.error(log, "释放httpclient资源异常:" + e.getMessage(), e);
                 e.printStackTrace();
             }
         }
@@ -667,7 +666,7 @@ public class HttpClientUtils {
                 return saveFilePath;
             }
         } catch (IOException e) {
-            LogUtils.error(log, "下载失败:{}", e.getMessage());
+            LogUtils.error(log, "下载失败:{}", e.getMessage(), e);
         } finally {
             try {
                 if (outputStream != null) {

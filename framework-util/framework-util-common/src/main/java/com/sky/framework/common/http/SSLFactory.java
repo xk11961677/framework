@@ -102,7 +102,7 @@ public class SSLFactory {
 
             return c;
         } catch (Exception e) {
-            LogUtils.error(log, "build sslcontext exception:{}", e.getMessage());
+            LogUtils.error(log, "build sslcontext exception:{}", e.getMessage(), e);
         }
         return null;
     }

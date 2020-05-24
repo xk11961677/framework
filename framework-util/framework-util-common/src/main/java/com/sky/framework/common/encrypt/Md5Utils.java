@@ -53,7 +53,7 @@ public class Md5Utils {
             MessageDigest md = MessageDigest.getInstance("MD5");
             result = new String(encodeHex((charset == null || "".equals(charset)) ? md.digest(result.getBytes()) : md.digest(result.getBytes(charset))));
         } catch (Exception e) {
-            LogUtils.error(log, "md5 encode exception:{}", e);
+            LogUtils.error(log, "md5 encode exception:{}", e.getMessage(), e);
         }
         return result;
     }
