@@ -24,8 +24,6 @@ package com.sky.framework.notify;
 
 
 import com.sky.framework.notify.wx.WxSendUtils;
-import com.baozun.tech.notify.wx.message.*;
-import com.framework.util.notify.wx.message.*;
 import com.sky.framework.notify.wx.message.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;

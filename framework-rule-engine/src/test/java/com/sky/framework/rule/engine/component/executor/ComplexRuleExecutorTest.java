@@ -20,42 +20,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.threadpool.util;
+package com.sky.framework.rule.engine.component.executor;
 
+import com.sky.framework.rule.engine.component.ExpressionUnit;
+import com.sky.framework.rule.engine.component.OperationUnit;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
-/**
- * 辅助工具类,平均分配任务数
- *
- * @author
- */
-public class AsyncThreadPoolUtils {
+import java.util.List;
 
-    public static final int cpuNum = Runtime.getRuntime().availableProcessors();
+@RunWith(MockitoJUnitRunner.class)
+@PowerMockIgnore("javax.management.*")
+public class ComplexRuleExecutorTest {
 
-    /**
-     * 平均分配任务数
-     *
-     * @param threadNum
-     * @param taskNum
-     * @param maxNumOfOneThread
-     * @return
-     * @since
-     */
-    public static int[] assignTaskNumber(int threadNum, int taskNum, int maxNumOfOneThread) {
-        int[] taskNums = new int[threadNum];
-        int numOfSingle = taskNum / threadNum;
-        int otherNum = taskNum % threadNum;
-        if (maxNumOfOneThread > 0 && numOfSingle >= maxNumOfOneThread) {
-            numOfSingle = maxNumOfOneThread;
-            otherNum = 0;
-        }
-        for (int i = 0; i < taskNums.length; i++) {
-            if (i < otherNum) {
-                taskNums[i] = numOfSingle + 1;
-            } else {
-                taskNums[i] = numOfSingle;
-            }
-        }
-        return taskNums;
+    @Test(expected = NullPointerException.class)
+    public void test() {
+        ComplexRuleExecutor t = new ComplexRuleExecutor();
+        String express = "";
+        express = "True1 || !(False2 && ( True3 || False4 && True5) && !(False6 || False7 && ( True8 || !True9 )) || False10)";
+        //express = "True1 || True2 || True3 || True4 && True5 && True6 && !True7 && True8 || True9";
+
+        List<OperationUnit> stack = t.parseExpress(express);
+
+        ExpressionUnit root;
+        root = t.breakExpress(stack, null);
+        System.out.println(root.calculate());
+
     }
 }

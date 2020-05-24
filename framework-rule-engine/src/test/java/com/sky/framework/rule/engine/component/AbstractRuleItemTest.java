@@ -20,42 +20,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.threadpool.util;
+package com.sky.framework.rule.engine.component;
 
 
-/**
- * 辅助工具类,平均分配任务数
- *
- * @author
- */
-public class AsyncThreadPoolUtils {
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.collections.CollectionUtils;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
-    public static final int cpuNum = Runtime.getRuntime().availableProcessors();
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
-    /**
-     * 平均分配任务数
-     *
-     * @param threadNum
-     * @param taskNum
-     * @param maxNumOfOneThread
-     * @return
-     * @since
-     */
-    public static int[] assignTaskNumber(int threadNum, int taskNum, int maxNumOfOneThread) {
-        int[] taskNums = new int[threadNum];
-        int numOfSingle = taskNum / threadNum;
-        int otherNum = taskNum % threadNum;
-        if (maxNumOfOneThread > 0 && numOfSingle >= maxNumOfOneThread) {
-            numOfSingle = maxNumOfOneThread;
-            otherNum = 0;
-        }
-        for (int i = 0; i < taskNums.length; i++) {
-            if (i < otherNum) {
-                taskNums[i] = numOfSingle + 1;
-            } else {
-                taskNums[i] = numOfSingle;
-            }
-        }
-        return taskNums;
+@RunWith(MockitoJUnitRunner.class)
+@PowerMockIgnore("javax.management.*")
+public class AbstractRuleItemTest {
+
+    @Test
+    public void test() {
+        List<String> baseline = Arrays.asList("a", "1", "b", "2");
+        List<Object> data = Arrays.asList("a", 1, "b", "2");
+        List<String> dataListString = JSON.parseArray(JSON.toJSONString(data), String.class);
+        List<String> baselineListString = JSON.parseArray(JSON.toJSONString(baseline), String.class);
+        Collection<String> disjunction = CollectionUtils.disjunction(baselineListString, dataListString);
+        Assert.assertEquals(0, disjunction.size());
     }
 }

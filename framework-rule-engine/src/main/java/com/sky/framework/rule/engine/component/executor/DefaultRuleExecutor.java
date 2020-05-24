@@ -20,16 +20,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rule.engine.component.impl;
+package com.sky.framework.rule.engine.component.executor;
 
 
 import com.jayway.jsonpath.JsonPath;
 import com.sky.framework.rule.engine.component.AbstractRuleItem;
+import com.sky.framework.rule.engine.constant.OperatorConstants;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
 import com.sky.framework.rule.engine.model.ItemResult;
 import com.sky.framework.rule.engine.model.RuleItem;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.ObjectUtils;
 
 
 /**
@@ -49,7 +49,7 @@ public class DefaultRuleExecutor extends AbstractRuleItem {
     public ItemResult doCheck(RuleItem item) throws RuleEngineException {
         Object source = getObject();
         //根据source 与 comparisonValue 获取数据的当前值 (需要符合json-path格式)
-        String subject = getValue(item.getComparisonField(), source);
+        Object subject = getValue(item.getComparisonField(), source);
         //执行操作表达式比较,返回结果
         boolean bRet = comparisonOperate(subject, item.getComparisonOperator(), item.getBaseline());
         return bRet ? ItemResult.pass(item) : ItemResult.fail(item);
@@ -63,13 +63,13 @@ public class DefaultRuleExecutor extends AbstractRuleItem {
      * @param data
      * @return
      */
-    private String getValue(String path, Object data) {
+    protected Object getValue(String path, Object data) {
         try {
             Object read = JsonPath.read(data, "$." + path);
-            return ObjectUtils.toString(read);
+            return read;
         } catch (Exception e) {
             //证明字段不存在
-            return "unknown";
+            return OperatorConstants.UNKNOWN;
         }
     }
 }

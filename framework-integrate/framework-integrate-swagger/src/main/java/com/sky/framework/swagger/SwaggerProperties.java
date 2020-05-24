@@ -43,12 +43,26 @@ public class SwaggerProperties {
      * 是否启用swagger在线文档,默认true
      */
     private Boolean enabled;
-
+    /**
+     * 是否开启Authorization
+     */
+    private Boolean authorization = false;
+    /**
+     * 是否开启渠道,默认开启
+     */
+    private Boolean channel = true;
     /**
      * 标题
      */
     private String title;
-
+    /**
+     * 包名 , 默认扫描 ApiOperation 注解的
+     */
+    private String basePackage;
+    /**
+     * host
+     */
+    private String host;
     /**
      * 详细描述
      */

@@ -67,12 +67,9 @@ public final class CommonThreadPool {
      * @return boolean
      * @since
      */
-    public static boolean shutdown() {
-        if (executorService != null) {
-            executorService.shutdown();
-            return true;
-        }
-        return false;
+    public static void shutdown() {
+        if (executorService == null) return;
+        executorService.shutdown();
     }
 
     /**
@@ -82,6 +79,7 @@ public final class CommonThreadPool {
      * @param unit
      */
     public static void shutdownGracefully(long timeout, TimeUnit unit) {
+        if (executorService == null) return;
         executorService.shutdown();
         try {
             if (!executorService.awaitTermination(timeout, unit)) {
@@ -272,7 +270,7 @@ public final class CommonThreadPool {
                         return;
                     }
                 } catch (InterruptedException e) {
-                    log.error("线程被中断:{}", e.getMessage(), e);
+                    log.error("线程被中断:{}", e);
                 }
             }
 

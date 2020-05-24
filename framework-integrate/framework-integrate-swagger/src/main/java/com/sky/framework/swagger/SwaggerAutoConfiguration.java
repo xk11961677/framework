@@ -22,6 +22,7 @@
  */
 package com.sky.framework.swagger;
 
+import com.google.common.base.Predicate;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,6 +31,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
+import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -71,29 +73,56 @@ public class SwaggerAutoConfiguration {
     public Docket createRestApi() {
         log.info("sky framework web add swagger successfully !:{}", swaggerProperties);
         //每次都需手动输入header信息
-        ParameterBuilder pb = new ParameterBuilder();
         List<Parameter> pars = new ArrayList();
-        pb.name("Authorization").description("user access_token")
-                .modelRef(new ModelRef("string")).parameterType("header")
-                .required(false);
-        pars.add(pb.build());
+        this.addParameters(pars);
 
-        ParameterBuilder pbChannel = new ParameterBuilder();
-        pbChannel.name("channel").description("user channel")
-                .modelRef(new ModelRef("string")).parameterType("header")
-                .required(false);
-        pars.add(pbChannel.build());
-        return new Docket(DocumentationType.SWAGGER_2)
+        Predicate<RequestHandler> selector = RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class);
+        if (!StringUtils.isEmpty(swaggerProperties.getBasePackage())) {
+            selector = RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage());
+        }
+
+        Docket build = new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .apis(selector)
                 .paths(PathSelectors.any())
-                .build()
-                //配置鉴权信息
-                .securitySchemes(securitySchemes())
-                .securityContexts(securityContexts())
-                .globalOperationParameters(pars)
-                .enable(true);
+                .build();
+
+        if (swaggerProperties.getAuthorization()) {
+            //配置鉴权信息
+            build.securitySchemes(securitySchemes()).securityContexts(securityContexts());
+        }
+
+        if (!StringUtils.isEmpty(swaggerProperties.getHost())) {
+            build.host(swaggerProperties.getHost());
+        }
+
+        build.globalOperationParameters(pars).enable(true);
+
+        return build;
+    }
+
+    /**
+     * 添加参数
+     *
+     * @param pars
+     */
+    private void addParameters(List<Parameter> pars) {
+        if (swaggerProperties.getAuthorization()) {
+            ParameterBuilder pb = new ParameterBuilder();
+            pb.name("Authorization").description("access_token")
+                    .modelRef(new ModelRef("string")).parameterType("header")
+                    .required(false);
+            pars.add(pb.build());
+        }
+
+        if (swaggerProperties.getChannel()) {
+            ParameterBuilder pbChannel = new ParameterBuilder();
+            pbChannel.name("channel").description("channel")
+                    .modelRef(new ModelRef("string")).parameterType("header")
+                    .required(false);
+            pars.add(pbChannel.build());
+        }
     }
 
     private ApiInfo apiInfo() {

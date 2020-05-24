@@ -20,86 +20,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.web.support;
+package com.sky.framework.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-import tk.mybatis.mapper.annotation.KeySql;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
- * The class Base entity.
- *
  * @author
  */
 @Data
-@SuppressWarnings("unused")
-public class BaseEntity implements Serializable {
-    private static final long serialVersionUID = 2393269568666085258L;
-    @Id
-    @KeySql(useGeneratedKeys = true)
-    private Long id;
-
+public class MongoBaseEntity {
+    /**
+     * Object ID(MongoDB ObjectId)
+     */
+    private String id;
+    /**
+     * 创建时间
+     */
+    @CreatedDate
+    private Date createTime;
+    /**
+     * 更新时间
+     */
+    @LastModifiedDate
+    private Date updateTime;
+    /**
+     * 创建人
+     */
+    private String createBy;
+    /**
+     * 更新人
+     */
+    private String updateBy;
     /**
      * 状态 0 有效 1 无效
      */
     private Integer disabled;
-
-    /**
-     * 创建时间
-     */
-    @Column(name = "create_time")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date createTime;
-
-    /**
-     * 创建人
-     */
-    @Column(name = "create_by")
-    private String createBy;
-
-    /**
-     * 更新时间
-     */
-    @Column(name = "update_time")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date updateTime;
-
-    /**
-     * 更新人
-     */
-    @Column(name = "update_by")
-    private String updateBy;
-
-
-    @Transient
-    private Integer pageNum;
-
-    @Transient
-    private Integer pageSize;
-
-    @Transient
-    private String orderBy;
-
-    /**
-     * Is new boolean.
-     *
-     * @return the boolean
-     */
-    @Transient
-    @JsonIgnore
-    public boolean isNew() {
-        return this.id == null;
-    }
-
-
 }

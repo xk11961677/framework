@@ -22,13 +22,11 @@
  */
 package com.sky.framework.rule.engine;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+
 import com.sky.framework.rule.engine.component.AbstractRuleItem;
 import com.sky.framework.rule.engine.component.RuleExecutorTable;
-import com.sky.framework.rule.engine.component.impl.ComplexRuleExecutor;
-import com.sky.framework.rule.engine.component.impl.DefaultRuleExecutor;
-import com.sky.framework.rule.engine.constant.OperatorConstants;
+import com.sky.framework.rule.engine.component.executor.ComplexRuleExecutor;
+import com.sky.framework.rule.engine.component.executor.DefaultRuleExecutor;
 import com.sky.framework.rule.engine.enums.ResultEnum;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
 import com.sky.framework.rule.engine.model.ItemResult;
@@ -54,69 +52,6 @@ public class RuleEngineService {
 
     public RuleEngineService(Class executorClass) {
         this.executorClass = executorClass;
-    }
-
-    private static List<RuleItem> itemList;
-
-    static {
-        itemList = new ArrayList<>();
-
-        RuleItem ruleItem1 = new RuleItem();
-        ruleItem1.setComparisonOperator(OperatorConstants.OPR_CODE.EQUAL);
-        ruleItem1.setComparisonField("aaa");
-        ruleItem1.setBaseline("gap");
-
-        RuleItem ruleItem2 = new RuleItem();
-        ruleItem2.setComparisonOperator(OperatorConstants.OPR_CODE.GREATER);
-        ruleItem2.setComparisonField("bbb");
-        ruleItem2.setBaseline("122");
-
-        RuleItem ruleItem0 = new RuleItem();
-        ruleItem0.setGroupExpress("( " + ruleItem1.getItemNo() + " && " + ruleItem2.getItemNo() + " )");
-
-        ruleItem1.setParentItemNo(ruleItem0.getItemNo());
-        ruleItem2.setParentItemNo(ruleItem0.getItemNo());
-
-        //
-        RuleItem ruleItem3 = new RuleItem();
-        ruleItem3.setComparisonOperator(OperatorConstants.OPR_CODE.EQUAL);
-        ruleItem3.setComparisonField("aaa");
-        ruleItem3.setBaseline("gap");
-
-        RuleItem ruleItem4 = new RuleItem();
-        ruleItem4.setComparisonOperator(OperatorConstants.OPR_CODE.GREATER);
-        ruleItem4.setComparisonField("bbb");
-        ruleItem4.setBaseline("120");
-
-        RuleItem ruleItem5 = new RuleItem();
-        ruleItem5.setGroupExpress("( " + ruleItem3.getItemNo() + " && " + ruleItem4.getItemNo() + " )");
-
-        ruleItem3.setParentItemNo(ruleItem5.getItemNo());
-        ruleItem4.setParentItemNo(ruleItem5.getItemNo());
-
-        RuleItem ruleItem6 = new RuleItem();
-        ruleItem6.setGroupExpress("( " + ruleItem0.getItemNo() + " || " + ruleItem5.getItemNo() + " )");
-
-        ruleItem0.setParentItemNo(ruleItem6.getItemNo());
-        ruleItem5.setParentItemNo(ruleItem6.getItemNo());
-
-        itemList.add(ruleItem2);
-        itemList.add(ruleItem1);
-        itemList.add(ruleItem3);
-        itemList.add(ruleItem4);
-
-        itemList.add(ruleItem0);
-        itemList.add(ruleItem5);
-        itemList.add(ruleItem6);
-    }
-
-
-    public static void main(String[] args) throws Exception {
-        String source = "{'aaa':'gap','bbb':'121','ccc':'测试'}";
-        JSONObject jsonObject = JSON.parseObject(source);
-        RuleEngineService ruleEngineService = new RuleEngineService();
-        RuleEngineContext result = ruleEngineService.start(jsonObject, itemList);
-        System.out.println(result.getResult());
     }
 
     /**
