@@ -1,0 +1,62 @@
+[
+  {
+    "value": "150",
+    "key": "sizeChart.[0].high"
+  },
+  {
+    "value": "120",
+    "key": "sizeChart.[0].weight"
+  },
+  {
+    "value": "150",
+    "key": "sizeChart.[0].value.[0].high"
+  },
+  {
+    "value": "120",
+    "key": "sizeChart.[0].value.[0].weight"
+  },
+  {
+    "value": "S",
+    "key": "sizeChart.[0].value.[0].value"
+  },
+  {
+    "value": "150",
+    "key": "sizeChart.[0].value.[1].high"
+  },
+  {
+    "value": "125",
+    "key": "sizeChart.[0].value.[1].weight"
+  },
+  {
+    "value": "M",
+    "key": "sizeChart.[0].value.[1].value"
+  },
+  {
+    "value": "150",
+    "key": "sizeChart.[1].high"
+  },
+  {
+    "value": "125",
+    "key": "sizeChart.[1].weight"
+  },
+  {
+    "value": "M",
+    "key": "sizeChart.[1].value"
+  },
+  {
+    "value": "150",
+    "key": "sizeChart.[2].high"
+  },
+  {
+    "value": "130",
+    "key": "sizeChart.[2].weight"
+  },
+  {
+    "value": "L",
+    "key": "sizeChart.[2].value"
+  },
+  {
+    "value": "test",
+    "key": "title"
+  }
+]

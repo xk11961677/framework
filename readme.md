@@ -34,6 +34,8 @@
     -  [framework-util-common](framework-util/framework-util-common)  公共工具类包
     -  [framework-util-oss](framework-util/framework-util-oss)  对象资源存储[readme.md](framework-util/framework-util-oss/readme.md)
     -  [framework-util-threadpool](framework-util/framework-util-threadpool)  线程池工具类,使用方法请读本项目[readme.md](framework-util/framework-util-threadpool/readme.md)
+    -  [framework-util-kv](framework-util/framework-util-kv)  将json转成key value格式工具
+    -  [framework-util-notify](framework-util/framework-util-notify)  发送企业微信与钉钉工具
 
 
 ## git 分支开发规约

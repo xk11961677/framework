@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.common.ding;
+package com.sky.framework.notify.dd;
 
 
 import com.alibaba.fastjson.JSON;
@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * @author
  */
-public class DingTalkMessageBuilder {
+public class DingTalkBuilder {
     /**
      * 参数可自定义access_token
      */
@@ -40,16 +40,16 @@ public class DingTalkMessageBuilder {
 
     private final HashMap<String, Object> map;
 
-    public DingTalkMessageBuilder(String token) {
+    public DingTalkBuilder(String token) {
         this.accessToken = token;
         map = new HashMap<>();
     }
 
-    public DingTalkMessageBuilder() {
+    public DingTalkBuilder() {
         map = new HashMap<>();
     }
 
-    public DingTalkMessageBuilder markdownMessage(String title, String text) {
+    public DingTalkBuilder markdownMessage(String title, String text) {
         map.put("msgtype", "markdown");
         Map<String, String> contentMap = new HashMap<>();
         contentMap.put("title", title);
@@ -58,7 +58,7 @@ public class DingTalkMessageBuilder {
         return this;
     }
 
-    public DingTalkMessageBuilder at(ArrayList<String> phones, boolean isAtAll) {
+    public DingTalkBuilder at(ArrayList<String> phones, boolean isAtAll) {
         Map<String, Object> at = new HashMap<>();
         at.put("atMobiles", phones);
         at.put("isAtAll", isAtAll);

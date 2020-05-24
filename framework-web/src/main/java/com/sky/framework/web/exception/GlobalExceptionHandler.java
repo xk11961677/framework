@@ -23,11 +23,11 @@
 package com.sky.framework.web.exception;
 
 import com.sky.framework.common.LogUtils;
-import com.sky.framework.common.ding.DingTalkMessage;
-import com.sky.framework.common.ding.DingTalkMessageBuilder;
 import com.sky.framework.model.dto.MessageRes;
 import com.sky.framework.model.enums.FailureCodeEnum;
 import com.sky.framework.model.exception.BusinessException;
+import com.sky.framework.notify.dd.DingTalkBuilder;
+import com.sky.framework.notify.dd.DingTalkUtils;
 import com.sky.framework.threadpool.core.CommonThreadPool;
 import com.sky.framework.threadpool.core.DefaultAsynchronousHandler;
 import com.sky.framework.web.common.notice.HttpExceptionNotice;
@@ -213,7 +213,7 @@ public class GlobalExceptionHandler {
                     HttpExceptionNotice httpExceptionNotice = new HttpExceptionNotice(e, null, uri, parameterMap, paramFromApplicationJson);
                     httpExceptionNotice.setProject(name);
                     String text = httpExceptionNotice.createText();
-                    DingTalkMessage dingTalkMessage = new DingTalkMessage(new DingTalkMessageBuilder().markdownMessage("异常信息", text));
+                    DingTalkUtils dingTalkMessage = new DingTalkUtils(new DingTalkBuilder().markdownMessage("异常信息", text));
                     dingTalkMessage.send();
                 } catch (Exception e) {
                     LogUtils.error(log, "send ding talk exception:{}", e);

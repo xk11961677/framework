@@ -20,9 +20,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.common.ding;
+package com.sky.framework.notify.dd;
 
-import com.sky.framework.common.LogUtils;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
@@ -33,15 +32,15 @@ import java.util.Objects;
  * @author
  */
 @Slf4j
-public class DingTalkMessage {
+public class DingTalkUtils {
 
     public static String token = "xxxx";
 
     private static String url = "https://oapi.dingtalk.com/robot/send?access_token=" + token;
 
-    private DingTalkMessageBuilder builder;
+    private DingTalkBuilder builder;
 
-    public DingTalkMessage(DingTalkMessageBuilder builder) {
+    public DingTalkUtils(DingTalkBuilder builder) {
         this.builder = builder;
     }
 
@@ -59,14 +58,14 @@ public class DingTalkMessage {
             }
 
             @Override
-            public void onResponse(Call call, okhttp3.Response response) {
+            public void onResponse(Call call, Response response) {
                 try {
                     ResponseBody responseBody = response.body();
                     if (responseBody != null) {
-                        LogUtils.info(log, responseBody.string());
+                        log.info(responseBody.string());
                     }
-                } catch (Exception ignore) {
-                    LogUtils.error(log, ignore.getMessage());
+                } catch (Exception e) {
+                    log.error("DingTalkMessage send exception:{}", e);
                 }
             }
         });

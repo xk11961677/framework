@@ -16,5 +16,7 @@
         <module>framework-util-common</module>
         <module>framework-util-threadpool</module>
         <module>framework-util-oss</module>
+        <module>framework-util-kv</module>
+        <module>framework-util-notify</module>
     </modules>
 </project>
