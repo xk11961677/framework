@@ -20,27 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rocketmq.config;
-
-import com.sky.framework.rocketmq.RocketMqAutoConfiguration;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-
-import java.util.List;
+package com.sky.framework.redis.enums;
 
 /**
+ * 锁的模式
+ *
  * @author
  */
-@EnableConfigurationProperties(MQProperties.class)
-@ConfigurationProperties(prefix = RocketMqAutoConfiguration.prefix + "rocket.config")
-@Data
-public class MQProperties {
-
-    private List<ProducerProperties> producer;
-
-    private List<ConsumerProperties> consumer;
-
-    private String namesrvAddr;
-
+public enum LockModel {
+    //可重入锁
+    REENTRANT,
+    //公平锁
+    FAIR,
+    //联锁
+    MULTIPLE,
+    //红锁
+    REDLOCK,
+    //读锁
+    READ,
+    //写锁
+    WRITE,
+    //自动模式,当参数只有一个.使用 REENTRANT 参数多个 REDLOCK
+    AUTO
 }

@@ -33,5 +33,5 @@ public class MybatisPlusProperties {
     /**
      * 是否启动填充用户信息处理器
      */
-    static final String MYBATIS_PLUS_META_USER_ENABLE = "mybatis.plus.meta.user.enabled";
+    static final String MYBATIS_PLUS_META_USER_ENABLE = MybatisPlusAutoConfiguration.prefix + "mybatis.plus.meta.user.enabled";
 }

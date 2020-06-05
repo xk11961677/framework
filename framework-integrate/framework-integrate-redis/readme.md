@@ -41,7 +41,7 @@ spring:
 另:使用redis官方推荐的redisson分布式锁
 详细配置请[点我](https://github.com/redisson/redisson/wiki)
 
-3) 如不需要使用redisson 请按如下配置排除jar包 ,且不要使用 RedissonLockUtil , 请使用 RedisLockUtil
+3) 如不需要使用redisson 请按如下配置排除jar包 ,且不要使用 RedissonLockUtils
 
 ```
 <exclusions>

@@ -33,11 +33,11 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@ConfigurationProperties(prefix = "swagger")
+@ConfigurationProperties(prefix = SwaggerAutoConfiguration.prefix + "swagger")
 @Data
 public class SwaggerProperties {
 
-    static final String SWAGGER_ENABLE = "swagger.enabled";
+    static final String SWAGGER_ENABLE = SwaggerAutoConfiguration.prefix + "swagger.enabled";
 
     /**
      * 是否启用swagger在线文档,默认true

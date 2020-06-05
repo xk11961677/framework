@@ -34,11 +34,6 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
-        </dependency>
-
         <!-- redisson client -->
         <dependency>
             <groupId>org.redisson</groupId>

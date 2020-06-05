@@ -20,27 +20,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rocketmq.config;
-
-import com.sky.framework.rocketmq.RocketMqAutoConfiguration;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-
-import java.util.List;
+package com.sky.framework.redis.enums;
 
 /**
  * @author
  */
-@EnableConfigurationProperties(MQProperties.class)
-@ConfigurationProperties(prefix = RocketMqAutoConfiguration.prefix + "rocket.config")
-@Data
-public class MQProperties {
-
-    private List<ProducerProperties> producer;
-
-    private List<ConsumerProperties> consumer;
-
-    private String namesrvAddr;
-
+public enum Model {
+    //哨兵
+    SENTINEL,
+    //主从
+    MASTERSLAVE,
+    //单例
+    SINGLE,
+    //集群
+    CLUSTER,
+    //云托管模式
+    REPLICATED
 }

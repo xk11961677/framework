@@ -36,6 +36,9 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackageClasses = MybatisPlusAutoConfiguration.class)
 @Slf4j
 public class MybatisPlusAutoConfiguration {
+
+    public static final String prefix = "fw.";
+
     /**
      * 分页插件
      *

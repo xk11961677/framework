@@ -20,51 +20,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.oss.property;
+package com.sky.framework.redis.property;
 
-import com.sky.framework.oss.OssAutoConfiguration;
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.redisson.config.ReadMode;
+import org.redisson.config.SubscriptionMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * OSS公共实体
+ * 多节点配置
  *
- * @author sky
+ * @author
  */
-@ConfigurationProperties(prefix = OssAutoConfiguration.prefix + "oss")
 @Data
-public class OssProperties {
+public class MultipleServerConfig {
+
+    private String loadBalancer = "org.redisson.connection.balancer.RoundRobinLoadBalancer";
+    private Integer slaveConnectionMinimumIdleSize = 32;
+    private Integer slaveConnectionPoolSize = 64;
+    private Integer failedSlaveReconnectionInterval = 3000;
+    private Integer failedSlaveCheckInterval = 180000;
+    private Integer masterConnectionMinimumIdleSize = 32;
+    private Integer masterConnectionPoolSize = 64;
+    private ReadMode readMode = ReadMode.SLAVE;
+    private SubscriptionMode subscriptionMode = SubscriptionMode.SLAVE;
+    private Integer subscriptionConnectionMinimumIdleSize = 1;
+    private Integer subscriptionConnectionPoolSize = 50;
+    private Long dnsMonitoringInterval = 5000L;
+
+    private List<String> nodeAddresses = new ArrayList();
 
     /**
-     * 图片访问地址前缀
+     * 集群,哨兵,云托管
      */
-    private String urlPrefix;
+    private Integer scanInterval = 1000;
 
     /**
-     * bucket是否私有
+     * 哨兵模式,云托管,主从
      */
-    private Boolean isPrivate = false;
+    private Integer database = 0;
 
     /**
-     * @see com.sky.framework.oss.strategy.OssStrategyEnum
+     * 哨兵模式
      */
-    private String strategy;
+    private String masterName;
 
-    /**
-     * 上传目录前缀
-     */
-    private String dirPrefix;
-
-    /**
-     * 回调接口地址(如: ali 通过前端上传时，ali需要回调地址通知图片信息或个人用户验签等)
-     */
-    private String callbackUrl;
-
-    /**
-     * 阿里云
-     *
-     * @see com.sky.framework.oss.property.AliyunOssProperties
-     */
-    private AliyunOssProperties aliyun = new AliyunOssProperties();
 
 }

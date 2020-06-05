@@ -35,6 +35,8 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class RocketMqAutoConfiguration implements CommandLineRunner {
 
+    public static final String prefix = "fw.";
+
     @Override
     public void run(String... args) {
         log.info("sky framework rocketmq startup successfully !");

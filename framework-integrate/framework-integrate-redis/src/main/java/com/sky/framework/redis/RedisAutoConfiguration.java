@@ -22,25 +22,27 @@
  */
 package com.sky.framework.redis;
 
-import com.sky.framework.redis.util.RedisLockUtils;
+import com.sky.framework.redis.property.RedisProperties;
 import com.sky.framework.redis.util.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 
 /**
  * @author
  */
 @Configuration
 @ComponentScan(basePackageClasses = RedisAutoConfiguration.class)
+@EnableConfigurationProperties(RedisProperties.class)
 @Slf4j
 public class RedisAutoConfiguration implements CommandLineRunner {
 
+    public static final String prefix = "fw.";
 
     @Override
     public void run(String... args) {
@@ -48,27 +50,10 @@ public class RedisAutoConfiguration implements CommandLineRunner {
     }
 
     @Bean
-    public RedisUtils redisUtil(RedisTemplate redisTemplate, StringRedisTemplate stringRedisTemplate) {
+    public RedisUtils redisUtils(RedisTemplate redisTemplate, StringRedisTemplate stringRedisTemplate) {
         RedisUtils redisUtil = new RedisUtils();
         RedisUtils.setRedisTemplate(redisTemplate);
         RedisUtils.setStringRedisTemplate(stringRedisTemplate);
         return redisUtil;
-    }
-
-
-    @Bean
-    public RedisLockUtils redisLockUtil(DefaultRedisScript defaultRedisScript, StringRedisTemplate stringRedisTemplate) {
-        RedisLockUtils redisLockUtil = new RedisLockUtils();
-        RedisLockUtils.setTemplate(stringRedisTemplate);
-        RedisLockUtils.setRedisScript(defaultRedisScript);
-        return redisLockUtil;
-    }
-
-    @Bean
-    public DefaultRedisScript<Long> defaultRedisScript() {
-        DefaultRedisScript<Long> defaultRedisScript = new DefaultRedisScript<>();
-        defaultRedisScript.setResultType(Long.class);
-        defaultRedisScript.setScriptText("if redis.call('get', KEYS[1]) == KEYS[2] then return redis.call('del', KEYS[1]) else return 0 end");
-        return defaultRedisScript;
     }
 }

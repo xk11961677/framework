@@ -22,7 +22,6 @@
  */
 package com.sky.framework.redis.util;
 
-import com.sky.framework.common.LogUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -53,7 +52,7 @@ public class RedissonLockUtils {
         try {
             return lock.tryLock(timeout, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            LogUtils.error(log, "lock interrupted:{}", e.getMessage(), e);
+            log.error("lock interrupted:{}", e.getMessage(), e);
             return false;
         }
     }
@@ -69,7 +68,7 @@ public class RedissonLockUtils {
         try {
             return lock.tryLock(timeout, leaseTime, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            LogUtils.error(log, "lock interrupted:{}", e.getMessage(), e);
+            log.error("lock interrupted:{}", e.getMessage(), e);
             return false;
         }
     }

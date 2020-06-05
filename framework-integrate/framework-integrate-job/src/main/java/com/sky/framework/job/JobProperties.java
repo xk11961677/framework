@@ -28,7 +28,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * @author
  */
-@ConfigurationProperties(prefix = "skycloud.job")
+@ConfigurationProperties(prefix = JobAutoConfiguration.prefix + "skycloud.job")
 @Data
 public class JobProperties {
 

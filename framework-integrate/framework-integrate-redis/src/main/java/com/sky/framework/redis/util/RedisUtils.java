@@ -22,7 +22,6 @@
  */
 package com.sky.framework.redis.util;
 
-import com.sky.framework.common.LogUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ObjectUtils;
@@ -57,14 +56,14 @@ public class RedisUtils {
         if (time > 0) {
             redisTemplate.expire(key, time, TimeUnit.SECONDS);
         } else {
-            LogUtils.info(log, "设置的时间不能为0或者小于0！！");
+            log.error("设置的时间不能为0或者小于0！！");
         }
     }
 
     /**
      * 获取缓存失效时间
      *
-     * @param key  key值
+     * @param key key值
      */
     public static Long getExpire(String key, TimeUnit unit) {
         Long expire = redisTemplate.getExpire(key, unit);
@@ -112,7 +111,7 @@ public class RedisUtils {
         try {
             return redisTemplate.delete(key);
         } catch (Exception e) {
-            LogUtils.info(log, "删除失败！" + e.getMessage(), e);
+            log.error("删除失败:{}", e.getMessage(), e);
         }
         return false;
     }
@@ -141,24 +140,25 @@ public class RedisUtils {
             stringRedisTemplate.opsForValue().set(key, ObjectUtils.toString(value));
             return true;
         } catch (Exception e) {
-            LogUtils.info(log, "插入缓存失败！" + e.getMessage(), e);
+            log.error("插入缓存失败！" + e.getMessage(), e);
         }
         return false;
     }
 
     /**
      * 存入缓存 如果不存在则存入
+     *
      * @param key
      * @param value
      * @param time
      * @return
      */
-    public static Boolean setIfAbsentString(String key,Object value, long time) {
+    public static Boolean setIfAbsentString(String key, Object value, long time) {
         try {
-            redisTemplate.opsForValue().setIfAbsent(key,value,time,TimeUnit.SECONDS);
+            redisTemplate.opsForValue().setIfAbsent(key, value, time, TimeUnit.SECONDS);
             return true;
         } catch (Exception e) {
-            LogUtils.info(log, "插入缓存失败！" + e.getMessage(), e);
+            log.error("插入缓存失败:{}", e.getMessage(), e);
         }
         return false;
     }
@@ -186,7 +186,7 @@ public class RedisUtils {
             stringRedisTemplate.opsForValue().set(key, ObjectUtils.toString(value), time, TimeUnit.SECONDS);
             return true;
         } catch (Exception e) {
-            LogUtils.info(log, "插入缓存失败！" + e.getMessage(), e);
+            log.error("插入缓存失败:{}", e.getMessage(), e);
         }
         return false;
     }
@@ -205,7 +205,7 @@ public class RedisUtils {
             redisTemplate.opsForList().rightPush(key, value);
             return true;
         } catch (Exception e) {
-            LogUtils.info(log, "插入List缓存失败！" + e.getMessage(), e);
+            log.error("插入List缓存失败:{}", e.getMessage(), e);
         }
         return false;
     }
@@ -227,7 +227,7 @@ public class RedisUtils {
             }
             return false;
         } catch (Exception e) {
-            LogUtils.info(log, "插入List缓存失败！" + e.getMessage(), e);
+            log.error("插入List缓存失败:{}", e.getMessage(), e);
         }
         return false;
     }
@@ -249,7 +249,7 @@ public class RedisUtils {
             }
             return false;
         } catch (Exception e) {
-            LogUtils.info(log, "插入List缓存失败！" + e.getMessage(), e);
+            log.error("插入List缓存失败:{}", e.getMessage(), e);
         }
         return false;
     }
@@ -266,7 +266,7 @@ public class RedisUtils {
         try {
             return redisTemplate.opsForList().range(key, start, end);
         } catch (Exception e) {
-            LogUtils.info(log, "获取缓存List中的内容失败了！" + e.getMessage(), e);
+            log.error("获取缓存List中的内容失败:{}", e.getMessage(), e);
         }
         return null;
     }
@@ -283,7 +283,7 @@ public class RedisUtils {
         try {
             return redisTemplate.opsForList().remove(key, count, value);
         } catch (Exception e) {
-            LogUtils.info(log, "删除List中的内容失败了！" + e.getMessage(), e);
+            log.error("删除List中的内容失败:{}", e.getMessage(), e);
         }
         return 0L;
     }
@@ -298,7 +298,7 @@ public class RedisUtils {
         try {
             return redisTemplate.opsForList().size(key);
         } catch (Exception e) {
-            LogUtils.info(log, "获取List长度失败！" + e.getMessage(), e);
+            log.error("获取List长度失败:{}", e.getMessage(), e);
         }
         return 0L;
     }

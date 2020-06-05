@@ -20,27 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rocketmq.config;
+package com.sky.framework.redis.exception;
 
-import com.sky.framework.rocketmq.RocketMqAutoConfiguration;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-
-import java.util.List;
 
 /**
+ * redis异常
+ *
  * @author
  */
-@EnableConfigurationProperties(MQProperties.class)
-@ConfigurationProperties(prefix = RocketMqAutoConfiguration.prefix + "rocket.config")
-@Data
-public class MQProperties {
+public class RedisException extends RuntimeException {
+    private static final long serialVersionUID = -1L;
 
-    private List<ProducerProperties> producer;
+    public RedisException() {
+    }
 
-    private List<ConsumerProperties> consumer;
+    public RedisException(Throwable cause) {
+        super(cause);
+    }
 
-    private String namesrvAddr;
+    public RedisException(String message) {
+        super(message);
+    }
 
+    public RedisException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

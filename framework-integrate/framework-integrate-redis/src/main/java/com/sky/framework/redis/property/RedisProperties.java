@@ -20,27 +20,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rocketmq.config;
+package com.sky.framework.redis.property;
 
-import com.sky.framework.rocketmq.RocketMqAutoConfiguration;
+
+import com.sky.framework.redis.RedisAutoConfiguration;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author
  */
-@EnableConfigurationProperties(MQProperties.class)
-@ConfigurationProperties(prefix = RocketMqAutoConfiguration.prefix + "rocket.config")
+@ConfigurationProperties(prefix = RedisAutoConfiguration.prefix + "redis")
 @Data
-public class MQProperties {
+public class RedisProperties {
+    /**
+     * cacheName ttl , 单位 秒 , key有特殊符号时demo "[xxx]": 600
+     */
+    private Map<String, Long> cacheNamesTTL;
 
-    private List<ProducerProperties> producer;
+    /**
+     * 默认TTL时间 , 单位 分钟
+     */
+    private Long defaultTTL = 30L;
 
-    private List<ConsumerProperties> consumer;
-
-    private String namesrvAddr;
-
+    /**
+     * 是否开启key设置TTL,默认不开启 , 如果开启此功能TTL单位 秒
+     */
+    private Boolean keyTTL = false;
 }

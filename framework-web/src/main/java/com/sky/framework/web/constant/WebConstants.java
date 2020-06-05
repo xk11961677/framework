@@ -22,6 +22,8 @@
  */
 package com.sky.framework.web.constant;
 
+import com.sky.framework.web.WebAutoConfiguration;
+
 /**
  * the class core constant
  *
@@ -29,15 +31,15 @@ package com.sky.framework.web.constant;
  */
 public interface WebConstants {
 
-    String GLOBAL_EXCEPTION_ENABLE = "web.global-exception-enabled";
+    String GLOBAL_EXCEPTION_ENABLE = WebAutoConfiguration.prefix + "web.global-exception-enabled";
 
-    String GLOBAL_EXCEPTION_DINGTALK_ENABLE = "web.global-exception-ding-talk-enabled";
+    String GLOBAL_EXCEPTION_DINGTALK_ENABLE = WebAutoConfiguration.prefix + "web.global-exception-ding-talk-enabled";
 
-    String GLOBAL_HTTP_CONVERTER_ENABLE = "web.global-http-converter-enabled";
+    String GLOBAL_HTTP_CONVERTER_ENABLE = WebAutoConfiguration.prefix + "web.global-http-converter-enabled";
 
-    String GLOBAL_CONTEXT_INTERCEPTOR_ENABLE = "web.global-context-interceptor-enabled";
+    String GLOBAL_CONTEXT_INTERCEPTOR_ENABLE = WebAutoConfiguration.prefix + "web.global-context-interceptor-enabled";
 
-    String GLOBAL_TOKEN_INTERCEPTOR_ENABLE = "web.global-token-interceptor-enabled";
+    String GLOBAL_TOKEN_INTERCEPTOR_ENABLE = WebAutoConfiguration.prefix + "web.global-token-interceptor-enabled";
 
     String UTF8 = "UTF-8";
 }

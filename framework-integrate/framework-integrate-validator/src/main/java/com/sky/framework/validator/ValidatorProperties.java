@@ -31,22 +31,31 @@ import java.util.List;
 /**
  * @author
  */
-@ConfigurationProperties(prefix = "validator")
+@ConfigurationProperties(prefix = ValidatorAutoConfiguration.prefix + "validator")
 @Data
 @SuppressWarnings("all")
 public class ValidatorProperties {
-
+    /**
+     * 验证器异常时默认错误码
+     */
     private int errorCode = -1;
-
+    /**
+     * 验证器异常时默认错误信息
+     */
     private String errorMsg = "验证器异常";
 
     /**
      * hibernate 默认 990001
-     * @see com.sky.framework.model.enums.FailureCodeEnum
+     *
+     * @see com.sky.framework.model.enums.SystemErrorCodeEnum
      */
-    private int hibernateDefaultErrorCode = 990001;
-
+    private Integer hibernateDefaultErrorCode = 990001;
+    /**
+     * 验证器执行顺序
+     */
     private int order = 100;
-
+    /**
+     * 切面拦截目标类
+     */
     private List<String> beanNames = new ArrayList<>();
 }

@@ -31,7 +31,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author sky
  */
-@ConfigurationProperties(prefix = "asyncthreadpool")
+@ConfigurationProperties(prefix = AsyncThreadPoolAutoConfiguration.prefix + "asyncthreadpool")
 public class AsyncThreadPoolProperties {
     /**
      * 默认核心线程数

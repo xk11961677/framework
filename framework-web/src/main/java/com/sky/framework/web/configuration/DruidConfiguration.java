@@ -24,6 +24,7 @@ package com.sky.framework.web.configuration;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import com.sky.framework.web.WebAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -35,7 +36,7 @@ import org.springframework.context.annotation.Configuration;
  * @author
  */
 @Configuration
-@ConditionalOnProperty(prefix = "spring.datasource.monitor", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = WebAutoConfiguration.prefix + "spring.datasource.monitor", value = "enabled", matchIfMissing = true)
 public class DruidConfiguration {
 
 

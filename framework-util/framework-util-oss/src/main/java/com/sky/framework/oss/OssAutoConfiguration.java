@@ -49,6 +49,8 @@ import javax.annotation.PreDestroy;
 @Slf4j
 public class OssAutoConfiguration implements CommandLineRunner {
 
+    public static final String prefix = "fw.";
+
     @Autowired
     private OssProperties ossProperties;
 
@@ -78,7 +80,7 @@ public class OssAutoConfiguration implements CommandLineRunner {
      * @author sky
      * @since
      */
-    @ConditionalOnProperty(name = "oss.strategy", havingValue = "aliyun")
+    @ConditionalOnProperty(name = OssAutoConfiguration.prefix + "oss.strategy", havingValue = "aliyun")
     @Bean
     public OssUtils ossUtils() {
         OssUtils ossUtils = new OssUtils();

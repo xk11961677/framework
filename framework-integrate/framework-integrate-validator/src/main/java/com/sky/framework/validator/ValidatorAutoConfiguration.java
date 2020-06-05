@@ -47,6 +47,8 @@ import java.util.List;
 @Slf4j
 public class ValidatorAutoConfiguration {
 
+    public static final String prefix = "fw.";
+
     @Resource
     private ValidatorProperties validatorProperties;
 

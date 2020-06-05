@@ -84,7 +84,7 @@ mvn javadoc:javadoc
 ## FAQ
 - [mybatis代码生成器(本地版本)](https://github.com/xk11961677/framework-mybaits-codegen)
 - [mybatis代码生成器(web版本)](https://github.com/xk11961677/skycloud-base/tree/develop/skycloud-base-codegen)
-
+- 所有配置项可在idea yml文件中 输入 fw. 即可提示
 
 ## 开发计划
 
