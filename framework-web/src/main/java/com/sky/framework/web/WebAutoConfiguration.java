@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class WebAutoConfiguration implements CommandLineRunner {
 
-    public static final String prefix = "fw.";
+    public static final String PREFIX = "fw.";
 
     @Override
     public void run(String... args) {

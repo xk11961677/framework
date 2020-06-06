@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * @author
  */
-@ConfigurationProperties(prefix = RedisAutoConfiguration.prefix + "redis")
+@ConfigurationProperties(prefix = RedisAutoConfiguration.PREFIX + "redis")
 @Data
 public class RedisProperties {
     /**

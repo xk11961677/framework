@@ -37,12 +37,12 @@ import javax.annotation.Resource;
  * @author
  */
 @Configuration
-@ConditionalOnProperty(prefix = JobAutoConfiguration.prefix + "skycloud.job", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = JobAutoConfiguration.PREFIX + "skycloud.job", value = "enabled", matchIfMissing = true)
 @EnableConfigurationProperties(value = JobProperties.class)
 @ComponentScan(basePackageClasses = JobAutoConfiguration.class)
 @Slf4j
 public class JobAutoConfiguration {
-    public static final String prefix = "fw.";
+    public static final String PREFIX = "fw.";
 
     @Resource
     private JobProperties properties;

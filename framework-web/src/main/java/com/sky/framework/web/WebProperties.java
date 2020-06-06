@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@ConfigurationProperties(prefix = WebAutoConfiguration.prefix + "web")
+@ConfigurationProperties(prefix = WebAutoConfiguration.PREFIX + "web")
 @Data
 public class WebProperties {
 

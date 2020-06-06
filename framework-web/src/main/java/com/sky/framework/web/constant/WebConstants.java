@@ -31,15 +31,15 @@ import com.sky.framework.web.WebAutoConfiguration;
  */
 public interface WebConstants {
 
-    String GLOBAL_EXCEPTION_ENABLE = WebAutoConfiguration.prefix + "web.global-exception-enabled";
+    String GLOBAL_EXCEPTION_ENABLE = WebAutoConfiguration.PREFIX + "web.global-exception-enabled";
 
-    String GLOBAL_EXCEPTION_DINGTALK_ENABLE = WebAutoConfiguration.prefix + "web.global-exception-ding-talk-enabled";
+    String GLOBAL_EXCEPTION_DINGTALK_ENABLE = WebAutoConfiguration.PREFIX + "web.global-exception-ding-talk-enabled";
 
-    String GLOBAL_HTTP_CONVERTER_ENABLE = WebAutoConfiguration.prefix + "web.global-http-converter-enabled";
+    String GLOBAL_HTTP_CONVERTER_ENABLE = WebAutoConfiguration.PREFIX + "web.global-http-converter-enabled";
 
-    String GLOBAL_CONTEXT_INTERCEPTOR_ENABLE = WebAutoConfiguration.prefix + "web.global-context-interceptor-enabled";
+    String GLOBAL_CONTEXT_INTERCEPTOR_ENABLE = WebAutoConfiguration.PREFIX + "web.global-context-interceptor-enabled";
 
-    String GLOBAL_TOKEN_INTERCEPTOR_ENABLE = WebAutoConfiguration.prefix + "web.global-token-interceptor-enabled";
+    String GLOBAL_TOKEN_INTERCEPTOR_ENABLE = WebAutoConfiguration.PREFIX + "web.global-token-interceptor-enabled";
 
     String UTF8 = "UTF-8";
 }

@@ -31,7 +31,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author sky
  */
-@ConfigurationProperties(prefix = OssAutoConfiguration.prefix + "oss")
+@ConfigurationProperties(prefix = OssAutoConfiguration.PREFIX + "oss")
 @Data
 public class OssProperties {
 

@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * @author
  */
-@ConfigurationProperties(prefix = ValidatorAutoConfiguration.prefix + "validator")
+@ConfigurationProperties(prefix = ValidatorAutoConfiguration.PREFIX + "validator")
 @Data
 @SuppressWarnings("all")
 public class ValidatorProperties {

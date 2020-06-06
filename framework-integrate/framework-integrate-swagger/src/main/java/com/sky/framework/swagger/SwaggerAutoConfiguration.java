@@ -61,7 +61,7 @@ import java.util.List;
 @Slf4j
 public class SwaggerAutoConfiguration {
 
-    public static final String prefix = "fw.";
+    public static final String PREFIX = "fw.";
 
     @Resource
     private SwaggerProperties swaggerProperties;

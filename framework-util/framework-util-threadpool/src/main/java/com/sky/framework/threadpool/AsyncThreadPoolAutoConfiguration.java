@@ -50,11 +50,11 @@ import javax.annotation.Resource;
  */
 @Configuration
 @EnableConfigurationProperties(value = AsyncThreadPoolProperties.class)
-@ConditionalOnProperty(prefix = AsyncThreadPoolAutoConfiguration.prefix + "asyncthreadpool", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = AsyncThreadPoolAutoConfiguration.PREFIX + "threadpool", value = "enabled", matchIfMissing = true)
 @Slf4j
 public class AsyncThreadPoolAutoConfiguration {
 
-    public static final String prefix = "fw.";
+    public static final String PREFIX = "fw.";
 
     @Resource
     private AsyncThreadPoolProperties asyncThreadPoolProperties;

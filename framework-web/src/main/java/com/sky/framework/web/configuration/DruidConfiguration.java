@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Configuration;
  * @author
  */
 @Configuration
-@ConditionalOnProperty(prefix = WebAutoConfiguration.prefix + "spring.datasource.monitor", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = WebAutoConfiguration.PREFIX + "spring.datasource.monitor", value = "enabled", matchIfMissing = true)
 public class DruidConfiguration {
 
 

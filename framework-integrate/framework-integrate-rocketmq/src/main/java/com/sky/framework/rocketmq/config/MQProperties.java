@@ -33,7 +33,7 @@ import java.util.List;
  * @author
  */
 @EnableConfigurationProperties(MQProperties.class)
-@ConfigurationProperties(prefix = RocketMqAutoConfiguration.prefix + "rocket.config")
+@ConfigurationProperties(prefix = RocketMqAutoConfiguration.PREFIX + "rocket.config")
 @Data
 public class MQProperties {
 

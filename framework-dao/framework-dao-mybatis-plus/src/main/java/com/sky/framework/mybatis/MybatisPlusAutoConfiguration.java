@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class MybatisPlusAutoConfiguration {
 
-    public static final String prefix = "fw.";
+    public static final String PREFIX = "fw.";
 
     /**
      * 分页插件

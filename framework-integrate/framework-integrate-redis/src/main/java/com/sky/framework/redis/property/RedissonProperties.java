@@ -37,7 +37,7 @@ import java.net.URI;
 /**
  * @author
  */
-@ConfigurationProperties(prefix = RedisAutoConfiguration.prefix + "redisson")
+@ConfigurationProperties(prefix = RedisAutoConfiguration.PREFIX + "redisson")
 @Data
 public class RedissonProperties {
     /**

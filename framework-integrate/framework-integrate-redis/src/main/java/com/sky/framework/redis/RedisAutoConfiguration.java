@@ -42,7 +42,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @Slf4j
 public class RedisAutoConfiguration implements CommandLineRunner {
 
-    public static final String prefix = "fw.";
+    public static final String PREFIX = "fw.";
 
     @Override
     public void run(String... args) {
