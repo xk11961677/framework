@@ -99,6 +99,9 @@ public class RedisConfiguration {
         RedisCacheConfiguration redisCacheConfiguration = getRedisCacheConfiguration(Duration.ofMinutes(redisProperties.getDefaultTTL()));
 
         Map<String, Long> cacheNamesTTL = redisProperties.getCacheNamesTTL();
+        if (cacheNamesTTL == null) {
+            cacheNamesTTL = new HashMap<>(0);
+        }
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>(cacheNamesTTL.size());
         for (Map.Entry<String, Long> entry : cacheNamesTTL.entrySet()) {
             RedisCacheConfiguration redisCacheConfigurationTTL = getRedisCacheConfiguration(Duration.ofSeconds(entry.getValue()));

@@ -25,7 +25,9 @@ package com.sky.framework.redis;
 import com.sky.framework.redis.property.RedisProperties;
 import com.sky.framework.redis.util.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -39,6 +41,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @Configuration
 @ComponentScan(basePackageClasses = RedisAutoConfiguration.class)
 @EnableConfigurationProperties(RedisProperties.class)
+@AutoConfigureBefore({RedissonAutoConfiguration.class})
 @Slf4j
 public class RedisAutoConfiguration implements CommandLineRunner {
 
