@@ -34,6 +34,11 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+
         <!-- redisson client -->
         <dependency>
             <groupId>org.redisson</groupId>
@@ -59,6 +64,7 @@
             <artifactId>spring-boot-autoconfigure-processor</artifactId>
             <optional>true</optional>
         </dependency>
+
 
     </dependencies>
 

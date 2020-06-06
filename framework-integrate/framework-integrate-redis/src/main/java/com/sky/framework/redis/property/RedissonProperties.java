@@ -40,6 +40,10 @@ import java.net.URI;
 @ConfigurationProperties(prefix = RedisAutoConfiguration.prefix + "redisson")
 @Data
 public class RedissonProperties {
+    /**
+     * aop lock order
+     */
+    private Integer aopLockOrder = 0;
 
     private Model model = Model.SINGLE;
 
