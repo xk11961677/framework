@@ -37,6 +37,10 @@
                     <artifactId>mybatis-spring</artifactId>
                     <groupId>org.mybatis</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>mybatis</artifactId>
+                    <groupId>org.mybatis</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 

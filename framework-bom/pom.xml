@@ -18,7 +18,7 @@
         <springfox.version>2.9.2</springfox.version>
         <swagger-bootstrap-ui.version>1.8.7</swagger-bootstrap-ui.version>
         <lombok.version>1.18.12</lombok.version>
-        <mybatis.version>3.4.2</mybatis.version>
+        <mybatis.version>3.5.1</mybatis.version>
         <mybatis-starter-version>2.0.1</mybatis-starter-version>
         <druid.version>1.1.22</druid.version>
         <mysql.version>8.0.20</mysql.version>
@@ -26,7 +26,7 @@
         <tk.mapper-core.version>1.1.5</tk.mapper-core.version>
         <tk.mapper.starter.version>2.1.5</tk.mapper.starter.version>
         <pagehelper.starter.version>1.2.10</pagehelper.starter.version>
-        <fastjson.version>1.2.60</fastjson.version>
+        <fastjson.version>1.2.69</fastjson.version>
         <commons-codec.version>1.10</commons-codec.version>
         <commons-lang.verion>2.6</commons-lang.verion>
         <commons-lang3.version>3.5</commons-lang3.version>
