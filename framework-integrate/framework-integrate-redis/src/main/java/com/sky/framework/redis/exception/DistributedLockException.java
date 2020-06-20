@@ -20,20 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.redis.enums;
+package com.sky.framework.redis.exception;
+
 
 /**
+ * 分布式锁异常
+ *
  * @author
  */
-public enum Model {
-    //哨兵
-    SENTINEL,
-    //主从
-    MASTERSLAVE,
-    //单例
-    SINGLE,
-    //集群
-    CLUSTER,
-    //云托管模式
-    REPLICATED
+public class DistributedLockException extends RuntimeException {
+    private static final long serialVersionUID = -1L;
+
+    public DistributedLockException() {
+    }
+
+    public DistributedLockException(Throwable cause) {
+        super(cause);
+    }
+
+    public DistributedLockException(String message) {
+        super(message);
+    }
+
+    public DistributedLockException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

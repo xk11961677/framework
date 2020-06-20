@@ -27,7 +27,7 @@ package com.sky.framework.redis.enums;
  *
  * @author
  */
-public enum LockModel {
+public enum LockModelEnum {
     //可重入锁
     REENTRANT,
     //公平锁

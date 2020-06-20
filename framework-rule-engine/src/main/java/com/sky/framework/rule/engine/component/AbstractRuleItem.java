@@ -24,7 +24,6 @@ package com.sky.framework.rule.engine.component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-
 import com.sky.framework.rule.engine.constant.OperatorConstants;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
 import com.sky.framework.rule.engine.model.ItemResult;
@@ -32,8 +31,10 @@ import com.sky.framework.rule.engine.model.RuleEngineContext;
 import com.sky.framework.rule.engine.model.RuleItem;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -42,6 +43,8 @@ import java.util.List;
 /**
  * @author
  */
+@SuppressWarnings("AliControlFlowStatementWithoutBraces")
+@Slf4j
 public abstract class AbstractRuleItem {
 
     /**
@@ -68,21 +71,33 @@ public abstract class AbstractRuleItem {
      */
     public abstract ItemResult doCheck(RuleItem item) throws RuleEngineException;
 
+    /**
+     * 支持 对key 的操作符判断
+     *
+     * @param data
+     * @param comparisonOperator
+     * @param baseline
+     * @param key
+     * @return
+     */
     public static boolean comparisonOperate(Object data, String comparisonOperator, List baseline, String key) {
         if (OperatorConstants.OPR_CODE.EXISTS.equals(comparisonOperator)) {
-            return key == null ? false : true;
+            return StringUtils.isBlank(key) ? false : true;
+        }
+        if (OperatorConstants.OPR_CODE.NOT_EXISTS.equals(comparisonOperator)) {
+            return StringUtils.isBlank(key) ? true : false;
         }
         return comparisonOperate(data, comparisonOperator, baseline);
     }
 
     /**
-     * 比较运算操作，将执行的结果和RuleItem中的baseline作比较。
+     * 比较运算操作，将执行的结果和RuleItem中的baseline作比较
      *
      * @param data               比较对象
-     * @param comparisonOperator 比较操作符号，在OperatorConstants中定义。
-     * @param baseline           比较基线，用于比较的对象。
-     * @return 根据comparisonOperator运行的结果。 true or false。
-     * @throws RuleEngineException 参数不合法，或者比较操作符不合法。
+     * @param comparisonOperator 比较操作符号，在OperatorConstants中定义
+     * @param baseline           比较基线，用于比较的对象
+     * @return 根据comparisonOperator运行的结果。 true or false
+     * @throws RuleEngineException 参数不合法，或者比较操作符不合法
      */
     public static boolean comparisonOperate(Object data, String comparisonOperator, List baseline) {
         boolean bRet = false;
@@ -255,7 +270,7 @@ public abstract class AbstractRuleItem {
                 }
                 break;
             default:
-                //todo
+                log.warn("AbstractRuleItem.comparisonOperate operator:{} not found", comparisonOperator);
                 break;
         }
         return bRet;

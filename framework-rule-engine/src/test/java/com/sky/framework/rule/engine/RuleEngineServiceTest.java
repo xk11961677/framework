@@ -24,8 +24,8 @@ package com.sky.framework.rule.engine;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.sky.framework.rule.engine.constant.OperatorConstants;
 import com.sky.framework.rule.engine.enums.ResultEnum;
+import com.sky.framework.rule.engine.factory.RuleItemFactory;
 import com.sky.framework.rule.engine.model.RuleEngineContext;
 import com.sky.framework.rule.engine.model.RuleItem;
 import org.junit.Assert;
@@ -35,10 +35,13 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+/**
+ * DefaultRuleExecutor.getValue 使用的jsonPath
+ *
+ * @author
+ */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("javax.management.*")
 public class RuleEngineServiceTest {
@@ -47,70 +50,25 @@ public class RuleEngineServiceTest {
 
     @Before
     public void before() {
-        itemList = new ArrayList<>();
-
-        RuleItem ruleItem1 = new RuleItem();
-        ruleItem1.setComparisonOperator(OperatorConstants.OPR_CODE.EQUAL);
-        ruleItem1.setComparisonField("a aa");
-        ruleItem1.setBaseline(Arrays.asList("gap7"));
-
-        RuleItem ruleItem2 = new RuleItem();
-        ruleItem2.setComparisonOperator(OperatorConstants.OPR_CODE.GREATER);
-        ruleItem2.setComparisonField("bbb");
-        ruleItem2.setBaseline(Arrays.asList("122"));
-
-        RuleItem ruleItem0 = new RuleItem();
-        ruleItem0.setGroupExpress("(" + ruleItem1.getItemNo() + "&&" + ruleItem2.getItemNo() + ")");
-
-        ruleItem1.setParentItemNo(ruleItem0.getItemNo());
-        ruleItem2.setParentItemNo(ruleItem0.getItemNo());
-
-        //
-        RuleItem ruleItem3 = new RuleItem();
-        ruleItem3.setComparisonOperator(OperatorConstants.OPR_CODE.IN);
-        //ruleItem3.setComparisonOperator(OperatorConstants.OPR_CODE.EQUAL);
-        ruleItem3.setComparisonField("a aa");
-        ruleItem3.setBaseline(Arrays.asList("gap", "gap456"));
-
-        RuleItem ruleItem4 = new RuleItem();
-        ruleItem4.setComparisonOperator(OperatorConstants.OPR_CODE.LESS);
-        ruleItem4.setComparisonField("bbb");
-        ruleItem4.setBaseline(Arrays.asList("120"));
-
-        RuleItem ruleItem5 = new RuleItem();
-        ruleItem5.setGroupExpress("(" + ruleItem3.getItemNo() + "&&" + ruleItem4.getItemNo() + ")");
-
-        ruleItem3.setParentItemNo(ruleItem5.getItemNo());
-        ruleItem4.setParentItemNo(ruleItem5.getItemNo());
-
-        RuleItem ruleItem6 = new RuleItem();
-        ruleItem6.setGroupExpress("(" + ruleItem0.getItemNo() + "||" + ruleItem5.getItemNo() + ")");
-
-        // 1 && 2 需要注释掉
-        ruleItem0.setParentItemNo(ruleItem6.getItemNo());
-        ruleItem5.setParentItemNo(ruleItem6.getItemNo());
-
-        itemList.add(ruleItem2);
-        itemList.add(ruleItem1);
-        // 1 && 2 需要注释掉
-        itemList.add(ruleItem3);
-        // 1 && 2 需要注释掉
-        itemList.add(ruleItem4);
-
-        itemList.add(ruleItem0);
-        // 1 && 2 需要注释掉
-        itemList.add(ruleItem5);
-        // 1 && 2 需要注释掉
-        itemList.add(ruleItem6);
+        itemList = RuleItemFactory.get();
     }
 
 
     @Test
-    public void test() {
-        String source = "{'a aa':['gap','gap123'],'bbb':'119','ccc':'测试'}";
+    public void test_01() {
+        String source = "{'aaa':['gap123'],'bbb':'119','ccc':'测试'}";
         JSONObject jsonObject = JSON.parseObject(source);
         RuleEngineService ruleEngineService = new RuleEngineService();
         RuleEngineContext result = ruleEngineService.start(jsonObject, itemList);
         Assert.assertEquals(ResultEnum.REJECTED, result.getResult());
+    }
+
+    @Test
+    public void test_02() {
+        String source = "{'aaa':['gap7','gap123','gap456'],'bbb':'123','ccc':'测试'}";
+        JSONObject jsonObject = JSON.parseObject(source);
+        RuleEngineService ruleEngineService = new RuleEngineService();
+        RuleEngineContext result = ruleEngineService.start(jsonObject, itemList);
+        Assert.assertEquals(ResultEnum.PASSED, result.getResult());
     }
 }

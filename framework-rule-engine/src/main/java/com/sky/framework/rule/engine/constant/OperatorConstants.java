@@ -24,15 +24,16 @@ package com.sky.framework.rule.engine.constant;
 
 
 /**
+ * 操作符
+ *
  * @author
  */
 public class OperatorConstants {
 
     private static OperatorConstants instance = new OperatorConstants();
 
-    public static final String UNKNOWN = "$$$$$$EXISTS$$$$$$";
+    public static final String UNKNOWN = "$$$$$$NOT_EXISTS$$$$$$";
 
-    @SuppressWarnings("AlibabaClassNamingShouldBeCamel")
     public final static class OPR_CODE {
 
         public static final String EQUAL = "01";
@@ -46,25 +47,27 @@ public class OperatorConstants {
         public static final String IN = "09";
         public static final String NIN = "10";
         public static final String STRING_EQUAL = "11";
-        public static final String NOTSTRING_EQUAL = "12";
+        public static final String NOT_STRING_EQUAL = "12";
         public static final String EQUAL_IGNORE_CASE = "13";
         public static final String NOT_EQUAL_IGNORE_CASE = "14";
         public static final String MATCH = "15";
         public static final String UNMATCH = "16";
         public static final String EXISTS = "17";
+        public static final String SCHEMA = "18";
+        public static final String NOT_EXISTS = "19";
 
 
-        private static final String RESERVED_CODES[] = new String[]{EQUAL, GREATER, LESS, NOT_EQUAL, GREATER_EQUAL, LESS_EQUAL, INCLUDE, NOT_INCLUDE,
-                IN, NIN, STRING_EQUAL, NOTSTRING_EQUAL, EQUAL_IGNORE_CASE, NOT_EQUAL_IGNORE_CASE, MATCH, UNMATCH, EXISTS, "18", "19", "20"};
+        public static final String[] RESERVED_CODES = new String[]{EQUAL, GREATER, LESS, NOT_EQUAL, GREATER_EQUAL, LESS_EQUAL, INCLUDE, NOT_INCLUDE,
+                IN, NIN, STRING_EQUAL, NOT_STRING_EQUAL, EQUAL_IGNORE_CASE, NOT_EQUAL_IGNORE_CASE, MATCH, UNMATCH, EXISTS, SCHEMA, NOT_EXISTS, "20"};
 
-        private static final String RESERVED_VALUES[] = new String[]{"EQUAL", "GREATER", "LESS", "NOT_EQUAL", "GREATER_EQUAL", "LESS_EQUAL", "INCLUDE",
-                "NOT_INCLUDE", "IN", "NIN", "STRING_EQUAL", "NOTSTRING_EQUAL", "EQUAL_IGNORE_CASE",
-                "NOT_EQUAL_IGNORE_CASE", "MATCH", "UNMATCH", "EXISTS", "18", "19", "20"};
+        public static final String[] RESERVED_VALUES = new String[]{"EQUAL", "GREATER", "LESS", "NOT_EQUAL", "GREATER_EQUAL", "LESS_EQUAL", "INCLUDE",
+                "NOT_INCLUDE", "IN", "NIN", "STRING_EQUAL", "NOT_STRING_EQUAL", "EQUAL_IGNORE_CASE",
+                "NOT_EQUAL_IGNORE_CASE", "MATCH", "UNMATCH", "EXISTS", "SCHEMA", "NOT_EXISTS", "20"};
 
 
-        private static final String RESERVED_ALIAS_VALUES[] = new String[]{"EQ", "GT", "LT", "NEQ", "GTE", "LTE", "INCLUDE",
-                "NOT_INCLUDE", "IN", "NIN", "STRING_EQUAL", "NOTSTRING_EQUAL", "EQ_IGNORE_CASE",
-                "NEQ_IGNORE_CASE", "MATCH", "UNMATCH", "EXISTS", "18", "19", "20"};
+        private static final String[] RESERVED_ALIAS_VALUES = new String[]{"EQ", "GT", "LT", "NEQ", "GTE", "LTE", "INCLUDE",
+                "NOT_INCLUDE", "IN", "NIN", "STRING_EQUAL", "NOT_STRING_EQUAL", "EQ_IGNORE_CASE",
+                "NEQ_IGNORE_CASE", "MATCH", "UNMATCH", "EXISTS", "SCHEMA", "NOT_EXISTS", "20"};
 
 
         public static String getCode(String value) {
@@ -96,6 +99,20 @@ public class OperatorConstants {
                 }
             }
             return temp;
+        }
+
+        public static String getAliasValue(String code) {
+            Integer temp = null;
+            for (int iLoop = 0; iLoop < RESERVED_CODES.length; iLoop++) {
+                if (RESERVED_CODES[iLoop].equalsIgnoreCase(code)) {
+                    temp = iLoop;
+                    break;
+                }
+            }
+            if (temp != null) {
+                return RESERVED_ALIAS_VALUES[temp];
+            }
+            return "";
         }
     }
 

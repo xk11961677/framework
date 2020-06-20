@@ -20,36 +20,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.redis.property;
+package com.sky.framework.rule.engine.model;
 
-
-import com.sky.framework.redis.RedisAutoConfiguration;
-import com.sky.framework.redis.enums.RedisSerializerEnum;
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author
  */
-@ConfigurationProperties(prefix = RedisAutoConfiguration.PREFIX + "redis")
 @Data
-public class RedisProperties {
+public class RejectRuleItem {
     /**
-     * cacheName ttl , 单位 秒 , key有特殊符号时demo "[xxx]": 600
+     * 序号
      */
-    private Map<String, Long> cacheNamesTTL;
+    private String itemNo;
     /**
-     * 默认TTL时间 , 单位 分钟
+     * 组表达式
      */
-    private Long defaultTTL = 30L;
+    private String groupExpress;
     /**
-     * 是否开启key设置TTL,默认不开启 , 如果开启此功能TTL单位 秒
+     * 扩展字段
      */
-    private Boolean keyTTL = false;
+    private String ext;
     /**
-     * 序列化类型
+     * 操作符对应关系
      */
-    private RedisSerializerEnum serializer = RedisSerializerEnum.JACKSON;
+    private Map<String, String> comparisonOperator = new HashMap<>();
+
 }

@@ -20,36 +20,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.redis.property;
+package com.sky.framework.redis.annotation;
 
 
-import com.sky.framework.redis.RedisAutoConfiguration;
-import com.sky.framework.redis.enums.RedisSerializerEnum;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.sky.framework.redis.enums.DistributedLockEnum;
 
-import java.util.Map;
+import java.lang.annotation.*;
 
 /**
  * @author
  */
-@ConfigurationProperties(prefix = RedisAutoConfiguration.PREFIX + "redis")
-@Data
-public class RedisProperties {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface DistributedLock {
+
     /**
-     * cacheName ttl , 单位 秒 , key有特殊符号时demo "[xxx]": 600
+     * 分布式锁类型,默认重入锁
+     *
+     * @return
      */
-    private Map<String, Long> cacheNamesTTL;
+    DistributedLockEnum model() default DistributedLockEnum.REENTRANT;
+
     /**
-     * 默认TTL时间 , 单位 分钟
+     * 分布式锁前缀默认空串
+     *
+     * @return
      */
-    private Long defaultTTL = 30L;
+    String prefix() default "";
+
     /**
-     * 是否开启key设置TTL,默认不开启 , 如果开启此功能TTL单位 秒
+     * @return
      */
-    private Boolean keyTTL = false;
+    String[] keys();
+
     /**
-     * 序列化类型
+     * 尝试获取锁,超时时间, 单位 秒 ，默认5
+     *
+     * @return
      */
-    private RedisSerializerEnum serializer = RedisSerializerEnum.JACKSON;
+    long timeout() default 5;
+
+    /**
+     * 获取锁后,租约时间, 单位 秒 ，默认5
+     *
+     * @return
+     */
+    long leaseTime() default 5;
 }

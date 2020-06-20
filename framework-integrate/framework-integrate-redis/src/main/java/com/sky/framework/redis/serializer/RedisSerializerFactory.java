@@ -20,36 +20,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.redis.property;
+package com.sky.framework.redis.serializer;
 
-
-import com.sky.framework.redis.RedisAutoConfiguration;
 import com.sky.framework.redis.enums.RedisSerializerEnum;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.Map;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
 /**
  * @author
  */
-@ConfigurationProperties(prefix = RedisAutoConfiguration.PREFIX + "redis")
-@Data
-public class RedisProperties {
+public interface RedisSerializerFactory {
+
     /**
-     * cacheName ttl , 单位 秒 , key有特殊符号时demo "[xxx]": 600
+     * 根据不同类型创建序列化对象
+     *
+     * @param redisSerializerEnum
+     * @return
      */
-    private Map<String, Long> cacheNamesTTL;
-    /**
-     * 默认TTL时间 , 单位 分钟
-     */
-    private Long defaultTTL = 30L;
-    /**
-     * 是否开启key设置TTL,默认不开启 , 如果开启此功能TTL单位 秒
-     */
-    private Boolean keyTTL = false;
-    /**
-     * 序列化类型
-     */
-    private RedisSerializerEnum serializer = RedisSerializerEnum.JACKSON;
+    RedisSerializer create(RedisSerializerEnum redisSerializerEnum);
 }

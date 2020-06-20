@@ -31,21 +31,30 @@ import com.sky.framework.rule.engine.enums.ResultEnum;
  * @author
  */
 public class ItemResult {
-
     /**
      * 是否继续
      */
     public static final int CONTINUE = 1;
-
     /**
      * 默认空结果
      */
     private ResultEnum result = ResultEnum.EMPTY;
-
     /**
      * 默认可以继续
      */
     private int continueFlag = CONTINUE;
+    /**
+     * 验证未通过的当前规则
+     */
+    private RuleItem item;
+
+    public void setItem(RuleItem item) {
+        this.item = item;
+    }
+
+    public RuleItem getItem() {
+        return item;
+    }
 
     public ResultEnum getResult() {
         return result;
@@ -77,7 +86,7 @@ public class ItemResult {
     }
 
     /**
-     * 拒绝
+     * 拒绝,设置拒绝的规则
      *
      * @return
      */
@@ -85,6 +94,7 @@ public class ItemResult {
         ItemResult result = new ItemResult();
         result.setResult(ResultEnum.REJECTED);
         result.setContinue(item.getContinueFlag());
+        result.setItem(item);
         return result;
     }
 }

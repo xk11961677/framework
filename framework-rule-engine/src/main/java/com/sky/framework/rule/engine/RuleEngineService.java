@@ -27,23 +27,30 @@ import com.sky.framework.rule.engine.component.AbstractRuleItem;
 import com.sky.framework.rule.engine.component.RuleExecutorTable;
 import com.sky.framework.rule.engine.component.executor.ComplexRuleExecutor;
 import com.sky.framework.rule.engine.component.executor.DefaultRuleExecutor;
+import com.sky.framework.rule.engine.constant.OperatorConstants;
 import com.sky.framework.rule.engine.enums.ResultEnum;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
 import com.sky.framework.rule.engine.model.ItemResult;
+import com.sky.framework.rule.engine.model.RejectRuleItem;
 import com.sky.framework.rule.engine.model.RuleEngineContext;
 import com.sky.framework.rule.engine.model.RuleItem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author
  */
 @Slf4j
 public class RuleEngineService {
-
+    /**
+     * 单一规则执行器类
+     */
     private Class executorClass;
 
     public RuleEngineService() {
@@ -64,33 +71,62 @@ public class RuleEngineService {
         ruleEngineContext.setRuleItems(items);
         ruleEngineContext.setResult(ResultEnum.PASSED);
         ruleEngineContext.setExecutorClass(executorClass);
-
         List<RuleItem> itemList = this.filterItem(items, null);
 
-        for (RuleItem item : itemList) {
-            if (StringUtils.isNotEmpty(item.getGroupExpress())) {
-                AbstractRuleItem executor = new ComplexRuleExecutor();
-                executor.setObject(object);
-                executor.setRuleEngineContext(ruleEngineContext);
-                ItemResult result = executor.doCheck(item);
-                ruleEngineContext.setResult(result.getResult());
-                if (ResultEnum.PASSED.equals(result.getResult()) && !result.canBeContinue()) {
-                    break;
-                }
-            } else {
-                AbstractRuleItem executor = RuleExecutorTable.get(executorClass);
-                executor.setObject(object);
-                executor.setRuleEngineContext(ruleEngineContext);
-                ItemResult result = executor.doCheck(item);
-                ruleEngineContext.setResult(result.getResult());
-                if (ResultEnum.PASSED.equals(result.getResult()) && !result.canBeContinue()) {
-                    break;
-                }
+        Iterator<RuleItem> iterator = itemList.iterator();
+        while (iterator.hasNext()) {
+            RuleItem item = iterator.next();
+            AbstractRuleItem executor = StringUtils.isNotBlank(item.getGroupExpress()) ? new ComplexRuleExecutor() : RuleExecutorTable.get(executorClass);
+            executor.setObject(object);
+            executor.setRuleEngineContext(ruleEngineContext);
+            ItemResult result = executor.doCheck(item);
+            ruleEngineContext.setResult(result.getResult());
+            if (ResultEnum.PASSED.equals(result.getResult()) && !result.canBeContinue()) {
+                break;
             }
+            addRejectRuleItem(result, ruleEngineContext);
         }
         return ruleEngineContext;
     }
 
+    /**
+     * 向上下文中添加被拒绝的ruleItem
+     *
+     * @param result
+     * @param ruleEngineContext
+     */
+    private void addRejectRuleItem(ItemResult result, RuleEngineContext ruleEngineContext) {
+        try {
+            if (ResultEnum.REJECTED.equals(result.getResult())) {
+                RuleItem resultItem = result.getItem();
+                RejectRuleItem rejectRuleItem = new RejectRuleItem();
+                rejectRuleItem.setItemNo(resultItem.getItemNo());
+                rejectRuleItem.setGroupExpress(rejectRuleItem.getGroupExpress());
+                rejectRuleItem.setExt(resultItem.getExt());
+                parseAndConvertComparisonOperator(resultItem.getItemNo(), rejectRuleItem);
+                ruleEngineContext.getRejectRuleItems().add(rejectRuleItem);
+            }
+        } catch (Exception e) {
+            log.error("RuleEngineService addRejectRuleItem exception:{}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 解析并转换操作符
+     *
+     * @param itemNo
+     * @param rejectRuleItem
+     */
+    private void parseAndConvertComparisonOperator(String itemNo, RejectRuleItem rejectRuleItem) {
+        String pattern = "##(\\d+)##";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(itemNo);
+        while (m.find()) {
+            String key = m.group().replaceAll("##", "");
+            String value = OperatorConstants.OPR_CODE.getAliasValue(key);
+            rejectRuleItem.getComparisonOperator().put(key, value);
+        }
+    }
 
     /**
      * 查找同层级的规则列表
@@ -99,12 +135,9 @@ public class RuleEngineService {
      * @param parentItemNo 父级规则
      * @return 同层级的规则列表
      */
-    public List<RuleItem> filterItem(List<RuleItem> itemList, String parentItemNo) {
-
+    private List<RuleItem> filterItem(List<RuleItem> itemList, String parentItemNo) {
         List<RuleItem> newItemList = new ArrayList<>();
-
         for (int iLoop = 0; iLoop < itemList.size(); iLoop++) {
-
             RuleItem item = itemList.get(iLoop);
             if (StringUtils.isEmpty(parentItemNo)) {
                 if (StringUtils.isEmpty(item.getParentItemNo())) {
@@ -116,8 +149,6 @@ public class RuleEngineService {
                 }
             }
         }
-
         return newItemList;
-
     }
 }

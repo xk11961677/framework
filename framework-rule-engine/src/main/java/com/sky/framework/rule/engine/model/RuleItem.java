@@ -24,10 +24,10 @@ package com.sky.framework.rule.engine.model;
 
 
 import lombok.Data;
+import org.apache.commons.lang.ObjectUtils;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author
@@ -35,7 +35,7 @@ import java.util.Objects;
 @Data
 public class RuleItem implements Serializable, Comparable {
     /**
-     *
+     * 序号
      */
     private String itemNo;
     /**
@@ -70,6 +70,10 @@ public class RuleItem implements Serializable, Comparable {
      * 组表达式
      */
     private String groupExpress;
+    /**
+     * 扩展字段
+     */
+    private String ext;
 
     @Override
     public int compareTo(Object obj) {
@@ -80,10 +84,10 @@ public class RuleItem implements Serializable, Comparable {
         if (this.groupExpress != null) {
             return replace(this.groupExpress);
         }
-        return this.comparisonField + "##" + this.comparisonOperator + "##" + this.baseline.toString().replace(" ", "") + "##" + this.priority;
+        return this.comparisonField + "##" + this.comparisonOperator + "##" + ObjectUtils.toString(this.baseline).replace(" ", "") + "##" + this.priority;
     }
 
     private String replace(String value) {
-        return Objects.toString(value).replace("(", "").replace(")", "");
+        return ObjectUtils.toString(value).replace("(", "").replace(")", "");
     }
 }

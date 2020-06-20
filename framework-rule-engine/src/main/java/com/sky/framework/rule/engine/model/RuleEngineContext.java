@@ -27,6 +27,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,24 +39,29 @@ import java.util.Map;
  */
 @Slf4j
 public class RuleEngineContext {
-
     /**
      * 执行器类
      */
     @Getter
     @Setter
     private Class executorClass;
-
+    /**
+     * 默认执行结果
+     */
     @Getter
     @Setter
     private ResultEnum result = ResultEnum.EMPTY;
-
     /**
-     * 规则容器
+     * 规则容器(准备验证的)
      */
     @Getter
     @Setter
     private List<RuleItem> ruleItems;
+    /**
+     * 拒绝的规则
+     */
+    @Getter
+    private List<RejectRuleItem> rejectRuleItems = new ArrayList<>();
 
     /**
      * ruleId :  ruleItem

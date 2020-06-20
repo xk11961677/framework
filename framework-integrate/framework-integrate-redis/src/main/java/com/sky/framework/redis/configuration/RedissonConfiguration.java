@@ -25,7 +25,7 @@ package com.sky.framework.redis.configuration;
 import com.sky.framework.redis.exception.RedisException;
 import com.sky.framework.redis.property.MultipleServerConfig;
 import com.sky.framework.redis.property.RedissonProperties;
-import com.sky.framework.redis.util.RedissonLockUtils;
+import com.sky.framework.redis.util.DistributedLockUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -285,9 +285,9 @@ public class RedissonConfiguration {
     }
 
     @Bean
-    public RedissonLockUtils redissonLockUtil(RedissonClient redissonClient) {
-        RedissonLockUtils redissonLockUtils = new RedissonLockUtils();
-        RedissonLockUtils.setRedissonClient(redissonClient);
+    public DistributedLockUtils redissonLockUtil(RedissonClient redissonClient) {
+        DistributedLockUtils redissonLockUtils = new DistributedLockUtils();
+        DistributedLockUtils.setRedissonClient(redissonClient);
         return redissonLockUtils;
     }
 

@@ -25,8 +25,10 @@ package com.sky.framework.redis.util;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
+import org.redisson.api.RReadWriteLock;
 import org.redisson.api.RedissonClient;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  * @author
  */
 @Slf4j
-public class RedissonLockUtils {
+public class DistributedLockUtils {
 
     @Setter
     private static RedissonClient redissonClient;
@@ -52,7 +54,7 @@ public class RedissonLockUtils {
         try {
             return lock.tryLock(timeout, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            log.error("lock interrupted:{}", e.getMessage(), e);
+            log.error("distributed lock interrupted:{}", e.getMessage(), e);
             return false;
         }
     }
@@ -68,7 +70,64 @@ public class RedissonLockUtils {
         try {
             return lock.tryLock(timeout, leaseTime, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            log.error("lock interrupted:{}", e.getMessage(), e);
+            log.error("distributed lock interrupted:{}", e.getMessage(), e);
+            return false;
+        }
+    }
+
+    /**
+     * 获取读锁
+     *
+     * @param key
+     * @param timeout
+     * @param leaseTime 锁租约时间,即锁过期时间
+     * @return
+     */
+    public static boolean readLock(String key, long timeout, long leaseTime) {
+        RReadWriteLock readWriteLock = redissonClient.getReadWriteLock(key);
+        try {
+            RLock lock = readWriteLock.readLock();
+            return lock.tryLock(timeout, leaseTime, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            log.error("distributed lock interrupted:{}", e.getMessage(), e);
+            return false;
+        }
+    }
+
+    /**
+     * 获取写锁
+     *
+     * @param key
+     * @param timeout
+     * @param leaseTime 锁租约时间,即锁过期时间
+     * @return
+     */
+    public static boolean writeLock(String key, long timeout, long leaseTime) {
+        RReadWriteLock readWriteLock = redissonClient.getReadWriteLock(key);
+        try {
+            RLock lock = readWriteLock.writeLock();
+            return lock.tryLock(timeout, leaseTime, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            log.error("distributed lock interrupted:{}", e.getMessage(), e);
+            return false;
+        }
+    }
+
+
+    /**
+     * 获取公平锁
+     *
+     * @param key
+     * @param timeout
+     * @param leaseTime 锁租约时间,即锁过期时间
+     * @return
+     */
+    public static boolean fairLock(String key, long timeout, long leaseTime) {
+        RLock lock = redissonClient.getFairLock(key);
+        try {
+            return lock.tryLock(timeout, leaseTime, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            log.error("distributed lock interrupted:{}", e.getMessage(), e);
             return false;
         }
     }
@@ -81,6 +140,26 @@ public class RedissonLockUtils {
         RLock lock = redissonClient.getLock(key);
         if (lock != null) {
             lock.unlock();
+        }
+        return true;
+    }
+
+    /**
+     * 强制解锁
+     *
+     * @param key
+     * @return
+     */
+    public static boolean forceUnlock(String key) {
+        RLock lock = redissonClient.getLock(key);
+        if (lock != null) {
+            try {
+                return lock.forceUnlockAsync().get();
+            } catch (InterruptedException e) {
+                return false;
+            } catch (ExecutionException e) {
+                return false;
+            }
         }
         return true;
     }

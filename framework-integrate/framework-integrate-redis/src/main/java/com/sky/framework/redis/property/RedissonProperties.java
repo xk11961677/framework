@@ -24,8 +24,8 @@ package com.sky.framework.redis.property;
 
 
 import com.sky.framework.redis.RedisAutoConfiguration;
-import com.sky.framework.redis.enums.LockModel;
-import com.sky.framework.redis.enums.Model;
+import com.sky.framework.redis.enums.LockModelEnum;
+import com.sky.framework.redis.enums.ModelEnum;
 import lombok.Data;
 import org.redisson.config.SslProvider;
 import org.redisson.config.TransportMode;
@@ -41,12 +41,15 @@ import java.net.URI;
 @Data
 public class RedissonProperties {
     /**
-     * aop lock order
+     * lock aspect order
      */
-    private Integer aopLockOrder = 0;
+    private Integer lockAspectOrder = 0;
 
-    private Model model = Model.SINGLE;
+    private ModelEnum model = ModelEnum.SINGLE;
 
+    /**
+     * @see org.redisson.client.codec.BaseCodec 的子类
+     */
     private String codec = "org.redisson.codec.JsonJacksonCodec";
 
     private Integer threads;
@@ -86,7 +89,7 @@ public class RedissonProperties {
     /**
      * 锁的模式 如果不设置 单个key默认可重入锁 多个key默认联锁
      */
-    private LockModel lockModel;
+    private LockModelEnum lockModel;
 
     /**
      * 等待加锁超时时间 -1一直等待

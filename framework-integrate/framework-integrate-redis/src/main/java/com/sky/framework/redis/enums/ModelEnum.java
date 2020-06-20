@@ -20,37 +20,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rule.engine.exception;
+package com.sky.framework.redis.enums;
+
 /**
  * @author
  */
-public class EmptyResultSetException extends RuleEngineException {
-
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -2247544711821509687L;
-
-	public EmptyResultSetException() {
-		super();
-	}
-
-	public EmptyResultSetException(String message) {
-		super(message);
-	}
-
-	public EmptyResultSetException(Throwable cause) {
-		super(cause);
-	}
-
-	public EmptyResultSetException(String message,Throwable cause) {
-		super(message, cause);
-	}
-
-
-	public EmptyResultSetException(String message, Throwable cause,
-            boolean enableSuppression,
-            boolean writableStackTrace) {
-    	super(message, cause, enableSuppression, writableStackTrace);
-    }
+public enum ModelEnum {
+    //哨兵
+    SENTINEL,
+    //主从
+    MASTERSLAVE,
+    //单例
+    SINGLE,
+    //集群
+    CLUSTER,
+    //云托管模式
+    REPLICATED
 }

@@ -29,25 +29,10 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface RedissonLock {
-
+@Target(ElementType.PARAMETER)
+public @interface DistributedLockKey {
     /**
      * @return
      */
-    String key();
-
-    /**
-     * 尝试获取锁,超时时间
-     *
-     * @return
-     */
-    long timeout() default 5;
-
-    /**
-     * 获取锁后,租约时间
-     *
-     * @return
-     */
-    long leaseTime() default 5;
+    String value() default "";
 }

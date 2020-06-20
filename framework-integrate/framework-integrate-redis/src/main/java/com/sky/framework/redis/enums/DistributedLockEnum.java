@@ -20,29 +20,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.redis.exception;
+package com.sky.framework.redis.enums;
 
+
+import com.sky.framework.redis.util.DistributedLockUtils;
 
 /**
- * redissonLock异常
- *
  * @author
  */
-public class RedissonLockException extends RuntimeException {
-    private static final long serialVersionUID = -1L;
+public enum DistributedLockEnum {
+    REENTRANT() {
+        @Override
+        public boolean getLock(String key, long timeout, long leaseTime) {
+            return DistributedLockUtils.lock(key, timeout, leaseTime);
+        }
+    },
+    FAIR() {
+        @Override
+        public boolean getLock(String key, long timeout, long leaseTime) {
+            return DistributedLockUtils.fairLock(key, timeout, leaseTime);
+        }
+    },
+    READ() {
+        @Override
+        public boolean getLock(String key, long timeout, long leaseTime) {
+            return DistributedLockUtils.readLock(key, timeout, leaseTime);
+        }
+    },
+    WRITE() {
+        @Override
+        public boolean getLock(String key, long timeout, long leaseTime) {
+            return DistributedLockUtils.writeLock(key, timeout, leaseTime);
+        }
+    };
 
-    public RedissonLockException() {
-    }
-
-    public RedissonLockException(Throwable cause) {
-        super(cause);
-    }
-
-    public RedissonLockException(String message) {
-        super(message);
-    }
-
-    public RedissonLockException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * 默认获取锁抽象方法
+     *
+     * @param key
+     * @param timeout
+     * @param leaseTime
+     * @return
+     */
+    public abstract boolean getLock(String key, long timeout, long leaseTime);
 }

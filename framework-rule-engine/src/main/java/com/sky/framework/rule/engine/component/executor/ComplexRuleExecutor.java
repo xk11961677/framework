@@ -22,7 +22,6 @@
  */
 package com.sky.framework.rule.engine.component.executor;
 
-
 import com.google.common.annotations.VisibleForTesting;
 import com.sky.framework.rule.engine.component.AbstractRuleItem;
 import com.sky.framework.rule.engine.component.ExpressionUnit;
@@ -45,8 +44,18 @@ import java.util.List;
 @Slf4j
 public class ComplexRuleExecutor extends AbstractRuleItem {
 
+    @Override
+    public ItemResult doCheck(RuleItem item) throws RuleEngineException {
+        if (StringUtils.isBlank(item.getGroupExpress())) {
+            throw new RuleEngineException("ComplexRuleExecutor must set groupExpress");
+        }
+        List<OperationUnit> stack = parseExpress(item.getGroupExpress());
+        ExpressionUnit root = breakExpress(stack, null);
+        return root.calculate() ? ItemResult.pass(item) : ItemResult.fail(item);
+    }
+
     /**
-     * 解析出各个独立的单元。
+     * 解析出各个独立的单元
      *
      * @param express
      * @return
@@ -155,7 +164,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
                 unit.level = 1;
                 theStack.add(unit);
             } else if ("!".equals(end) || "(".equals(end) || "|".equals(end) || "&".equals(end)) {
-                System.err.println("结尾的字符不能是关键字。");
+                log.warn("结尾的字符不能是关键字");
             } else {
                 //变量。
                 unit = new OperationUnit();
@@ -170,14 +179,14 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
     }
 
     /**
-     * 去除前后端无用的括号。
+     * 去除前后端无用的括号
      *
      * @param list
      * @param minLevel -- 如果是-1，那么需要重新累计level值。
      * @return
      */
     private List<OperationUnit> trimExpress(List<OperationUnit> list, int minLevel) {
-        //无括号表达式。
+        //无括号表达式
         if (list.size() <= 1) {
             return list;
         }
@@ -185,15 +194,15 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
         if (list.get(0).type != TypeEnum.LEFT_BRACKET) {
             return list;
         }
-        //开头是左括号，但是结尾不是右括号。
+        //开头是左括号,但是结尾不是右括号
         if (list.get(0).type == TypeEnum.LEFT_BRACKET && list.get(list.size() - 1).type != TypeEnum.RIGHT_BRACKET) {
             return list;
         }
-        //最少括号数目是0，就是中间有非括号的情况 () + ()。
+        //最少括号数目是0,就是中间有非括号的情况 () + ()
         if (minLevel == 0) {
             return list;
         }
-        //未知的最小括号数目，重新取得。
+        //未知的最小括号数目,重新取得
         if (minLevel < 0) {
             int tempLevel = Integer.MAX_VALUE;
             for (OperationUnit unit : list) {
@@ -203,24 +212,22 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
             }
             minLevel = tempLevel;
         }
-        //最少括号数目是0，就是中间有非括号的情况 () + ()。
+        //最少括号数目是0,就是中间有非括号的情况 () + ()
         if (minLevel <= 0) {
             return list;
         }
-        //依次拷贝到去除多余括号的数组中去。
+        //依次拷贝到去除多余括号的数组中去
         List<OperationUnit> newList = new ArrayList<>();
         for (int iLoop = 0; iLoop < list.size(); iLoop++) {
             OperationUnit unit = list.get(iLoop);
             if (iLoop < minLevel) {
-                //非标准括号，可能是表达式不合格。
+                //非标准括号，可能是表达式不合格
                 if (unit.type != TypeEnum.LEFT_BRACKET) {
-                    System.err.println("括号个数不匹配。");
-                    //throw new Exception("括号个数不匹配。");
+                    throw new RuleEngineException("括号个数不匹配");
                 }
             } else if (iLoop >= list.size() - minLevel) {
                 if (unit.type != TypeEnum.RIGHT_BRACKET) {
-                    //throw new Exception("括号个数不匹配。");
-                    System.err.println("括号个数不匹配。");
+                    throw new RuleEngineException("括号个数不匹配");
                 }
             } else {
                 unit.level = unit.level - minLevel;
@@ -240,7 +247,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
         int firstOr = -1, firstAnd = -1, firstNot = -1;
         for (int iLoop = 0; iLoop < list.size(); iLoop++) {
             OperationUnit unit = list.get(iLoop);
-            //取得括号外的内容。括号中的内容不作为划分的信息。
+            //取得括号外的内容,括号中的内容不作为划分的信息
             if (unit.level == 0) {
                 //双目运算符
                 if (unit.type == TypeEnum.BINOCULAR) {
@@ -286,7 +293,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
             root.rightSubList = this.trimExpress(list.subList(firstNot + 1, list.size()), -1);
             root.setRight(breakExpress(root.rightSubList, root.getRight()));
             root.calculate();
-            //不带运算符的情况。
+            //不带运算符的情况
         } else if (current == null && list.size() > 0) {
             if (list.get(0).type == TypeEnum.VARIABLE) {
                 root.setOperator(list.get(0).element);
@@ -295,25 +302,12 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
                 try {
                     root.setValue(calculate(item, this.object));
                 } catch (RuleEngineException e) {
-                    log.error(":{}", e.getMessage());
+                    log.error("ComplexRuleExecutor.breakExpress :{}", e.getMessage(), e);
                     throw e;
                 }
             }
         }
         return root;
-    }
-
-
-    @Override
-    public ItemResult doCheck(RuleItem item) throws RuleEngineException {
-        ItemResult result = ItemResult.pass(item);
-        if (StringUtils.isNotEmpty(item.getGroupExpress())) {
-            List<OperationUnit> stack = parseExpress(item.getGroupExpress());
-            ExpressionUnit root = breakExpress(stack, null);
-            boolean bRet = root.calculate();
-            result = bRet ? ItemResult.pass(item) : ItemResult.fail(item);
-        }
-        return result;
     }
 
     /**
@@ -330,10 +324,9 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
         auditInstance.setObject(object);
         auditInstance.setRuleEngineContext(ruleEngineContext);
         ItemResult result = auditInstance.doCheck(item);
-        if (null != result) {
+        if (result != null) {
             return (result.getResult() == ResultEnum.PASSED);
-        } else {
-            throw new RuleEngineException("do check returns NPE");
         }
+        throw new RuleEngineException("ComplexRuleExecutor.calculate ItemResult is null");
     }
 }
