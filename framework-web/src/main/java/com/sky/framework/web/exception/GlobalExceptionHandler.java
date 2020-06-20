@@ -158,25 +158,6 @@ public class GlobalExceptionHandler {
         return MessageRes.fail(SystemErrorCodeEnum.GL990001.getCode(), SystemErrorCodeEnum.GL990001.getMsg());
     }
 
-
-    /**
-     * 全局[Exception]异常
-     *
-     * @param request
-     * @param e
-     * @return
-     */
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public MessageRes exception(HttpServletRequest request, Exception e) {
-        LogUtils.error(log, "全局[Exception]异常:{}", e.getMessage(), e);
-        this.asyncSendDingTalk(request, e);
-        String message = e.getMessage();
-        message = StringUtils.isEmpty(message) ? SystemErrorCodeEnum.GL999999.getMsg() : message;
-        return MessageRes.fail(SystemErrorCodeEnum.GL999999.getCode(), message);
-    }
-
     /**
      * 全局[Throwable]异常
      *
