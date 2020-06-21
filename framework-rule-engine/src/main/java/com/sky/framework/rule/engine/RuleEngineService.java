@@ -23,7 +23,7 @@
 package com.sky.framework.rule.engine;
 
 
-import com.sky.framework.rule.engine.component.AbstractRuleItem;
+import com.sky.framework.rule.engine.component.AbstractRuleExecutor;
 import com.sky.framework.rule.engine.component.RuleExecutorTable;
 import com.sky.framework.rule.engine.component.executor.ComplexRuleExecutor;
 import com.sky.framework.rule.engine.component.executor.DefaultRuleExecutor;
@@ -76,7 +76,7 @@ public class RuleEngineService {
         Iterator<RuleItem> iterator = itemList.iterator();
         while (iterator.hasNext()) {
             RuleItem item = iterator.next();
-            AbstractRuleItem executor = StringUtils.isNotBlank(item.getGroupExpress()) ? new ComplexRuleExecutor() : RuleExecutorTable.get(executorClass);
+            AbstractRuleExecutor executor = StringUtils.isNotBlank(item.getGroupExpress()) ? new ComplexRuleExecutor() : RuleExecutorTable.get(executorClass);
             executor.setObject(object);
             executor.setRuleEngineContext(ruleEngineContext);
             ItemResult result = executor.doCheck(item);
@@ -137,8 +137,8 @@ public class RuleEngineService {
      */
     private List<RuleItem> filterItem(List<RuleItem> itemList, String parentItemNo) {
         List<RuleItem> newItemList = new ArrayList<>();
-        for (int iLoop = 0; iLoop < itemList.size(); iLoop++) {
-            RuleItem item = itemList.get(iLoop);
+        for (int i = 0; i < itemList.size(); i++) {
+            RuleItem item = itemList.get(i);
             if (StringUtils.isEmpty(parentItemNo)) {
                 if (StringUtils.isEmpty(item.getParentItemNo())) {
                     newItemList.add(item);

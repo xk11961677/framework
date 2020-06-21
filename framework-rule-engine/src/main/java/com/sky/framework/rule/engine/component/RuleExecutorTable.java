@@ -41,7 +41,7 @@ public class RuleExecutorTable {
      * @param clazz
      * @return
      */
-    public static AbstractRuleItem get(Class clazz) {
+    public static AbstractRuleExecutor get(Class clazz) {
         ConstructorAccess constructorAccess = ruleExecutor.get(clazz.getName());
         if (constructorAccess == null) {
             synchronized (lock) {
@@ -52,6 +52,6 @@ public class RuleExecutorTable {
                 }
             }
         }
-        return (AbstractRuleItem) constructorAccess.newInstance();
+        return (AbstractRuleExecutor) constructorAccess.newInstance();
     }
 }

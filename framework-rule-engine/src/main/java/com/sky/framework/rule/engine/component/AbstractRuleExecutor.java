@@ -45,7 +45,7 @@ import java.util.List;
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 @Slf4j
-public abstract class AbstractRuleItem {
+public abstract class AbstractRuleExecutor {
 
     /**
      * 源数据

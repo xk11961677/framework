@@ -24,7 +24,7 @@ package com.sky.framework.rule.engine.component.executor;
 
 
 import com.jayway.jsonpath.JsonPath;
-import com.sky.framework.rule.engine.component.AbstractRuleItem;
+import com.sky.framework.rule.engine.component.AbstractRuleExecutor;
 import com.sky.framework.rule.engine.constant.OperatorConstants;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
 import com.sky.framework.rule.engine.model.ItemResult;
@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author
  */
 @Slf4j
-public class DefaultRuleExecutor extends AbstractRuleItem {
+public class DefaultRuleExecutor extends AbstractRuleExecutor {
 
     /**
      * @param item

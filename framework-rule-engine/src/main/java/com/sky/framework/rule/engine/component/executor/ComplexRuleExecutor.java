@@ -23,7 +23,7 @@
 package com.sky.framework.rule.engine.component.executor;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.sky.framework.rule.engine.component.AbstractRuleItem;
+import com.sky.framework.rule.engine.component.AbstractRuleExecutor;
 import com.sky.framework.rule.engine.component.ExpressionUnit;
 import com.sky.framework.rule.engine.component.OperationUnit;
 import com.sky.framework.rule.engine.component.RuleExecutorTable;
@@ -42,7 +42,7 @@ import java.util.List;
  * @author
  */
 @Slf4j
-public class ComplexRuleExecutor extends AbstractRuleItem {
+public class ComplexRuleExecutor extends AbstractRuleExecutor {
 
     @Override
     public ItemResult doCheck(RuleItem item) throws RuleEngineException {
@@ -320,7 +320,7 @@ public class ComplexRuleExecutor extends AbstractRuleItem {
      */
     @SuppressWarnings("unchecked")
     private boolean calculate(RuleItem item, Object object) throws RuleEngineException {
-        AbstractRuleItem auditInstance = RuleExecutorTable.get(ruleEngineContext.getExecutorClass());
+        AbstractRuleExecutor auditInstance = RuleExecutorTable.get(ruleEngineContext.getExecutorClass());
         auditInstance.setObject(object);
         auditInstance.setRuleEngineContext(ruleEngineContext);
         ItemResult result = auditInstance.doCheck(item);
