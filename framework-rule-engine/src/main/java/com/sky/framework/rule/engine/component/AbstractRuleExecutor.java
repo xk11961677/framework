@@ -22,8 +22,7 @@
  */
 package com.sky.framework.rule.engine.component;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
+import com.sky.framework.rule.engine.component.command.OperatorCommand;
 import com.sky.framework.rule.engine.constant.OperatorConstants;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
 import com.sky.framework.rule.engine.model.ItemResult;
@@ -32,12 +31,8 @@ import com.sky.framework.rule.engine.model.RuleItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -100,179 +95,15 @@ public abstract class AbstractRuleExecutor {
      * @throws RuleEngineException 参数不合法，或者比较操作符不合法
      */
     public static boolean comparisonOperate(Object data, String comparisonOperator, List baseline) {
-        boolean bRet = false;
         if (null == baseline || null == comparisonOperator) {
             return false;
             //throw new RuleEngineException("null pointer error of subject or baseline or comparison code.");
         }
-        BigDecimal bdSubject = null;
-        BigDecimal object = null;
-        String subject = null;
-
-        List<Object> list = new ArrayList<>();
-        list.add(data);
-        if (data != null && data instanceof JSONArray) {
-            list = ((JSONArray) data).toJavaList(Object.class);
+        OperatorCommand command = CommandTable.INSTANCE.get(comparisonOperator);
+        if (command == null) {
+            log.warn("AbstractRuleItem.comparisonOperate operator:{} not found", comparisonOperator);
+            return false;
         }
-        List<String> dataListString = null;
-        List<String> baselineListString = null;
-
-        switch (comparisonOperator) {
-            case OperatorConstants.OPR_CODE.EQUAL:
-                if (data == null) return false;
-                for (Object value : list) {
-                    subject = ObjectUtils.toString(value);
-                    try {
-                        bdSubject = new BigDecimal(subject);
-                        object = new BigDecimal(ObjectUtils.toString(baseline.get(0)));
-                        bRet = (bdSubject.compareTo(object) == 0);
-                    } catch (Exception e) {
-                        bRet = subject.equals(ObjectUtils.toString(baseline.get(0)));
-                    }
-                    if (bRet) {
-                        break;
-                    }
-                }
-                break;
-            case OperatorConstants.OPR_CODE.GREATER:
-                if (data == null) return false;
-                for (Object value : list) {
-                    subject = ObjectUtils.toString(value);
-                    try {
-                        bdSubject = new BigDecimal(subject);
-                        object = new BigDecimal(ObjectUtils.toString(baseline.get(0)));
-                        bRet = (bdSubject.compareTo(object) > 0);
-                    } catch (Exception e1) {
-                        bRet = (subject.compareTo(ObjectUtils.toString(baseline.get(0))) > 0);
-                    }
-                    if (bRet) {
-                        break;
-                    }
-                }
-                break;
-            case OperatorConstants.OPR_CODE.LESS:
-                if (data == null) return false;
-                for (Object value : list) {
-                    subject = ObjectUtils.toString(value);
-                    try {
-                        bdSubject = new BigDecimal(subject);
-                        object = new BigDecimal(ObjectUtils.toString(baseline.get(0)));
-                        bRet = (bdSubject.compareTo(object) < 0);
-                    } catch (Exception e1) {
-                        bRet = (subject.compareTo(ObjectUtils.toString(baseline.get(0))) < 0);
-                    }
-                    if (bRet) {
-                        break;
-                    }
-                }
-                break;
-            case OperatorConstants.OPR_CODE.NOT_EQUAL:
-                if (data == null) return false;
-                for (Object value : list) {
-                    subject = ObjectUtils.toString(value);
-                    try {
-                        bdSubject = new BigDecimal(subject);
-                        object = new BigDecimal(ObjectUtils.toString(baseline.get(0)));
-                        bRet = (bdSubject.compareTo(object) != 0);
-                    } catch (Exception e) {
-                        bRet = !subject.equals(ObjectUtils.toString(baseline.get(0)));
-                    }
-                    if (!bRet) {
-                        break;
-                    }
-                }
-                break;
-            case OperatorConstants.OPR_CODE.GREATER_EQUAL:
-                if (data == null) return false;
-                for (Object value : list) {
-                    subject = ObjectUtils.toString(value);
-                    try {
-                        bdSubject = new BigDecimal(subject);
-                        object = new BigDecimal(ObjectUtils.toString(baseline.get(0)));
-                        bRet = (bdSubject.compareTo(object) >= 0);
-                    } catch (Exception e1) {
-                        bRet = (subject.compareTo(ObjectUtils.toString(baseline.get(0))) >= 0);
-                    }
-                    if (bRet) {
-                        break;
-                    }
-                }
-                break;
-            case OperatorConstants.OPR_CODE.LESS_EQUAL:
-                if (data == null) return false;
-                for (Object value : list) {
-                    subject = ObjectUtils.toString(value);
-                    try {
-                        bdSubject = new BigDecimal(subject);
-                        object = new BigDecimal(ObjectUtils.toString(baseline.get(0)));
-                        bRet = (bdSubject.compareTo(object) <= 0);
-                    } catch (Exception e1) {
-                        bRet = (subject.compareTo(ObjectUtils.toString(baseline.get(0))) <= 0);
-                    }
-                    if (bRet) {
-                        break;
-                    }
-                }
-                break;
-            case OperatorConstants.OPR_CODE.INCLUDE:
-                if (data == null) return false;
-                dataListString = JSON.parseArray(JSON.toJSONString(list), String.class);
-                baselineListString = JSON.parseArray(JSON.toJSONString(baseline), String.class);
-                bRet = CollectionUtils.intersection(baselineListString, dataListString).size() == baselineListString.size();
-                break;
-            case OperatorConstants.OPR_CODE.NOT_INCLUDE:
-                if (data == null) return true;
-                dataListString = JSON.parseArray(JSON.toJSONString(list), String.class);
-                baselineListString = JSON.parseArray(JSON.toJSONString(baseline), String.class);
-                int all = dataListString.size() + baselineListString.size();
-                bRet = CollectionUtils.disjunction(baselineListString, dataListString).size() == all;
-                break;
-            case OperatorConstants.OPR_CODE.IN:
-                if (data == null) return false;
-                dataListString = JSON.parseArray(JSON.toJSONString(list), String.class);
-                baselineListString = JSON.parseArray(JSON.toJSONString(baseline), String.class);
-                bRet = CollectionUtils.intersection(baselineListString, dataListString).size() > 0;
-                break;
-            case OperatorConstants.OPR_CODE.NIN:
-                if (data == null) return true;
-                dataListString = JSON.parseArray(JSON.toJSONString(list), String.class);
-                baselineListString = JSON.parseArray(JSON.toJSONString(baseline), String.class);
-                bRet = CollectionUtils.intersection(baselineListString, dataListString).size() == 0;
-                break;
-            case OperatorConstants.OPR_CODE.EQUAL_IGNORE_CASE:
-                if (data == null) return false;
-                for (Object value : list) {
-                    subject = ObjectUtils.toString(value);
-                    bRet = subject.equalsIgnoreCase(ObjectUtils.toString(baseline.get(0)));
-                    if (bRet) {
-                        break;
-                    }
-                }
-                break;
-            case OperatorConstants.OPR_CODE.NOT_EQUAL_IGNORE_CASE:
-                if (data == null) return false;
-                for (Object value : list) {
-                    subject = ObjectUtils.toString(value);
-                    bRet = !subject.equalsIgnoreCase(ObjectUtils.toString(baseline.get(0)));
-                    if (!bRet) {
-                        break;
-                    }
-                }
-                break;
-            case OperatorConstants.OPR_CODE.MATCH:
-                if (data == null) return false;
-                for (Object value : list) {
-                    subject = ObjectUtils.toString(value);
-                    bRet = subject.matches(ObjectUtils.toString(baseline.get(0)));
-                    if (bRet) {
-                        break;
-                    }
-                }
-                break;
-            default:
-                log.warn("AbstractRuleItem.comparisonOperate operator:{} not found", comparisonOperator);
-                break;
-        }
-        return bRet;
+        return command.execute(data, baseline);
     }
 }
