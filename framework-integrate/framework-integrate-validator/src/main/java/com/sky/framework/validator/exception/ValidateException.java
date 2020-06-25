@@ -23,6 +23,7 @@
 package com.sky.framework.validator.exception;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 验证器外抛异常
@@ -30,6 +31,7 @@ import lombok.Data;
  * @author
  */
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class ValidateException extends RuntimeException {
 
     private String errorMsg;
