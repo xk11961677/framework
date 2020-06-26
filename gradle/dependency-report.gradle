@@ -1,0 +1,34 @@
+apply plugin: 'project-report'
+
+dependencyReport {
+    outputFile = file('build/dependency/dependency.txt')
+    configurations = [project.getConfigurations().getByName("default")]
+}
+
+task processDependecyReport {
+    doLast {
+        def validDep = new org.apache.tools.ant.types.RegularExpression()
+        validDep.pattern = '^[\\|\\+\\\\)]'
+
+        def omittedDep = new org.apache.tools.ant.types.RegularExpression()
+        omittedDep.pattern = '^((?!\\(\\*\\)).)*$'
+
+        copy {
+            from 'build/dependency'
+            into 'build'
+            include 'dependency.txt'
+            filter { String line ->
+                line.replaceAll("\\d+.+->\\W", "")
+            }
+            filter { String line -> line + ':compile'
+            }
+            filter(org.apache.tools.ant.filters.LineContainsRegExp, regexps: [validDep])
+            filter(org.apache.tools.ant.filters.LineContainsRegExp, regexps: [omittedDep])
+        }
+    }
+}
+
+htmlDependencyReport {
+}
+
+check.dependsOn dependencyReport, processDependecyReport, htmlDependencyReport

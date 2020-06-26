@@ -1,0 +1,43 @@
+/**
+ * The PMD Plugin
+ *
+ * Gradle plugin that performs quality checks on your project’s Java source files using PMD
+ * and generates reports from these checks.
+ *
+ * Tasks:
+ * Run PMD against {rootDir}/src/main/java: ./gradlew pmdMain
+ * Run PMD against {rootDir}/src/test/java: ./gradlew pmdTest
+ *
+ * Reports:
+ * PMD reports can be found in {project.buildDir}/build/reports/pmd
+ *
+ * Configuration:
+ * PMD is very configurable. The configuration file is located at {rootDir}/config/pmd/pmd-ruleset.xml
+ *
+ * Additional Documentation:
+ * https://docs.gradle.org/current/userguide/pmd_plugin.html
+ */
+
+apply plugin: 'pmd'
+
+pmd {
+    // The version of the code quality tool to be used.
+    // The most recent version of PMD can be found at https://pmd.github.io
+    toolVersion = "5.8.1"
+
+    // The source sets to be analyzed as part of the check and build tasks.
+    // Use 'sourceSets = []' to remove PMD from the check and build tasks.
+    sourceSets = [project.sourceSets.main]
+
+    // The directory where reports will be generated.
+    reportsDir = file("$project.buildDir/reports/pmd")
+
+    // Whether to allow the build to continue if there are warnings.
+    ignoreFailures = false
+
+    // Whether or not rule violations are to be displayed on the console.
+    consoleOutput = true
+
+    // The custom rule set files to be used.
+    ruleSetConfig = resources.text.fromFile("$rootProject.projectDir/config/pmd/pmd-ruleset.xml")
+}

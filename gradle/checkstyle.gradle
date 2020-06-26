@@ -1,0 +1,37 @@
+/**
+ * The Checkstyle Plugin
+ *
+ * Gradle plugin that performs quality checks on your project's Java source files using Checkstyle
+ * and generates reports from these checks.
+ *
+ * Tasks:
+ * Run Checkstyle against {rootDir}/src/main/java: ./gradlew checkstyleMain
+ * Run Checkstyle against {rootDir}/src/test/java: ./gradlew checkstyleTest
+ *
+ * Reports:
+ * Checkstyle reports can be found in {project.buildDir}/build/reports/checkstyle
+ *
+ * Configuration:
+ * Checkstyle is very configurable. The configuration file is located at {rootDir}/config/checkstyle/checkstyle.xml
+ *
+ * Additional Documentation:
+ * https://docs.gradle.org/current/userguide/checkstyle_plugin.html
+ */
+
+apply plugin: 'checkstyle'
+
+checkstyle {
+    // The version of the code quality tool to be used.
+    // The most recent version of Checkstyle can be found at https://github.com/checkstyle/checkstyle/releases
+    toolVersion = "8.8"
+
+    // The source sets to be analyzed as part of the check and build tasks.
+    // Use 'sourceSets = []' to remove Checkstyle from the check and build tasks.
+//    sourceSets = [project.sourceSets.main, project.sourceSets.test]
+
+    // Whether or not to allow the build to continue if there are warnings.
+    ignoreFailures = false
+
+    // Whether or not rule violations are to be displayed on the console.
+    showViolations = true
+}

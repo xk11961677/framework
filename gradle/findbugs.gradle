@@ -1,0 +1,57 @@
+/**
+ * The FindBugs Plugin
+ *
+ * Gradle plugin that performs quality checks on your project’s Java source files using FindBugs
+ * and generates reports from these checks.
+ *
+ * Tasks:
+ * Run FindBugs against {rootDir}/src/main/java: ./gradlew findbugsMain
+ * Run FindBugs against {rootDir}/src/test/java: ./gradlew findbugsTest
+ *
+ * Reports:
+ * FindBugs reports can be found in {project.buildDir}/build/reports/findbugs
+ *
+ * Configuration:
+ * FindBugs is very configurable. The configuration file is located at {rootDir}/config/findbugs/findbugs-filter.xml
+ *
+ * Additional Documentation:
+ * https://docs.gradle.org/current/userguide/findbugs_plugin.html
+ */
+
+apply plugin: 'findbugs'
+
+findbugs {
+    // The version of the code quality tool to be used.
+    // The most recent version of FindBugs can be found at http://findbugs.sourceforge.net
+    toolVersion = "3.0.1"
+
+    // The source sets to be analyzed as part of the check and build tasks.
+    // Use 'sourceSets = []' to remove FindBugs from the check and build tasks.
+    sourceSets = [project.sourceSets.main]
+
+    // The directory where reports will be generated.
+    reportsDir = file("$project.buildDir/reports/findbugs")
+
+    // Whether to allow the build to continue if there are warnings.
+    ignoreFailures = false
+
+    // The analysis effort level. The value specified should be one of min, default, or max.
+    // Higher levels increase precision and find more bugs at the expense of running time and memory consumption.
+    effort = "default"
+
+    // The priority threshold for reporting bugs.
+    // If set to low, all bugs are reported.
+    // If set to medium, medium and high priority bugs are reported.
+    // If set to high, only high priority bugs are reported.
+    reportLevel = "low"
+
+    //The filename of a filter specifying bugs to exclude from being reported.
+    excludeFilter = file("$rootProject.projectDir/config/findbugs/findbugs-filter.xml")
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
