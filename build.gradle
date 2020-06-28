@@ -17,11 +17,14 @@ allprojects {
 
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'checkstyle'
-    apply plugin: "jacoco"
-    apply plugin: 'maven-publish'
+    apply plugin: "java"
+//    apply plugin: "idea"
+    apply plugin: "maven"
+    apply plugin: "maven-publish"
     apply plugin: "io.spring.dependency-management"
+    apply from: "${rootDir}/gradle/jacoco.gradle"
+    apply from: "${rootDir}/gradle/checkstyle.gradle"
+    apply from: "${rootDir}/gradle/dependency-report.gradle"
 
     dependencyManagement {
         imports {
@@ -54,13 +57,7 @@ subprojects {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
         withSourcesJar()
-    }
-
-    checkstyle {
-        configFile = file("${rootDir}/style/sky_checkstyle.xml")
-        ignoreFailures = true
-        showViolations = true
-        toolVersion = "8.8"
+//        withJavadocJar()
     }
 
     publishing {
@@ -69,6 +66,20 @@ subprojects {
                 from(components.java)
             }
         }
+    }
+
+//    task myJavadocs(type: Javadoc) {
+//        source = sourceSets.main.allJava
+//    }
+
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+        options {
+            encoding "UTF-8"
+            charSet 'UTF-8'
+        }
+
     }
 
     tasks.withType(JavaCompile) {

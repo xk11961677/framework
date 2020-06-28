@@ -3,6 +3,7 @@
  */
 
 rootProject.name = 'framework-parent'
+include(':framework-dependencies')
 include(':framework-integrate:framework-integrate-validator')
 include(':framework-integrate:framework-integrate-redis')
 include(':framework-integrate:framework-integrate-rocketmq')
@@ -28,6 +29,7 @@ include(':framework-dao:framework-dao-mongo')
 include(':framework-dao:framework-dao-mybatis-plus')
 include(':framework-dao')
 include(':framework-rule-engine')
+project(':framework-dependencies').projectDir = file('framework-dependencies')
 project(':framework-integrate:framework-integrate-validator').projectDir = file('framework-integrate/framework-integrate-validator')
 project(':framework-integrate:framework-integrate-redis').projectDir = file('framework-integrate/framework-integrate-redis')
 project(':framework-integrate:framework-integrate-rocketmq').projectDir = file('framework-integrate/framework-integrate-rocketmq')

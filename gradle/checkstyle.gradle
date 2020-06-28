@@ -21,6 +21,8 @@
 apply plugin: 'checkstyle'
 
 checkstyle {
+    configFile = file("${rootDir}/style/sky_checkstyle.xml")
+
     // The version of the code quality tool to be used.
     // The most recent version of Checkstyle can be found at https://github.com/checkstyle/checkstyle/releases
     toolVersion = "8.8"
@@ -30,7 +32,7 @@ checkstyle {
 //    sourceSets = [project.sourceSets.main, project.sourceSets.test]
 
     // Whether or not to allow the build to continue if there are warnings.
-    ignoreFailures = false
+    ignoreFailures = true
 
     // Whether or not rule violations are to be displayed on the console.
     showViolations = true
