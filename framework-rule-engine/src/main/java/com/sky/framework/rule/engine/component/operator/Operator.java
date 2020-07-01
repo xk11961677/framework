@@ -20,16 +20,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rule.engine.component.command;
+package com.sky.framework.rule.engine.component.operator;
 
 import java.util.List;
 
 /**
- * 操作符命令类
+ * 操作符执行类
  *
  * @author
  */
-public interface OperatorCommand {
+public interface Operator {
 
     /**
      * 执行
@@ -41,9 +41,9 @@ public interface OperatorCommand {
     boolean execute(Object data, List baseline);
 
     /**
-     * 返回操作符名称
+     * 返回操作符key
      *
      * @return
      */
-    String operator();
+    String key();
 }

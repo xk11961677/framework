@@ -20,39 +20,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rule.engine.component.command;
+package com.sky.framework.rule.engine.component;
 
-import com.alibaba.fastjson.JSONArray;
-import com.google.common.collect.Lists;
-import com.sky.framework.rule.engine.constant.OperatorConstants;
-import org.apache.commons.lang.ObjectUtils;
+import com.sky.framework.rule.engine.component.operator.Operator;
+import com.sky.framework.rule.engine.util.SpiLoader;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author
  */
-public class NotEqualIgnoreCaseCommand implements OperatorCommand {
+@Slf4j
+public class OperatorTable {
 
-    @Override
-    public boolean execute(Object data, List baseline) {
-        if (data == null) return false;
+    private static final Map<String, Operator> container = new ConcurrentHashMap<>();
 
-        List<Object> list = data instanceof JSONArray ? ((JSONArray) data).toJavaList(Object.class) : Lists.newArrayList(data);
-        String subject, baselineStr = ObjectUtils.toString(baseline.get(0));
-        boolean bRet = false;
-        for (Object value : list) {
-            subject = ObjectUtils.toString(value);
-            bRet = !subject.equalsIgnoreCase(baselineStr);
-            if (!bRet) {
-                break;
-            }
+    public static final OperatorTable INSTANCE = new OperatorTable();
+
+    private OperatorTable() {
+        ServiceLoader<Operator> operators = SpiLoader.loadAll(Operator.class);
+        Iterator<Operator> iterator = operators.iterator();
+        while (iterator.hasNext()) {
+            Operator operator = iterator.next();
+            container.put(operator.key(), operator);
         }
-        return bRet;
     }
 
-    @Override
-    public String operator() {
-        return OperatorConstants.OPR_CODE.NOT_EQUAL_IGNORE_CASE;
+    public Operator get(String key) {
+        return container.get(key);
+    }
+
+    public void put(String key, Operator operator) {
+        container.put(key, operator);
     }
 }

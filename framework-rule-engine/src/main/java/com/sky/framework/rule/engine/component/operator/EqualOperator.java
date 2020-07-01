@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rule.engine.component.command;
+package com.sky.framework.rule.engine.component.operator;
 
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * @author
  */
-public class GreaterCommand implements OperatorCommand {
+public class EqualOperator implements Operator {
 
     @Override
     public boolean execute(Object data, List baseline) {
@@ -48,9 +48,9 @@ public class GreaterCommand implements OperatorCommand {
             try {
                 bdSubject = new BigDecimal(subject);
                 object = new BigDecimal(ObjectUtils.toString(baseline.get(0)));
-                bRet = (bdSubject.compareTo(object) > 0);
-            } catch (Exception e1) {
-                bRet = (subject.compareTo(ObjectUtils.toString(baseline.get(0))) > 0);
+                bRet = (bdSubject.compareTo(object) == 0);
+            } catch (Exception e) {
+                bRet = subject.equals(ObjectUtils.toString(baseline.get(0)));
             }
             if (bRet) {
                 break;
@@ -60,7 +60,7 @@ public class GreaterCommand implements OperatorCommand {
     }
 
     @Override
-    public String operator() {
-        return OperatorConstants.OPR_CODE.GREATER;
+    public String key() {
+        return OperatorConstants.OPR_CODE.EQUAL;
     }
 }

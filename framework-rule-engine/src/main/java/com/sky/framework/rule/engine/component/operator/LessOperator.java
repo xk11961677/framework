@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rule.engine.component.command;
+package com.sky.framework.rule.engine.component.operator;
 
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * @author
  */
-public class NotEqualCommand implements OperatorCommand {
+public class LessOperator implements Operator {
 
     @Override
     public boolean execute(Object data, List baseline) {
@@ -41,19 +41,18 @@ public class NotEqualCommand implements OperatorCommand {
 
         List<Object> list = data instanceof JSONArray ? ((JSONArray) data).toJavaList(Object.class) : Lists.newArrayList(data);
         BigDecimal bdSubject, object;
-        String subject, baselineStr = ObjectUtils.toString(baseline.get(0));
-
+        String subject;
         boolean bRet = false;
         for (Object value : list) {
             subject = ObjectUtils.toString(value);
             try {
                 bdSubject = new BigDecimal(subject);
-                object = new BigDecimal(baselineStr);
-                bRet = (bdSubject.compareTo(object) != 0);
-            } catch (Exception e) {
-                bRet = !subject.equals(baselineStr);
+                object = new BigDecimal(ObjectUtils.toString(baseline.get(0)));
+                bRet = (bdSubject.compareTo(object) < 0);
+            } catch (Exception e1) {
+                bRet = (subject.compareTo(ObjectUtils.toString(baseline.get(0))) < 0);
             }
-            if (!bRet) {
+            if (bRet) {
                 break;
             }
         }
@@ -61,7 +60,7 @@ public class NotEqualCommand implements OperatorCommand {
     }
 
     @Override
-    public String operator() {
-        return OperatorConstants.OPR_CODE.NOT_EQUAL;
+    public String key() {
+        return OperatorConstants.OPR_CODE.LESS;
     }
 }

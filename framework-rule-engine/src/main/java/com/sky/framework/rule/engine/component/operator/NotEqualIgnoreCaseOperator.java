@@ -20,20 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rule.engine.component.command;
+package com.sky.framework.rule.engine.component.operator;
 
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
 import com.sky.framework.rule.engine.constant.OperatorConstants;
 import org.apache.commons.lang.ObjectUtils;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * @author
  */
-public class EqualIgnoreCaseCommand implements OperatorCommand {
+public class NotEqualIgnoreCaseOperator implements Operator {
 
     @Override
     public boolean execute(Object data, List baseline) {
@@ -44,8 +43,8 @@ public class EqualIgnoreCaseCommand implements OperatorCommand {
         boolean bRet = false;
         for (Object value : list) {
             subject = ObjectUtils.toString(value);
-            bRet = subject.equalsIgnoreCase(baselineStr);
-            if (bRet) {
+            bRet = !subject.equalsIgnoreCase(baselineStr);
+            if (!bRet) {
                 break;
             }
         }
@@ -53,7 +52,7 @@ public class EqualIgnoreCaseCommand implements OperatorCommand {
     }
 
     @Override
-    public String operator() {
-        return OperatorConstants.OPR_CODE.EQUAL_IGNORE_CASE;
+    public String key() {
+        return OperatorConstants.OPR_CODE.NOT_EQUAL_IGNORE_CASE;
     }
 }
