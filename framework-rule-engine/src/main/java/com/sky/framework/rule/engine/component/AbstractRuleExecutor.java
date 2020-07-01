@@ -22,7 +22,7 @@
  */
 package com.sky.framework.rule.engine.component;
 
-import com.sky.framework.rule.engine.component.command.OperatorCommand;
+import com.sky.framework.rule.engine.component.operator.Operator;
 import com.sky.framework.rule.engine.constant.OperatorConstants;
 import com.sky.framework.rule.engine.exception.RuleEngineException;
 import com.sky.framework.rule.engine.model.ItemResult;
@@ -99,11 +99,11 @@ public abstract class AbstractRuleExecutor {
             return false;
             //throw new RuleEngineException("null pointer error of subject or baseline or comparison code.");
         }
-        OperatorCommand command = CommandTable.INSTANCE.get(comparisonOperator);
-        if (command == null) {
+        Operator operator = OperatorTable.INSTANCE.get(comparisonOperator);
+        if (operator == null) {
             log.warn("AbstractRuleItem.comparisonOperate operator:{} not found", comparisonOperator);
             return false;
         }
-        return command.execute(data, baseline);
+        return operator.execute(data, baseline);
     }
 }

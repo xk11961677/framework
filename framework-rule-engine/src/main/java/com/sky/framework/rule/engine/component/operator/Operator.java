@@ -20,34 +20,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rule.engine.component.command;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.google.common.collect.Lists;
-import com.sky.framework.rule.engine.constant.OperatorConstants;
-import org.apache.commons.collections.CollectionUtils;
+package com.sky.framework.rule.engine.component.operator;
 
 import java.util.List;
 
 /**
+ * 操作符命令类
+ *
  * @author
  */
-public class NotIncludeCommand implements OperatorCommand {
+public interface Operator {
 
-    @Override
-    public boolean execute(Object data, List baseline) {
-        if (data == null) return false;
-        List<Object> list = data instanceof JSONArray ? ((JSONArray) data).toJavaList(Object.class) : Lists.newArrayList(data);
+    /**
+     * 执行
+     *
+     * @param data
+     * @param baseline
+     * @return
+     */
+    boolean execute(Object data, List baseline);
 
-        List<String> dataListString = JSON.parseArray(JSON.toJSONString(list), String.class);
-        List<String> baselineListString = JSON.parseArray(JSON.toJSONString(baseline), String.class);
-        int all = dataListString.size() + baselineListString.size();
-        return CollectionUtils.disjunction(baselineListString, dataListString).size() == all;
-    }
-
-    @Override
-    public String operator() {
-        return OperatorConstants.OPR_CODE.NOT_INCLUDE;
-    }
+    /**
+     * 返回操作符key
+     *
+     * @return
+     */
+    String key();
 }

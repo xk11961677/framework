@@ -20,30 +20,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rule.engine.component.command;
+package com.sky.framework.rule.engine.component.operator;
+
+import com.alibaba.fastjson.JSONArray;
+import com.google.common.collect.Lists;
+import com.sky.framework.rule.engine.constant.OperatorConstants;
+import org.apache.commons.lang.ObjectUtils;
 
 import java.util.List;
 
 /**
- * 操作符命令类
- *
  * @author
  */
-public interface OperatorCommand {
+public class MatchOperator implements Operator {
 
-    /**
-     * 执行
-     *
-     * @param data
-     * @param baseline
-     * @return
-     */
-    boolean execute(Object data, List baseline);
+    @Override
+    public boolean execute(Object data, List baseline) {
+        if (data == null) return false;
 
-    /**
-     * 返回操作符名称
-     *
-     * @return
-     */
-    String operator();
+        List<Object> list = data instanceof JSONArray ? ((JSONArray) data).toJavaList(Object.class) : Lists.newArrayList(data);
+        String subject, baselineStr = ObjectUtils.toString(baseline.get(0));
+        boolean bRet = false;
+        for (Object value : list) {
+            subject = ObjectUtils.toString(value);
+            bRet = subject.matches(baselineStr);
+            if (bRet) {
+                break;
+            }
+        }
+        return bRet;
+    }
+
+    @Override
+    public String key() {
+        return OperatorConstants.OPR_CODE.MATCH;
+    }
 }

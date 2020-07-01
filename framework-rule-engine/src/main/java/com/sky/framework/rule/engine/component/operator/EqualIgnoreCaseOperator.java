@@ -20,35 +20,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.rule.engine.component.command;
+package com.sky.framework.rule.engine.component.operator;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
 import com.sky.framework.rule.engine.constant.OperatorConstants;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ObjectUtils;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * @author
  */
-public class IncludeCommand implements OperatorCommand {
+public class EqualIgnoreCaseOperator implements Operator {
 
     @Override
     public boolean execute(Object data, List baseline) {
         if (data == null) return false;
-        List<Object> list = data instanceof JSONArray ? ((JSONArray) data).toJavaList(Object.class) : Lists.newArrayList(data);
 
-        List<String> dataListString = JSON.parseArray(JSON.toJSONString(list), String.class);
-        List<String> baselineListString = JSON.parseArray(JSON.toJSONString(baseline), String.class);
-        return CollectionUtils.intersection(baselineListString, dataListString).size() == baselineListString.size();
+        List<Object> list = data instanceof JSONArray ? ((JSONArray) data).toJavaList(Object.class) : Lists.newArrayList(data);
+        String subject, baselineStr = ObjectUtils.toString(baseline.get(0));
+        boolean bRet = false;
+        for (Object value : list) {
+            subject = ObjectUtils.toString(value);
+            bRet = subject.equalsIgnoreCase(baselineStr);
+            if (bRet) {
+                break;
+            }
+        }
+        return bRet;
     }
 
     @Override
-    public String operator() {
-        return OperatorConstants.OPR_CODE.INCLUDE;
+    public String key() {
+        return OperatorConstants.OPR_CODE.EQUAL_IGNORE_CASE;
     }
 }
