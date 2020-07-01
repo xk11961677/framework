@@ -6,6 +6,9 @@ target/
 #*.zip
 *.tar
 *.tar.gz
+# gradle ignore
+.gradle
+/**/build/**
 
 # eclipse ignore
 .settings/
@@ -35,3 +38,4 @@ Thumbs.db
 
 # license check result
 license-list
+
