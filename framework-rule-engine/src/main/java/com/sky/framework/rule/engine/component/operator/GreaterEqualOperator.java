@@ -33,10 +33,10 @@ import java.util.List;
 /**
  * @author
  */
-public class GreaterEqualOperator implements Operator {
+public class GreaterEqualOperator extends AbstractOperator {
 
     @Override
-    public boolean execute(Object data, List baseline) {
+    public boolean exec(Object data, List baseline) {
         if (data == null) return false;
 
         List<Object> list = data instanceof JSONArray ? ((JSONArray) data).toJavaList(Object.class) : Lists.newArrayList(data);
