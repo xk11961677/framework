@@ -99,7 +99,7 @@ public abstract class AbstractRuleExecutor {
             return false;
             //throw new RuleEngineException("null pointer error of subject or baseline or comparison code.");
         }
-        Operator operator = OperatorTable.INSTANCE.get(comparisonOperator);
+        Operator operator = OperatorTable.getInstance().get(comparisonOperator);
         if (operator == null) {
             log.warn("AbstractRuleItem.comparisonOperate operator:{} not found", comparisonOperator);
             return false;

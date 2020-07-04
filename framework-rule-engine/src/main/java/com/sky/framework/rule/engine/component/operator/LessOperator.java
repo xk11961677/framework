@@ -60,7 +60,7 @@ public class LessOperator implements Operator {
     }
 
     @Override
-    public String key() {
+    public String code() {
         return OperatorConstants.OPR_CODE.LESS;
     }
 }

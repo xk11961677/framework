@@ -41,9 +41,9 @@ public interface Operator {
     boolean execute(Object data, List baseline);
 
     /**
-     * 返回操作符key
+     * 返回支持的操作符code
      *
      * @return
      */
-    String key();
+    String code();
 }

@@ -61,7 +61,7 @@ public class GreaterEqualOperator implements Operator {
     }
 
     @Override
-    public String key() {
+    public String code() {
         return OperatorConstants.OPR_CODE.GREATER_EQUAL;
     }
 }
