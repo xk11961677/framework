@@ -39,22 +39,38 @@ public class OperatorTable {
 
     private static final Map<String, Operator> container = new ConcurrentHashMap<>();
 
-    public static final OperatorTable INSTANCE = new OperatorTable();
+    private static final OperatorTable INSTANCE = new OperatorTable();
 
     private OperatorTable() {
         ServiceLoader<Operator> operators = SpiLoader.loadAll(Operator.class);
         Iterator<Operator> iterator = operators.iterator();
         while (iterator.hasNext()) {
             Operator operator = iterator.next();
-            container.put(operator.key(), operator);
+            container.put(operator.code(), operator);
         }
     }
 
-    public Operator get(String key) {
-        return container.get(key);
+    public static OperatorTable getInstance() {
+        return INSTANCE;
     }
 
-    public void put(String key, Operator operator) {
-        container.put(key, operator);
+    /**
+     * 根据code获取Operator
+     *
+     * @param code
+     * @return
+     */
+    public Operator get(String code) {
+        return container.get(code);
+    }
+
+    /**
+     * 存储Operator运算类
+     *
+     * @param code
+     * @param operator
+     */
+    public void put(String code, Operator operator) {
+        container.put(code, operator);
     }
 }

@@ -8,7 +8,7 @@ target/
 *.tar.gz
 # gradle ignore
 .gradle
-build
+/**/build/**
 
 # eclipse ignore
 .settings/

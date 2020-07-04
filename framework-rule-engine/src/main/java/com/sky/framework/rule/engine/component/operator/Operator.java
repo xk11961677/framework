@@ -25,7 +25,7 @@ package com.sky.framework.rule.engine.component.operator;
 import java.util.List;
 
 /**
- * 操作符命令类
+ * 操作符执行类
  *
  * @author
  */
@@ -41,9 +41,9 @@ public interface Operator {
     boolean execute(Object data, List baseline);
 
     /**
-     * 返回操作符key
+     * 返回支持的操作符code
      *
      * @return
      */
-    String key();
+    String code();
 }

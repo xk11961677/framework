@@ -52,7 +52,7 @@ public class EqualIgnoreCaseOperator implements Operator {
     }
 
     @Override
-    public String key() {
+    public String code() {
         return OperatorConstants.OPR_CODE.EQUAL_IGNORE_CASE;
     }
 }
