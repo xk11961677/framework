@@ -85,6 +85,7 @@ mvn javadoc:javadoc
 - [mybatis代码生成器(本地版本)](https://github.com/xk11961677/framework-mybaits-codegen)
 - [mybatis代码生成器(web版本)](https://github.com/xk11961677/skycloud-base/tree/develop/skycloud-base-codegen)
 - 所有配置项可在idea yml文件中 输入 fw. 即可提示
+- 编译环境的要求为 JDK8，需要采用 [Apache Maven 3.2.5](https://archive.apache.org/dist/maven/maven-3/3.2.5/binaries/) 或者更高的版本进行编译。
 
 ## 开发计划
 
