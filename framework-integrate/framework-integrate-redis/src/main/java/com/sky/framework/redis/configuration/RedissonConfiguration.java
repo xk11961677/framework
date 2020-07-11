@@ -77,7 +77,7 @@ public class RedissonConfiguration {
 
         MultipleServerConfig multipleServerConfig = redissonProperties.getMultipleServerConfig();
 
-        switch (redissonProperties.getModel()) {
+        switch (redissonProperties.getMode()) {
             case SINGLE:
                 SingleServerConfig singleServerConfig = config.useSingleServer();
                 com.sky.framework.redis.property.SingleServerConfig param = redissonProperties.getSingleServerConfig();

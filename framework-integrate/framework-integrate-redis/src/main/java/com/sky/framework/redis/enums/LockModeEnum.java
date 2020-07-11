@@ -23,17 +23,23 @@
 package com.sky.framework.redis.enums;
 
 /**
+ * 锁的模式
+ *
  * @author
  */
-public enum ModelEnum {
-    //哨兵
-    SENTINEL,
-    //主从
-    MASTERSLAVE,
-    //单例
-    SINGLE,
-    //集群
-    CLUSTER,
-    //云托管模式
-    REPLICATED
+public enum LockModeEnum {
+    //可重入锁
+    REENTRANT,
+    //公平锁
+    FAIR,
+    //联锁
+    MULTIPLE,
+    //红锁
+    REDLOCK,
+    //读锁
+    READ,
+    //写锁
+    WRITE,
+    //自动模式,当参数只有一个.使用 REENTRANT 参数多个 REDLOCK
+    AUTO
 }

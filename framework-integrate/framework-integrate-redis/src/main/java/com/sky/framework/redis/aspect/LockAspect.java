@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sky.framework.redis.aop;
+package com.sky.framework.redis.aspect;
 
 import com.sky.framework.redis.annotation.DistributedLock;
 import com.sky.framework.redis.annotation.DistributedLockKey;
@@ -96,7 +96,7 @@ public class LockAspect implements Ordered {
 
         String lockKey = distributedLock.prefix() + LOCK_NAME_PREFIX + LOCK_NAME_SEPARATOR + parseKey(distributedLock.keys(), method, args);
 
-        boolean lock = distributedLock.model().getLock(lockKey, distributedLock.timeout(), distributedLock.leaseTime());
+        boolean lock = distributedLock.mode().getLock(lockKey, distributedLock.timeout(), distributedLock.leaseTime());
         try {
             if (!lock) {
                 String clazzName = proceedingJoinPoint.getTarget().getClass().getSimpleName();
@@ -164,12 +164,6 @@ public class LockAspect implements Ordered {
                 }
             }
         }
-    }
-
-    private List<String> getParameterKey(Parameter[] parameters, Object[] parameterValues) {
-        List<String> parameterKey = new ArrayList<>();
-
-        return parameterKey;
     }
 
     @Override

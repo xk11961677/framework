@@ -40,7 +40,7 @@ public @interface DistributedLock {
      *
      * @return
      */
-    DistributedLockEnum model() default DistributedLockEnum.REENTRANT;
+    DistributedLockEnum mode() default DistributedLockEnum.REENTRANT;
 
     /**
      * 分布式锁前缀默认空串
