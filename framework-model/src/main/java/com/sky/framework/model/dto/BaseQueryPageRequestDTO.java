@@ -22,6 +22,7 @@
  */
 package com.sky.framework.model.dto;
 
+import com.sky.framework.model.constant.GlobalConstants;
 import lombok.Data;
 
 /**
@@ -29,17 +30,15 @@ import lombok.Data;
  *
  * @author
  */
-@SuppressWarnings("serial")
 @Data
 public class BaseQueryPageRequestDTO extends BaseRequestDTO {
     /**
      * 分页使用的参数，分页大小
      */
-    private Integer pageSize = 10;
-
+    private Integer pageSize = GlobalConstants.DEFAULT_PAGE_SIZE;
     /**
      * 分页使用的参数，当前分页号
      */
-    private Integer pageNum = 1;
+    private Integer pageNum = GlobalConstants.DEFAULT_PAGE_NUM;
 
 }

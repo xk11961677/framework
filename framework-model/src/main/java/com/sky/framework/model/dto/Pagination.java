@@ -22,64 +22,52 @@
  */
 package com.sky.framework.model.dto;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * 描述: 分页
+ * 分页
  *
  * @author
- * @version V1.0
  */
 public class Pagination<P> implements Serializable {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -681184866199665872L;
-
-    /**
-     * 默认分页大小
-     */
-    public static final int DEFAULT_PAGE_SIZE = 10;
-
-    /**
-     * 默认页码
-     */
-    public static final int DEFAULT_PAGE_NUM = 1;
-
+    private static final long serialVersionUID = -1L;
     /**
      * 分页使用的参数，分页大小
      */
+    @Getter
     private int pageSize;
-
     /**
      * 分页使用的参数，当前分页号
      */
+    @Getter
     private int pageNum;
-
     /**
      * 分页使用的参数，总数据条数
      */
+    @Getter
     private int total;
-
     /**
      * 分页使用的参数，总页数
      */
+    @Getter
     private int pages;
-
     /**
      * 查询结果数据
      */
+    @Getter
     private List<P> list = null;
 
     public Pagination() {
     }
 
-    public Pagination(int pageSize, int pageNum, int totalCount, List<P> datas) {
+    public Pagination(int pageSize, int pageNum, int totalCount, List<P> list) {
         this.pageSize = pageSize;
         this.pageNum = pageNum;
         this.total = totalCount;
-        this.list = datas;
+        this.list = list;
         if (this.pageSize == 0) {
             pages = 0;
         } else if (this.total % this.pageSize == 0) {
@@ -89,8 +77,8 @@ public class Pagination<P> implements Serializable {
         }
     }
 
-    public Pagination(int pageSize, int pageNum, List<P> datas) {
-        this(pageSize, pageNum, 0, datas);
+    public Pagination(int pageSize, int pageNum, List<P> list) {
+        this(pageSize, pageNum, 0, list);
     }
 
     public Pagination(int pageSize, int pageNum, int totalCount) {
@@ -102,7 +90,7 @@ public class Pagination<P> implements Serializable {
     }
 
     /**
-     * 内存分页 edit by YacoXiao
+     * 内存分页
      */
     public void ramPage() {
         if (pageNum < 1) {
@@ -112,32 +100,10 @@ public class Pagination<P> implements Serializable {
             pageNum = pages;
         }
         int from = (pageNum - 1) * pageSize;
-        int to = pageNum * pageSize ;
+        int to = pageNum * pageSize;
         if (pageNum == pages && pages * pageSize > total) {
             to = total;
         }
         this.list = total == 0 ? null : list.subList(from, to);
     }
-
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public int getPageNum() {
-        return pageNum;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public int getPages() {
-        return this.pages;
-    }
-
-    public List<P> getList() {
-        return list;
-    }
-
 }

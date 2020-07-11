@@ -39,7 +39,7 @@ import java.io.Serializable;
 @Data
 public class MessageReq<T> implements Serializable {
 
-    private static final long serialVersionUID = -6566620839070950003L;
+    private static final long serialVersionUID = -1L;
 
     @NotBlank(message = "clientId不能为空")
     @ApiModelProperty(value = "客户端ID，服务端分配", required = true)

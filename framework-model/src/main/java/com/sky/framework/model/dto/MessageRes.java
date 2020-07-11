@@ -40,7 +40,7 @@ import java.io.Serializable;
 @ApiModel(value = "通用返回结果")
 public class MessageRes<T> implements Serializable {
 
-    private static final long serialVersionUID = -6788609721062977943L;
+    private static final long serialVersionUID = -1L;
 
     @ApiModelProperty("返回码")
     private String code;

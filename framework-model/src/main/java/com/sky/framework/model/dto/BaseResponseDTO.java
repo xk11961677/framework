@@ -23,11 +23,13 @@
 package com.sky.framework.model.dto;
 
 
+import lombok.Data;
+
 /**
  * 响应实体基础类
  *
  * @author
  */
-@SuppressWarnings("serial")
+@Data
 public class BaseResponseDTO extends BaseDTO {
 }

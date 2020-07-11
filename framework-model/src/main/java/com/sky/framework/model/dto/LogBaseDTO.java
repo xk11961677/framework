@@ -54,16 +54,14 @@ public class LogBaseDTO {
      * 应用名称
      */
     private String appName;
-
     /**
      * 日志时间
      */
     private String logTime;
-
     /**
      * 日志时间int类型
      */
-    private int time;
+    private Integer time;
     /**
      * 等级
      */
@@ -82,27 +80,22 @@ public class LogBaseDTO {
      * 标签
      */
     private String tag;
-
     /**
      * 线程名称
      */
     private String thread;
-
     /**
      * 日志输出来源类名与行号
      */
     private String location;
-
     /**
      * 异常栈信息
      */
     private String throwable;
-
     /**
      * encoder 之后的日志信息
      */
     private String log;
-
     /**
      * mdc 信息
      */

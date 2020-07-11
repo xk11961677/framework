@@ -38,18 +38,18 @@ public enum LogLevel {
 
     Trace(5);
 
-    private int intValue;
+    private int value;
 
-    private LogLevel(int value) {
-        this.intValue = value;
+    LogLevel(int value) {
+        this.value = value;
     }
 
     public int getValue() {
-        return this.intValue;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return String.valueOf(this.intValue);
+        return String.valueOf(this.value);
     }
 }
