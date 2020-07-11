@@ -32,7 +32,7 @@ public abstract class AbstractOperator implements Operator {
     @Override
     public boolean execute(Object data, List baseline) {
         if (data == null) return false;
-        return exec(data, baseline);
+        return doExecute(data, baseline);
     }
 
     /**
@@ -42,5 +42,5 @@ public abstract class AbstractOperator implements Operator {
      * @param baseline
      * @return
      */
-    public abstract boolean exec(Object data, List baseline);
+    public abstract boolean doExecute(Object data, List baseline);
 }
