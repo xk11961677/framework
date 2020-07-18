@@ -22,6 +22,7 @@
  */
 package com.sky.framework.kv;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Charsets;
@@ -47,6 +48,7 @@ public class JsonKVUtilsTest {
         String json = Resources.toString(url, Charsets.UTF_8);
         JSONObject jsonObject = JSONObject.parseObject(json);
         List<KeyValue> propertyValueList = JsonKVUtils.convertPropertiesToKV(jsonObject, KeyValue.class);
+        System.out.println(JSON.toJSONString(propertyValueList));
         Assert.assertNotNull(propertyValueList);
     }
 
@@ -56,6 +58,7 @@ public class JsonKVUtilsTest {
         String json = Resources.toString(url, Charsets.UTF_8);
         List<KeyValue> propertyValueList = JSONArray.parseArray(json, KeyValue.class);
         JSONObject value = JsonKVUtils.convertPropertiesFromKV(propertyValueList);
+        System.out.println(value.toJSONString());
         Assert.assertNotNull(value);
     }
 }

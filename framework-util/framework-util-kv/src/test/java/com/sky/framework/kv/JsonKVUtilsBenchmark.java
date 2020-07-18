@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author
  */
-@Warmup(iterations = 2)
+@Warmup(iterations = 1)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @BenchmarkMode({Mode.Throughput})
 @State(Scope.Benchmark)
@@ -74,14 +74,13 @@ public class JsonKVUtilsBenchmark {//NOSONAR
      */
     @TearDown
     public void shutdown() {
-
     }
 
     /**
      * 序列化KV
      */
     @Benchmark
-    public void KVSerialization() {
+    public void serialize() {
         JsonKVUtils.convertPropertiesToKV(jsonObject, KeyValue.class);
     }
 
@@ -89,7 +88,7 @@ public class JsonKVUtilsBenchmark {//NOSONAR
      * KV反序列化
      */
     @Benchmark
-    public void KVUnSerialization() {
+    public void deserialize() {
         JsonKVUtils.convertPropertiesFromKV(propertyValueList);
     }
 
@@ -98,13 +97,14 @@ public class JsonKVUtilsBenchmark {//NOSONAR
      * 使用方式:
      * http://openjdk.java.net/projects/code-tools/jmh/
      * <p>
-     * 通过下面地址可将result.json文件上传查看图
+     * 通过下面地址可将生成的json文件上传查图表
      * http://deepoove.com/jmh-visual-chart/
      */
     public static void main(String[] args) throws Exception {
+        String simpleName = JsonKVUtilsBenchmark.class.getSimpleName();
         Options opt = new OptionsBuilder()
-                .include(JsonKVUtilsBenchmark.class.getSimpleName())
-                .result("result.json")
+                .include(simpleName)
+                .result(simpleName + ".json")
                 .resultFormat(ResultFormatType.JSON)
                 .build();
         new Runner(opt).run();
