@@ -35,17 +35,17 @@ import java.io.Serializable;
  */
 @Data
 public class Result<T> implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -1L;
+    /**
+     * 返回code
+     */
     private String code;
     /**
-     * 失败原因
+     * 返回消息
      */
     private String msg;
-
     /**
-     * 处理结果
+     * 返回结果
      */
     private T data;
 
@@ -55,7 +55,6 @@ public class Result<T> implements Serializable {
      * @param data
      * @return
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
     public static <T> Result success(T data) {
         Result result = new Result();
         result.setCode(SystemErrorCodeEnum.SUCCESS.getCode());
@@ -71,7 +70,6 @@ public class Result<T> implements Serializable {
      * @param result
      * @return
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
     public static <T> Result success(T data, Result result) {
         result.setCode(SystemErrorCodeEnum.SUCCESS.getCode());
         result.setMsg(SystemErrorCodeEnum.SUCCESS.getMsg());
@@ -84,7 +82,6 @@ public class Result<T> implements Serializable {
      *
      * @return
      */
-    @SuppressWarnings("rawtypes")
     public static Result success() {
         Result result = new Result();
         result.setCode(SystemErrorCodeEnum.SUCCESS.getCode());
@@ -95,13 +92,24 @@ public class Result<T> implements Serializable {
     /**
      * 获取失败返回结果
      *
+     * @return
+     */
+    public static Result fail() {
+        Result result = new Result();
+        result.setCode(SystemErrorCodeEnum.FAILURE.getCode());
+        result.setMsg(SystemErrorCodeEnum.FAILURE.getMsg());
+        return result;
+    }
+
+    /**
+     * 获取失败返回结果
+     *
      * @param code
      * @return
      */
-    @SuppressWarnings("rawtypes")
     public static Result fail(String code) {
         Result result = new Result();
-        result.setCode(SystemErrorCodeEnum.FAILURE.getCode());
+        result.setCode(code);
         result.setMsg(SystemErrorCodeEnum.FAILURE.getMsg());
         return result;
     }
@@ -113,12 +121,10 @@ public class Result<T> implements Serializable {
      * @param msg
      * @return
      */
-    @SuppressWarnings("rawtypes")
     public static Result fail(String code, String msg) {
         Result result = new Result();
         result.setCode(code);
         result.setMsg(msg);
         return result;
     }
-
 }

@@ -24,8 +24,8 @@ package com.sky.framework.redis.property;
 
 
 import com.sky.framework.redis.RedisAutoConfiguration;
-import com.sky.framework.redis.enums.LockModelEnum;
-import com.sky.framework.redis.enums.ModelEnum;
+import com.sky.framework.redis.enums.LockModeEnum;
+import com.sky.framework.redis.enums.ModeEnum;
 import lombok.Data;
 import org.redisson.config.SslProvider;
 import org.redisson.config.TransportMode;
@@ -45,7 +45,7 @@ public class RedissonProperties {
      */
     private Integer lockAspectOrder = 0;
 
-    private ModelEnum model = ModelEnum.SINGLE;
+    private ModeEnum mode = ModeEnum.SINGLE;
 
     /**
      * @see org.redisson.client.codec.BaseCodec 的子类
@@ -89,7 +89,7 @@ public class RedissonProperties {
     /**
      * 锁的模式 如果不设置 单个key默认可重入锁 多个key默认联锁
      */
-    private LockModelEnum lockModel;
+    private LockModeEnum lockMode;
 
     /**
      * 等待加锁超时时间 -1一直等待

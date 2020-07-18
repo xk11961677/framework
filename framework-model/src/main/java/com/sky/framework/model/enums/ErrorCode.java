@@ -25,15 +25,17 @@ package com.sky.framework.model.enums;
 /**
  * @author
  */
-@SuppressWarnings("all")
 public interface ErrorCode {
-
     /**
+     * 获取msg
+     *
      * @return
      */
     String getMsg();
 
     /**
+     * 获取code
+     *
      * @return
      */
     String getCode();

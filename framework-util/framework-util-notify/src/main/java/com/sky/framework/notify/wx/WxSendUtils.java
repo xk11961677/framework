@@ -46,7 +46,7 @@ public class WxSendUtils {
      */
     public static void send(String webhook, Message message) {
         if (StringUtils.isBlank(webhook)) {
-            log.warn("webhook is empty");
+            log.warn("WxSendUtils send failed ,Because webhook is empty");
             return;
         }
         OkHttpClient okHttpClient = new OkHttpClient();

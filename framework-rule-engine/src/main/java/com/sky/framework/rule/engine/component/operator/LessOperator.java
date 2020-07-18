@@ -36,7 +36,7 @@ import java.util.List;
 public class LessOperator extends AbstractOperator {
 
     @Override
-    public boolean exec(Object data, List baseline) {
+    public boolean doExecute(Object data, List baseline) {
         if (data == null) return false;
 
         List<Object> list = data instanceof JSONArray ? ((JSONArray) data).toJavaList(Object.class) : Lists.newArrayList(data);

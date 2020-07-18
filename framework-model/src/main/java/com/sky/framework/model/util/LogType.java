@@ -25,7 +25,6 @@ package com.sky.framework.model.util;
 /**
  * @author
  */
-@SuppressWarnings("unused")
 public enum LogType {
     Business(0),
 
@@ -41,18 +40,18 @@ public enum LogType {
 
     Logback(6);
 
-    private int intValue;
+    private int value;
 
-    private LogType(int value) {
-        this.intValue = value;
+    LogType(int value) {
+        this.value = value;
     }
 
     public int getValue() {
-        return this.intValue;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return String.valueOf(this.intValue);
+        return String.valueOf(this.value);
     }
 }

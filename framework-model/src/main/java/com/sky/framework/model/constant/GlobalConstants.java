@@ -31,4 +31,12 @@ public class GlobalConstants {
      * 版本信息
      */
     public static final String VERSION = "1.0";
+    /**
+     * 默认分页大小
+     */
+    public static final int DEFAULT_PAGE_SIZE = 10;
+    /**
+     * 默认页码
+     */
+    public static final int DEFAULT_PAGE_NUM = 1;
 }

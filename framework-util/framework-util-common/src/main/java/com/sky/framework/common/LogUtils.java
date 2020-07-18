@@ -24,7 +24,6 @@ package com.sky.framework.common;
 
 import org.slf4j.Logger;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 
@@ -33,132 +32,241 @@ import java.util.function.Supplier;
  */
 public class LogUtils {
 
-    public static final LogUtils LOG_UTIL = new LogUtils();
+    public static final LogUtils INSTANCE = new LogUtils();
 
     private LogUtils() {
-
+        /**Private constructor: this class is not intended to be instantiated.**/
     }
 
     public static LogUtils getInstance() {
-        return LOG_UTIL;
+        return INSTANCE;
     }
 
 
     /**
      * debug 打印日志
      *
-     * @param logger   日志
-     * @param format   日志信息
-     * @param supplier supplier接口
+     * @param logger    日志
+     * @param format    日志信息
+     * @param suppliers supplier接口
      */
-    public static void debug(Logger logger, String format, Supplier<Object> supplier) {
+    public static void debug(Logger logger, String format, Supplier<?>... suppliers) {
         if (logger.isDebugEnabled()) {
-            logger.debug(format, supplier.get());
-        }
-    }
-
-    public static void debug(Logger logger, Supplier<Object> supplier) {
-        if (logger.isDebugEnabled()) {
-            logger.debug(Objects.toString(supplier.get()));
+            logger.debug(format, getAll(suppliers));
         }
     }
 
     /**
      * debug 打印日志
      *
-     * @param logger   日志
-     * @param format   日志信息
+     * @param logger
+     * @param supplier
+     */
+    public static void debug(Logger logger, Supplier<String> supplier) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(supplier.get());
+        }
+    }
+
+    /**
+     * info 打印日志
+     *
+     * @param logger
+     * @param format
+     * @param suppliers
+     */
+    public static void info(Logger logger, String format, Supplier<?>... suppliers) {
+        if (logger.isInfoEnabled()) {
+            logger.info(format, getAll(suppliers));
+        }
+    }
+
+    /**
+     * info 打印日志
+     *
+     * @param logger
+     * @param supplier
+     */
+    public static void info(Logger logger, Supplier<String> supplier) {
+        if (logger.isInfoEnabled()) {
+            logger.info(supplier.get());
+        }
+    }
+
+    /**
+     * error 打印日志
+     *
+     * @param logger
+     * @param format
+     * @param suppliers
+     */
+    public static void error(Logger logger, String format, Supplier<?>... suppliers) {
+        if (logger.isErrorEnabled()) {
+            logger.error(format, getAll(suppliers));
+        }
+    }
+
+    /**
+     * error 打印日志
+     *
+     * @param logger
+     * @param supplier
+     */
+    public static void error(Logger logger, Supplier<String> supplier) {
+        if (logger.isErrorEnabled()) {
+            logger.error(supplier.get());
+        }
+    }
+
+    /**
+     * warn 打印日志
+     *
+     * @param logger
+     * @param format
+     * @param suppliers
+     */
+    public static void warn(Logger logger, String format, Supplier<?>... suppliers) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(format, getAll(suppliers));
+        }
+    }
+
+    /**
+     * warn 打印日志
+     *
+     * @param logger
+     * @param supplier
+     */
+    public static void warn(Logger logger, Supplier<String> supplier) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(supplier.get());
+        }
+    }
+
+    /**
+     * Converts an array of lambda expressions into an array of their evaluation results.
+     *
+     * @param suppliers an array of lambda expressions or {@code null}
+     * @return an array containing the results of evaluating the lambda expressions (or {@code null} if the suppliers
+     * array was {@code null}
+     */
+    private static Object[] getAll(final Supplier<?>... suppliers) {
+        if (suppliers == null) {
+            return null;
+        }
+        final Object[] result = new Object[suppliers.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = suppliers[i].get();
+        }
+        return result;
+    }
+
+
+    /**
+     * debug 打印日志
+     *
+     * @param logger  日志
+     * @param format  日志信息
      * @param objects
      */
+    @Deprecated
     public static void debug(Logger logger, String format, Object... objects) {
         if (logger.isDebugEnabled()) {
             logger.debug(format, objects);
         }
     }
 
-
+    /**
+     * debug 打印日志
+     *
+     * @param logger
+     * @param info
+     */
+    @Deprecated
     public static void debug(Logger logger, String info) {
         if (logger.isDebugEnabled()) {
             logger.debug(info);
         }
     }
 
-
-    public static void info(Logger logger, String format, Supplier<Object> supplier) {
-        if (logger.isInfoEnabled()) {
-            logger.info(format, supplier.get());
-        }
-    }
-
-
-    public static void info(Logger logger, Supplier<Object> supplier) {
-        if (logger.isInfoEnabled()) {
-            logger.info(Objects.toString(supplier.get()));
-        }
-    }
-
+    /**
+     * info 打印日志
+     *
+     * @param logger
+     * @param format
+     * @param objects
+     */
+    @Deprecated
     public static void info(Logger logger, String format, Object... objects) {
         if (logger.isInfoEnabled()) {
             logger.info(format, objects);
         }
     }
 
+    /**
+     * info 打印日志
+     *
+     * @param logger
+     * @param info
+     */
+    @Deprecated
     public static void info(Logger logger, String info) {
         if (logger.isInfoEnabled()) {
             logger.info(info);
         }
     }
 
-
-    public static void error(Logger logger, String format, Supplier<Object> supplier) {
-        if (logger.isErrorEnabled()) {
-            logger.error(format, supplier.get());
-        }
-    }
-
-    public static void error(Logger logger, Supplier<Object> supplier) {
-        if (logger.isErrorEnabled()) {
-            logger.error(Objects.toString(supplier.get()));
-        }
-    }
-
-
+    /**
+     * error 打印日志
+     *
+     * @param logger
+     * @param format
+     * @param objects
+     */
+    @Deprecated
     public static void error(Logger logger, String format, Object... objects) {
         if (logger.isErrorEnabled()) {
             logger.error(format, objects);
         }
     }
 
-
+    /**
+     * error 打印日志
+     *
+     * @param logger
+     * @param info
+     */
+    @Deprecated
     public static void error(Logger logger, String info) {
         if (logger.isErrorEnabled()) {
             logger.error(info);
         }
     }
 
-    public static void warn(Logger logger, String format, Supplier<Object> supplier) {
-        if (logger.isWarnEnabled()) {
-            logger.warn(format, supplier.get());
-        }
-    }
-
-    public static void warn(Logger logger, Supplier<Object> supplier) {
-        if (logger.isWarnEnabled()) {
-            logger.warn(Objects.toString(supplier.get()));
-        }
-    }
-
+    /**
+     * warn 打印日志
+     *
+     * @param logger
+     * @param format
+     * @param objects
+     */
+    @Deprecated
     public static void warn(Logger logger, String format, Object... objects) {
         if (logger.isWarnEnabled()) {
             logger.warn(format, objects);
         }
     }
 
+    /**
+     * warn 打印日志
+     *
+     * @param logger
+     * @param info
+     */
+    @Deprecated
     public static void warn(Logger logger, String info) {
         if (logger.isWarnEnabled()) {
             logger.warn(info);
         }
     }
-
-
 }

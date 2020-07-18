@@ -40,22 +40,18 @@ import lombok.Data;
  */
 @Data
 public class LogSimpleDTO extends LogBaseDTO {
-
     /**
      * 全类名
      */
     private String fullClazz;
-
     /**
      * 方法名
      */
     private String method;
-
     /**
      * url
      */
     private String url;
-
     /**
      * remoteIp
      */

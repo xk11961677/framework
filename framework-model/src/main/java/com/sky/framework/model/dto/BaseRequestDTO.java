@@ -28,10 +28,8 @@ import lombok.Data;
  * 请求实体基础类
  * @author
  */
-@SuppressWarnings("serial")
 @Data
 public class BaseRequestDTO extends BaseDTO {
-
     /**
      * 版本号
      */
@@ -56,22 +54,18 @@ public class BaseRequestDTO extends BaseDTO {
      * 唯一ID 用于验证幂等性
       */
     private String uniqueId;
-
     /**
      * access_token  访问token
      */
     private String accessToken;
-
     /**
      * refresh_token  刷新token
      */
     private String refreshToken;
-
     /**
      * client_id
      */
     private String clientId;
-
     /**
      * secret_key
      */

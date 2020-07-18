@@ -33,7 +33,6 @@ import java.io.Serializable;
  */
 @Data
 public class BaseDTO implements Serializable {
-
     /**
      * 响应编码
      */
@@ -54,7 +53,6 @@ public class BaseDTO implements Serializable {
      * 扩展字段
      */
     private String extParam;
-
     /**
      * 排序字段
      */

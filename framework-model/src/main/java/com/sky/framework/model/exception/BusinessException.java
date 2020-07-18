@@ -24,49 +24,47 @@ package com.sky.framework.model.exception;
 
 
 /**
- * 业务异常.
+ * 业务异常
  *
  * @author
  */
 public class BusinessException extends RuntimeException {
+    private static final long serialVersionUID = -1L;
+    /**
+     * 自定义业务异常码
+     */
+    protected String code;
 
-	/**
-	 * 异常码
-	 */
-	protected String code;
+    public BusinessException() {
+    }
 
-	private static final long serialVersionUID = 3160241586346324994L;
+    public BusinessException(String message) {
+        super(message);
+    }
 
-	public BusinessException() {
-	}
+    public BusinessException(Throwable cause) {
+        super(cause);
+    }
 
-	public BusinessException(Throwable cause) {
-		super(cause);
-	}
+    public BusinessException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public BusinessException(String message) {
-		super(message);
-	}
+    public BusinessException(String code, String message) {
+        super(message);
+        this.code = code;
+    }
 
-	public BusinessException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public BusinessException(String code, String message, Throwable cause) {
+        super(message, cause);
+        this.code = code;
+    }
 
-	public BusinessException(String code, String message) {
-		super(message);
-		this.code = code;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public BusinessException(String code, String msgFormat, Object... args) {
-		super(String.format(msgFormat, args));
-		this.code = code;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
 }

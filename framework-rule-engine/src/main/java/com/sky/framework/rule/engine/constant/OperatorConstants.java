@@ -24,17 +24,15 @@ package com.sky.framework.rule.engine.constant;
 
 
 /**
- * 操作符
+ * 操作符,待优化 todo 暂时无法扩展
  *
  * @author
  */
-public class OperatorConstants {
-
-    private static OperatorConstants instance = new OperatorConstants();
+public final class OperatorConstants {
 
     public static final String UNKNOWN = "$$$$$$NOT_EXISTS$$$$$$";
 
-    public final static class OPR_CODE {
+    public static final class OPR_CODE {
 
         public static final String EQUAL = "01";
         public static final String GREATER = "02";
@@ -71,58 +69,39 @@ public class OperatorConstants {
 
 
         public static String getCode(String value) {
-            String temp = null;
-            for (int iLoop = 0; iLoop < RESERVED_VALUES.length; iLoop++) {
-                if (RESERVED_VALUES[iLoop].equalsIgnoreCase(value)) {
-                    temp = RESERVED_CODES[iLoop];
-                    break;
-                }
-            }
-
-            if (temp == null) {
-                for (int iLoop = 0; iLoop < RESERVED_ALIAS_VALUES.length; iLoop++) {
-                    if (RESERVED_ALIAS_VALUES[iLoop].equalsIgnoreCase(value)) {
-                        temp = RESERVED_CODES[iLoop];
-                        break;
-                    }
-                }
-            }
-            return temp;
+            return getCode(value, RESERVED_VALUES, RESERVED_ALIAS_VALUES);
         }
 
         public static String getValue(String code) {
-            String temp = null;
-            for (int iLoop = 0; iLoop < RESERVED_CODES.length; iLoop++) {
-                if (RESERVED_CODES[iLoop].equalsIgnoreCase(code)) {
-                    temp = RESERVED_VALUES[iLoop];
-                    break;
-                }
-            }
-            return temp;
+            return getValue(code, RESERVED_VALUES);
         }
 
         public static String getAliasValue(String code) {
-            Integer temp = null;
-            for (int iLoop = 0; iLoop < RESERVED_CODES.length; iLoop++) {
-                if (RESERVED_CODES[iLoop].equalsIgnoreCase(code)) {
-                    temp = iLoop;
-                    break;
+            return getValue(code, RESERVED_ALIAS_VALUES);
+        }
+
+        public static String getCode(String value, String[]... values) {
+            for (int i = 0; i < values.length; i++) {
+                String[] vs = values[i];
+                for (int j = 0; j < vs.length; j++) {
+                    if (vs[j].equalsIgnoreCase(value)) {
+                        return RESERVED_CODES[j];
+                    }
                 }
             }
-            if (temp != null) {
-                return RESERVED_ALIAS_VALUES[temp];
+            return null;
+        }
+
+        public static String getValue(String code, String[] values) {
+            for (int i = 0; i < RESERVED_CODES.length; i++) {
+                if (RESERVED_CODES[i].equalsIgnoreCase(code)) {
+                    return values[i];
+                }
             }
-            return "";
+            return null;
         }
     }
 
-
     private OperatorConstants() {
-
     }
-
-    public static OperatorConstants getInstance() {
-        return instance;
-    }
-
 }

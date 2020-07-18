@@ -40,18 +40,11 @@ import java.util.Date;
  * @author
  */
 @Data
-@SuppressWarnings("unused")
 public class BaseEntity implements Serializable {
-    private static final long serialVersionUID = 2393269568666085258L;
+    private static final long serialVersionUID = -1L;
     @Id
     @KeySql(useGeneratedKeys = true)
     private Long id;
-
-    /**
-     * 状态 0 有效 1 无效
-     */
-    private Integer disabled;
-
     /**
      * 创建时间
      */
@@ -59,13 +52,6 @@ public class BaseEntity implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
-
-    /**
-     * 创建人
-     */
-    @Column(name = "create_by")
-    private String createBy;
-
     /**
      * 更新时间
      */
@@ -73,13 +59,20 @@ public class BaseEntity implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
-
+    /**
+     * 创建人
+     */
+    @Column(name = "create_by")
+    private String createBy;
     /**
      * 更新人
      */
     @Column(name = "update_by")
     private String updateBy;
-
+    /**
+     * 状态 0 有效 1 无效
+     */
+    private Integer disabled;
 
     @Transient
     private Integer pageNum;
@@ -100,6 +93,4 @@ public class BaseEntity implements Serializable {
     public boolean isNew() {
         return this.id == null;
     }
-
-
 }

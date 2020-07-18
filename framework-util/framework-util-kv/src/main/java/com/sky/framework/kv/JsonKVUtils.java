@@ -53,8 +53,8 @@ public class JsonKVUtils {
         if (list == null || list.size() == 0) {
             return new JSONObject();
         }
-        JsonUnSerialization serialization = new JsonUnSerialization(KV2JsonObject(list));
-        return JSON.parseObject(serialization.unSerialization());
+        JsonDeserialization deserialization = new JsonDeserialization(KV2JsonObject(list));
+        return JSON.parseObject(deserialization.deserialize());
     }
 
     /**
@@ -68,7 +68,7 @@ public class JsonKVUtils {
             return new ArrayList<>();
         }
         JsonSerialization serialization = new JsonSerialization(json.toJSONString());
-        return serialization.serialization(tClass);
+        return serialization.serialize(tClass);
     }
 
 

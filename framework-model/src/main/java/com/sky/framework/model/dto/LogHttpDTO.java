@@ -39,9 +39,9 @@ public class LogHttpDTO extends LogBaseDTO {
 
     private String remoteIp;
 
-    private long expendTime;
+    private Long expendTime;
 
-    private int httpCode;
+    private Integer httpCode;
 
     @Override
     public String toString() {
