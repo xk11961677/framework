@@ -40,6 +40,4 @@ public class KeyValue implements Serializable {
         this.key = key;
         this.value = value;
     }
-
-
 }

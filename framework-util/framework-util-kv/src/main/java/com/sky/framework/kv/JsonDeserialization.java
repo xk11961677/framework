@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * @author
  */
 @Slf4j
-public final class JsonUnSerialization {
+public final class JsonDeserialization {
 
     private final JsonValue root;
 
@@ -46,31 +46,21 @@ public final class JsonUnSerialization {
      *
      * @param json the JSON string
      */
-    public JsonUnSerialization(String json) {
+    public JsonDeserialization(String json) {
         root = Json.parse(json);
     }
-
-    /**
-     * 匹配key , 按 . 拆分
-     *
-     * @return
-     */
-    private Pattern keyPartPattern() {
-        return Pattern.compile("[^" + Pattern.quote(separator.toString()) + "]+");
-    }
-
 
     /**
      * 反序列化
      */
     @SuppressWarnings("squid:S3776")
-    public String unSerialization() {
+    public String deserialize() {
         StringWriter sw = new StringWriter();
         if (root.isArray()) {
             try {
-                unSerializationArray(root.asArray()).writeTo(sw, WriterConfig.MINIMAL);
+                deserializationArray(root.asArray()).writeTo(sw, WriterConfig.MINIMAL);
             } catch (IOException e) {
-                log.warn("unSerializationArray:{}", e.getMessage());
+                log.warn("deserializationArray exception:{}", e.getMessage(), e);
             }
             return sw.toString();
         }
@@ -81,12 +71,12 @@ public final class JsonUnSerialization {
         //序列化后的
         JsonObject serialization = root.asObject();
         //反序列化的
-        JsonValue unSerialization = Json.object();
+        JsonValue deserialization = Json.object();
 
         //for循环处理当前key value
         for (String key : serialization.names()) {
             //临时记录，已序列化value
-            JsonValue currentVal = unSerialization;
+            JsonValue currentVal = deserialization;
             //key
             String objKey = null;
             //在数组中的对应下标
@@ -120,16 +110,16 @@ public final class JsonUnSerialization {
                         }
                     }
                 }
-                if (unSerialization == null) {
-                    unSerialization = currentVal;
+                if (deserialization == null) {
+                    deserialization = currentVal;
                 }
             }
-            setUnSerializedValue(serialization, key, currentVal, objKey, aryIdx);
+            setDeserializationValue(serialization, key, currentVal, objKey, aryIdx);
         }
         try {
-            unSerialization.writeTo(sw, WriterConfig.MINIMAL);
+            deserialization.writeTo(sw, WriterConfig.MINIMAL);
         } catch (Exception e) {
-            log.warn("unSerialization:{}", e.getMessage());
+            log.warn("deserialize exception:{}", e.getMessage(), e);
         }
         return sw.toString();
     }
@@ -141,18 +131,27 @@ public final class JsonUnSerialization {
      * @return
      */
     //NOSONAR
-    private JsonArray unSerializationArray(JsonArray array) {
-        JsonArray unSerializationArray = Json.array().asArray();
+    private JsonArray deserializationArray(JsonArray array) {
+        JsonArray deserializationArray = Json.array().asArray();
         for (JsonValue value : array) {
             if (value.isArray()) {
-                unSerializationArray.add(unSerializationArray(value.asArray()));
+                deserializationArray.add(deserializationArray(value.asArray()));
             } else if (value.isObject()) {
-                unSerializationArray.add(Json.parse(new JsonUnSerialization(value.toString()).unSerialization()));
+                deserializationArray.add(Json.parse(new JsonDeserialization(value.toString()).deserialize()));
             } else {
-                unSerializationArray.add(value);
+                deserializationArray.add(value);
             }
         }
-        return unSerializationArray;
+        return deserializationArray;
+    }
+
+    /**
+     * 匹配key , 按 . 拆分
+     *
+     * @return
+     */
+    private Pattern keyPartPattern() {
+        return Pattern.compile("[^" + Pattern.quote(separator.toString()) + "]+");
     }
 
     /**
@@ -165,8 +164,14 @@ public final class JsonUnSerialization {
         return keyPart.matches("^\\[\\d*\\]$");
     }
 
+    /**
+     * 替换keyPart [ 和 ] 符号
+     *
+     * @param keyPart
+     * @return
+     */
     private String replace(String keyPart) {
-        return keyPart.replace("[","").replace("]","");
+        return keyPart.replace("[", "").replace("]", "");
     }
 
     /**
@@ -239,16 +244,13 @@ public final class JsonUnSerialization {
      * @param objKey
      * @param aryIdx
      */
-    private void setUnSerializedValue(JsonObject jsonObject, String key,
-                                      JsonValue currentVal, String objKey, Integer aryIdx) {
+    private void setDeserializationValue(JsonObject jsonObject, String key, JsonValue currentVal, String objKey, Integer aryIdx) {
         JsonValue val = jsonObject.get(key);
         if (objKey != null) {
             if (val.isArray()) {
                 JsonValue jsonArray = Json.array();
                 for (JsonValue arrayVal : val.asArray()) {
-                    jsonArray.asArray().add(
-                            Json.parse(newJsonUnSerialization(arrayVal.toString())
-                                    .unSerialization()));
+                    jsonArray.asArray().add(Json.parse(newJsonDeserialization(arrayVal.toString()).deserialize()));
                 }
                 currentVal.asObject().add(objKey, jsonArray);
             } else {
@@ -261,13 +263,13 @@ public final class JsonUnSerialization {
     }
 
     /**
-     * 创建jsonUnSerialization
+     * 创建JsonDeserialization
      *
      * @param json
      * @return
      */
-    private JsonUnSerialization newJsonUnSerialization(String json) {
-        JsonUnSerialization js = new JsonUnSerialization(json);
+    private JsonDeserialization newJsonDeserialization(String json) {
+        JsonDeserialization js = new JsonDeserialization(json);
         return js;
     }
 
@@ -295,14 +297,14 @@ public final class JsonUnSerialization {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof JsonUnSerialization)) {
+        if (!(o instanceof JsonDeserialization)) {
             return false;
         }
-        return root.equals(((JsonUnSerialization) o).root);
+        return root.equals(((JsonDeserialization) o).root);
     }
 
     @Override
     public String toString() {
-        return "JsonUnSerialization{root=" + root + "}";
+        return "JsonDeserialization{root=" + root + "}";
     }
 }
