@@ -24,8 +24,7 @@ package com.sky.framework.kv;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.eclipsesource.json.JsonObject;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +48,18 @@ public class JsonKVUtils {
      * @param list
      * @return
      */
+    @Deprecated
     public static JSONObject convertPropertiesFromKV(List<? extends KeyValue> list) {
+        return deserialize(list);
+    }
+
+    /**
+     * 反序列化成JSONObject
+     *
+     * @param list
+     * @return
+     */
+    public static JSONObject deserialize(List<? extends KeyValue> list) {
         if (list == null || list.size() == 0) {
             return new JSONObject();
         }
@@ -63,14 +73,63 @@ public class JsonKVUtils {
      * @param json
      * @return
      */
-    public static <T> List<T> convertPropertiesToKV(JSONObject json, Class<T> tClass) {
+    @Deprecated
+    public static <T> List<T> convertPropertiesToKV(JSONObject json, Class<T> clazz) {
+        return serialize(json, clazz, KVModeEnum.JACKSON);
+    }
+
+    /**
+     * @param json
+     * @return
+     */
+    public static List<KeyValue> serialize(JSONObject json) {
+        return serialize(json, KVModeEnum.JACKSON);
+    }
+
+    /**
+     * @param json
+     * @param clazz
+     * @return
+     */
+    public static <T> List<T> serialize(JSONObject json, Class<T> clazz) {
+        return serialize(json, clazz, KVModeEnum.JACKSON);
+    }
+
+    /**
+     * @param json
+     * @param mode
+     * @return
+     */
+    public static List<KeyValue> serialize(JSONObject json, KVModeEnum mode) {
+        return serialize(json, KeyValue.class, mode);
+    }
+
+    /**
+     * 序列化成List<K,V>
+     *
+     * @param json
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> serialize(JSONObject json, Class<T> clazz, KVModeEnum mode) {
         if (json == null || json.isEmpty()) {
             return new ArrayList<>();
         }
-        JsonSerialization serialization = new JsonSerialization(json.toJSONString());
-        return serialization.serialize(tClass);
+        return get(mode, json.toJSONString()).serialize(clazz);
     }
 
+    /**
+     * 获取序列化对象
+     *
+     * @param mode
+     * @param json
+     * @return
+     */
+    private static BaseJsonSerialization get(KVModeEnum mode, String json) {
+        return (mode == KVModeEnum.FASTJSON) ? new FastJsonSerialization(json) : new JacksonSerialization(json);
+
+    }
 
     /**
      * 将KV转成json object
@@ -79,10 +138,10 @@ public class JsonKVUtils {
      * @return
      */
     private static String KV2JsonObject(List<? extends KeyValue> list) {
-        ObjectNode object = new ObjectNode(new JsonNodeFactory(false));
+        JsonObject object = new JsonObject();
         for (KeyValue propertyValue : list) {
             if (!StringUtils.isBlank(propertyValue.getKey())) {
-                object.put(propertyValue.getKey(), propertyValue.getValue());
+                object.add(propertyValue.getKey(), propertyValue.getValue());
             }
         }
         return object.toString();

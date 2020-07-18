@@ -23,25 +23,26 @@
 package com.sky.framework.kv;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author
  */
-public final class JacksonJsonObject implements Iterable<Entry<String, JsonNode>> {
+public final class FastJsonObject implements Iterable<Entry<String, Object>> {
 
-    private final JsonNode jsonObject;
+    private final JSONObject jsonObject;
 
-    public JacksonJsonObject(JsonNode jsonObject) {
+    public FastJsonObject(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
     }
 
-    public JsonNode get(String name) {
-        return this.jsonObject.get(name);
+    public JSONObject get(String name) {
+        return this.jsonObject.getJSONObject(name);
     }
 
     @Override
@@ -54,7 +55,7 @@ public final class JacksonJsonObject implements Iterable<Entry<String, JsonNode>
         if (this == o) {
             return true;
         } else {
-            return !(o instanceof JacksonJsonObject) ? false : Objects.equals(this.jsonObject, ((JacksonJsonObject) o).jsonObject);
+            return !(o instanceof FastJsonObject) ? false : Objects.equals(this.jsonObject, ((FastJsonObject) o).jsonObject);
         }
     }
 
@@ -64,25 +65,26 @@ public final class JacksonJsonObject implements Iterable<Entry<String, JsonNode>
     }
 
     @Override
-    public Iterator<Entry<String, JsonNode>> iterator() {
-        return new JacksonJsonEntryIterator(this.jsonObject.fields());
+    public Iterator<Entry<String, Object>> iterator() {
+        Set<Entry<String, Object>> entries = this.jsonObject.entrySet();
+        return new FastJsonEntryIterator(entries.iterator());
     }
 
-    private final class JacksonJsonEntryIterator implements Iterator<Entry<String, JsonNode>> {
-        private final Iterator<Entry<String, JsonNode>> jsonNodeIterator;
+    private final class FastJsonEntryIterator implements Iterator<Entry<String, Object>> {
+        private final Iterator<Entry<String, Object>> jsonIterator;
 
-        private JacksonJsonEntryIterator(Iterator<Entry<String, JsonNode>> jsonNodeIterator) {
-            this.jsonNodeIterator = jsonNodeIterator;
+        private FastJsonEntryIterator(Iterator<Entry<String, Object>> jsonIterator) {
+            this.jsonIterator = jsonIterator;
         }
 
         @Override
         public boolean hasNext() {
-            return this.jsonNodeIterator.hasNext();
+            return this.jsonIterator.hasNext();
         }
 
         @Override
-        public Entry<String, JsonNode> next() {
-            Entry<String, JsonNode> member = (Entry) this.jsonNodeIterator.next();
+        public Entry<String, Object> next() {
+            Entry<String, Object> member = this.jsonIterator.next();
             return member;
         }
     }
