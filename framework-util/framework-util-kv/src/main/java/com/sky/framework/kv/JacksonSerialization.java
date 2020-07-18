@@ -37,13 +37,13 @@ import java.math.BigDecimal;
  * @author
  */
 @Slf4j
-public final class JackJsonSerialization extends BaseJsonSerialization<JsonNode> {
+public final class JacksonSerialization extends BaseJsonSerialization<JsonNode> {
     /**
      * 创建
      *
      * @param json the JSON string
      */
-    public JackJsonSerialization(String json) {
+    public JacksonSerialization(String json) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             this.source = mapper.readTree(json);
@@ -59,7 +59,7 @@ public final class JackJsonSerialization extends BaseJsonSerialization<JsonNode>
      */
     @Override
     protected void reduce(JsonNode val) {
-        JacksonJsonObject jsonObject;
+        JacksonObject jsonObject;
         if (val.isObject() && (jsonObject = asObject(val)).iterator().hasNext()) {
             deque.add(IndexedPeekIterator.newIndexedPeekIterator(jsonObject));
         } else if (val.isArray() && val.elements().hasNext()) {
@@ -99,8 +99,8 @@ public final class JackJsonSerialization extends BaseJsonSerialization<JsonNode>
      * @param val
      * @return
      */
-    private JacksonJsonObject asObject(JsonNode val) {
-        return new JacksonJsonObject(val);
+    private JacksonObject asObject(JsonNode val) {
+        return new JacksonObject(val);
     }
 
 }

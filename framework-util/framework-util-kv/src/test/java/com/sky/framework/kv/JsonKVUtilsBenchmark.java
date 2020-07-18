@@ -97,7 +97,7 @@ public class JsonKVUtilsBenchmark {//NOSONAR
      * 使用方式:
      * http://openjdk.java.net/projects/code-tools/jmh/
      * <p>
-     * 通过下面地址可将生成的json文件上传查图表
+     * 通过下面地址可将生成的json文件上传查看图表
      * http://deepoove.com/jmh-visual-chart/
      */
     public static void main(String[] args) throws Exception {

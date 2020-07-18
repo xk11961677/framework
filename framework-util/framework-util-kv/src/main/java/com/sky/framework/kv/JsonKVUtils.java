@@ -75,7 +75,7 @@ public class JsonKVUtils {
      */
     @Deprecated
     public static <T> List<T> convertPropertiesToKV(JSONObject json, Class<T> clazz) {
-        return serialize(json, clazz, KVModeEnum.FASTJSON);
+        return serialize(json, clazz, KVModeEnum.JACKSON);
     }
 
     /**
@@ -127,7 +127,7 @@ public class JsonKVUtils {
      * @return
      */
     private static BaseJsonSerialization get(KVModeEnum mode, String json) {
-        return (mode == KVModeEnum.FASTJSON) ? new FastJsonSerialization(json) : new JackJsonSerialization(json);
+        return (mode == KVModeEnum.FASTJSON) ? new FastJsonSerialization(json) : new JacksonSerialization(json);
 
     }
 

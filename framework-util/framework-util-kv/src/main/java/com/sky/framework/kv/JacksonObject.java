@@ -32,11 +32,11 @@ import java.util.Objects;
 /**
  * @author
  */
-public final class JacksonJsonObject implements Iterable<Entry<String, JsonNode>> {
+public final class JacksonObject implements Iterable<Entry<String, JsonNode>> {
 
     private final JsonNode jsonObject;
 
-    public JacksonJsonObject(JsonNode jsonObject) {
+    public JacksonObject(JsonNode jsonObject) {
         this.jsonObject = jsonObject;
     }
 
@@ -54,7 +54,7 @@ public final class JacksonJsonObject implements Iterable<Entry<String, JsonNode>
         if (this == o) {
             return true;
         } else {
-            return !(o instanceof JacksonJsonObject) ? false : Objects.equals(this.jsonObject, ((JacksonJsonObject) o).jsonObject);
+            return !(o instanceof JacksonObject) ? false : Objects.equals(this.jsonObject, ((JacksonObject) o).jsonObject);
         }
     }
 
