@@ -69,6 +69,7 @@
         <module>framework-util</module>
         <module>framework-dao</module>
         <module>framework-rule-engine</module>
+        <module>framework-dsl</module>
     </modules>
 
 
