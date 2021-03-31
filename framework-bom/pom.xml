@@ -41,7 +41,7 @@
         <mybatis.plus.starter.version>3.2.0</mybatis.plus.starter.version>
         <jsonpath.version>2.2.0</jsonpath.version>
         <reflectasm.version>1.11.0</reflectasm.version>
-        <guava.version>28.2-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <commons-text.version>1.8</commons-text.version>
         <minimal.json.version>0.9.5</minimal.json.version>
     </properties>
