@@ -32,7 +32,7 @@
         <commons-lang3.version>3.5</commons-lang3.version>
         <commons-collections.version>3.2.2</commons-collections.version>
         <commons-pool2.version>2.6.2</commons-pool2.version>
-        <httpclient.version>4.5.2</httpclient.version>
+        <httpclient.version>4.5.13</httpclient.version>
         <okhttp3.version>3.8.1</okhttp3.version>
         <redisson.starter.version>3.11.0</redisson.starter.version>
         <kryo.version>2.24.0</kryo.version>
