@@ -21,7 +21,7 @@
         <mybatis.version>3.5.1</mybatis.version>
         <mybatis-starter-version>2.0.1</mybatis-starter-version>
         <druid.version>1.1.22</druid.version>
-        <mysql.version>8.0.20</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
         <tk.mapper.version>4.1.5</tk.mapper.version>
         <tk.mapper-core.version>1.1.5</tk.mapper-core.version>
         <tk.mapper.starter.version>2.1.5</tk.mapper.starter.version>
