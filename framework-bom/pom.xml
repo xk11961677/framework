@@ -36,7 +36,7 @@
         <okhttp3.version>3.8.1</okhttp3.version>
         <redisson.starter.version>3.11.0</redisson.starter.version>
         <kryo.version>2.24.0</kryo.version>
-        <hutool.version>4.5.18</hutool.version>
+        <hutool.version>5.8.19</hutool.version>
         <aliyun-sdk-oss.version>3.5.0</aliyun-sdk-oss.version>
         <mybatis.plus.starter.version>3.2.0</mybatis.plus.starter.version>
         <jsonpath.version>2.2.0</jsonpath.version>
